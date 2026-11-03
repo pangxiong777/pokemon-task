@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>宝可梦作业激励</title>
+<title>宝可梦激励</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="apple-touch-icon" href="icon.png">
@@ -551,6 +551,16 @@ table.rec tr:last-child td{border-bottom:none;}
 .mon-tap{cursor:pointer;transition:transform .12s ease;}
 .mon-tap:active{transform:scale(.985);}
 .skill-tag{font-size:10px;font-weight:900;color:#fff;background:linear-gradient(135deg,#5c6bc0,#3949ab);border-radius:99px;padding:2px 8px;margin-left:auto;}
+.mon-detail .md-sec{margin-top:12px;text-align:left;}
+.mon-detail .md-sec h4{margin:0 0 6px;font-size:12.5px;font-weight:900;color:#8a7a6a;letter-spacing:.4px;}
+.mon-detail .md-moves{display:flex;flex-wrap:wrap;gap:6px;}
+.mon-detail .md-move{
+  font-size:12.5px;font-weight:700;background:var(--pk-soft);border:1px solid var(--pk-line);
+  border-radius:10px;padding:5px 10px;display:inline-flex;align-items:center;gap:5px;
+}
+.mon-detail .md-move .lv{font-size:10px;font-weight:900;color:#8a97ad;}
+.mon-detail .md-move.locked{opacity:.55;background:#fff;}
+.mon-detail .md-note{font-size:12.5px;color:#6b5a4a;font-weight:600;line-height:1.55;margin:0;}
 .nav-inner.many .tab{font-size:10px;padding:8px 0 7px;}
 .nav-inner.many .tab .ti{font-size:19px;}
 .tr-svg{width:96px;height:auto;display:block;}
@@ -730,11 +740,11 @@ table.rec tr:last-child td{border-bottom:none;}
         <circle cx="50" cy="50" r="16" fill="#fff" stroke="#3b2f2f" stroke-width="6"/>
         <circle cx="50" cy="50" r="6" fill="#fff"/>
       </svg>
-      <span>宝可梦作业激励</span>
+      <span>宝可梦激励</span>
     </div>
     <div class="hd-right">
       <button class="kid-switch" id="kidSwitch" onclick="openKidSwitch()" title="切换孩子">
-        <span class="ks-av" id="kidAv">🧒</span><span class="ks-nm" id="kidNm">暖暖</span><span class="ks-ar">▾</span>
+        <span class="ks-av" id="kidAv">🧒</span><span class="ks-nm" id="kidNm">吨吨</span><span class="ks-ar">▾</span>
       </button>
       <button class="chip hot" id="streakChip" onclick="go('records')">🔥 连击 0 天</button>
       <button class="mode-btn" id="modeBtn" onclick="toggleMode()">👨‍👩‍👧 家长</button>
@@ -882,10 +892,10 @@ var KEY='pkHomeworkApp.v1';
 var KIDS_KEY='pkHomeworkApp.kids.v1';
 var KIDS_MAX=3;
 var OLD_SUBJECTS=['语文','数学','英语','阅读','运动','其他'];
-var NEW_SUBJECTS=['画画','弹钢琴','幼儿园表现','跳绳打卡','吃饭','阅读绘本','收拾玩具'];
+var NEW_SUBJECTS=['画画','拍皮球','幼儿园表现','骑自行车','好好吃饭','阅读绘本','收拾玩具'];
 function defaultState(){
   return {
-    v:1, childName:'暖暖', pin:'', deadline:'21:30', baseXP:20, fastMult:1.2,
+    v:1, childName:'吨吨', pin:'', deadline:'21:30', baseXP:20, fastMult:1.2,
     streakTarget:7, subjects:NEW_SUBJECTS.slice(),
     sound:true, firstRun:true, team:[],
     homework:[], streak:{count:0,lastDate:null,lastPrize:0,record:0},
@@ -953,7 +963,7 @@ function migrateLegacySave(){
     if(!raw) raw=localStorage.getItem('pkHomeworkApp.v1.legacy');
     if(raw){
       var d=JSON.parse(raw); had=true;
-      var nm=(d&&d.childName)?d.childName:'暖暖';
+      var nm=(d&&d.childName)?d.childName:'吨吨';
       var kid=newKidEntry(nm,'🧒');
       try{ localStorage.setItem(kidStorageKey(kid.key),raw); }catch(e){}
       KIDS={active:kid.key,list:[kid]};
@@ -961,7 +971,7 @@ function migrateLegacySave(){
       return KIDS;
     }
   }catch(e){}
-  var kid=newKidEntry('暖暖','🧒');
+  var kid=newKidEntry('吨吨','🧒');
   KIDS={active:kid.key,list:[kid]};
   try{ localStorage.setItem(KIDS_KEY,JSON.stringify(KIDS)); }catch(e){}
   return KIDS;
@@ -1079,7 +1089,7 @@ function openKidAdd(){
   }).join('');
   showModal('<div class="dialog"><h3>➕ 添加一个孩子</h3>'+
     '<p class="lead" style="font-size:13px">给新成员起个名字，他/她会从选初始伙伴开始全新的冒险。</p>'+
-    '<div class="field" style="margin-top:10px"><label>孩子的名字</label><input id="kidNameIn" maxlength="8" placeholder="例如：暖暖、小小"></div>'+
+    '<div class="field" style="margin-top:10px"><label>孩子的名字</label><input id="kidNameIn" maxlength="8" placeholder="例如：吨吨、小小"></div>'+
     '<div class="field"><label>选个头像</label><div class="av-wrap">'+avs+'</div></div>'+
     '<div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="createKid()">创建</button>'+
     '<button class="btn btn-gray btn-block" onclick="openKidSwitch()">返回</button></div></div>');
@@ -1948,31 +1958,91 @@ function meetDone(){ return !!(S.meet&&S.meet.date===todayStr()&&S.meet.done); }
 function meetBannerHTML(){
   if(S.firstRun) return '';
   var done=meetDone(), t=meetTopicToday();
-  return '<button class="meet-banner" onclick="openMeet()">'+
+  return '<button class="meet-banner" onclick="openMeet(true)">'+
     '<span class="mb-ic">🎓</span>'+
     '<span class="mb-text"><b>大木博士的每日英语</b><i>'+(done?('今天聊过 '+t.ic+' '+t.nm+' · 可以再练一遍'):('今日话题 '+t.ic+' '+t.nm+' · 和大木博士练英语'))+'</i></span>'+
     '<span class="mb-go">'+(done?'✅ 已见面':'GO →')+'</span></button>';
 }
-var voiceEl=null;
-function speakFallback(text){
+/* 英语发音：优先用嵌入的 ASSET_VOICE；否则用系统 TTS。
+   iPhone「添加到主屏幕」要求第一次 speak() 必须在用户点击的同步调用栈里，
+   因此不能先 404 再异步兜底（会静音）。 */
+var voiceEl=null, voicePrimed=false, enVoice=null, voiceTimer=null;
+function soundEnabled(){ return !(S&&S.sound===false); }
+function refreshEnVoice(){
+  try{
+    if(!window.speechSynthesis) return null;
+    var vs=window.speechSynthesis.getVoices()||[], i;
+    enVoice=null;
+    for(i=0;i<vs.length;i++){ if(/en[-_]US/i.test(vs[i].lang)){ enVoice=vs[i]; break; } }
+    if(!enVoice){ for(i=0;i<vs.length;i++){ if(/^en/i.test(vs[i].lang)){ enVoice=vs[i]; break; } } }
+  }catch(e){}
+  return enVoice;
+}
+try{
+  if(window.speechSynthesis){
+    refreshEnVoice();
+    window.speechSynthesis.addEventListener('voiceschanged', refreshEnVoice);
+  }
+}catch(e){}
+function primeVoice(){
+  if(voicePrimed) return;
+  voicePrimed=true;
+  try{
+    var ac=audio();
+    if(ac&&ac.state==='suspended'&&ac.resume) ac.resume();
+  }catch(e){}
   try{
     if(window.speechSynthesis){
-      var u=new SpeechSynthesisUtterance(text);
-      u.lang='en-US'; u.rate=0.85;
-      window.speechSynthesis.cancel(); window.speechSynthesis.speak(u);
+      refreshEnVoice();
+      var u=new SpeechSynthesisUtterance(' ');
+      u.volume=0; u.rate=2; u.lang='en-US';
+      if(enVoice) u.voice=enVoice;
+      window.speechSynthesis.speak(u);
+      window.speechSynthesis.cancel();
     }
   }catch(e){}
 }
-function playVoice(name,text){
+['pointerdown','touchstart','click'].forEach(function(ev){
+  document.addEventListener(ev,function(){ try{ primeVoice(); }catch(e){} },{capture:true,passive:true});
+});
+function speakFallback(text, sync){
+  if(!text||!soundEnabled()) return;
+  try{
+    if(!window.speechSynthesis) return;
+    refreshEnVoice();
+    var u=new SpeechSynthesisUtterance(String(text));
+    u.lang='en-US'; u.rate=0.88;
+    if(enVoice) u.voice=enVoice;
+    window.speechSynthesis.cancel();
+    if(sync){
+      window.speechSynthesis.speak(u);
+    }else{
+      try{ clearTimeout(voiceTimer); }catch(e){}
+      voiceTimer=setTimeout(function(){
+        try{ window.speechSynthesis.speak(u); }catch(e){}
+      },60);
+    }
+  }catch(e){}
+}
+function playVoice(name,text,sync){
+  if(!soundEnabled()) return;
+  var wantSync=(sync!==false);
   try{
     stopVoice();
-    voiceEl=new Audio('assets/voice/'+name+'.mp3');
-    voiceEl.onerror=function(){ speakFallback(text||''); };
-    var p=voiceEl.play();
-    if(p&&p.catch){ p.catch(function(){ speakFallback(text||''); }); }
-  }catch(e){ speakFallback(text||''); }
+    /* 若打包了嵌入语音（与 ASSET_CRY 同思路），优先播放录音 */
+    if(typeof ASSET_VOICE!=='undefined'&&ASSET_VOICE&&name&&ASSET_VOICE[name]){
+      voiceEl=new Audio(ASSET_VOICE[name]);
+      voiceEl.volume=1;
+      var p=voiceEl.play();
+      if(p&&p.catch){ p.catch(function(){ speakFallback(text||'', wantSync); }); }
+      return;
+    }
+    /* 本包未附带 assets/voice，直接同步 TTS，避免 iOS 异步兜底被静音 */
+    speakFallback(text||'', wantSync);
+  }catch(e){ speakFallback(text||'', wantSync); }
 }
 function stopVoice(){
+  try{ clearTimeout(voiceTimer); }catch(e){}
   try{ if(voiceEl){ voiceEl.pause(); voiceEl.currentTime=0; } }catch(e){}
   try{ if(window.speechSynthesis) window.speechSynthesis.cancel(); }catch(e){}
 }
@@ -1994,11 +2064,14 @@ var OAK_SVG='<svg viewBox="0 0 100 100" style="width:100%;height:100%;border-rad
   '<path d="M50 50v5" stroke="#e0a97f" stroke-width="2" stroke-linecap="round"/>'+
   '<path d="M43 58q7 6 14 0" stroke="#a86a4a" stroke-width="2.6" fill="none" stroke-linecap="round"/>'+
 '</svg>';
-var meetIdx=0, meetFirst=false;
-function openMeet(){
+var meetIdx=0, meetFirst=false, meetNeedTap=false;
+function openMeet(fromGesture){
   if(!S.meet||S.meet.date!==todayStr()) S.meet={date:todayStr(),done:false,count:(S.meet?S.meet.count:0)};
   meetFirst=!meetDone();
   meetIdx=0;
+  /* 自动弹出（无点击）时，iOS 不允许直接发音，先让孩子点一下开始 */
+  meetNeedTap=!(fromGesture||voicePrimed);
+  if(fromGesture) primeVoice();
   var tt=meetTopicToday();
   showModal('<div class="dialog meet-dialog">'+
     '<div class="meet-top"><b>🎓 大木博士的每日英语</b><span id="meetStep">1 / 6</span></div>'+
@@ -2013,9 +2086,14 @@ function openMeet(){
     '<div class="meet-dots" id="meetDots"></div>'+
     '<div class="dlg-actions" id="meetActs"></div>'+
   '</div>');
-  meetRender();
+  meetRender(!!fromGesture);
 }
-function meetRender(){
+function meetStartListen(){
+  primeVoice();
+  meetNeedTap=false;
+  meetRender(true);
+}
+function meetRender(fromGesture){
   var lines=meetLines(), L=lines[meetIdx];
   var en=$('meetEn'), zh=$('meetZh'), step=$('meetStep'), dots=$('meetDots');
   if(!en) return;
@@ -2029,21 +2107,31 @@ function meetRender(){
   var oak=$('charOak'), kid=$('charKid');
   if(oak){ oak.className='meet-char oak '+(L.who==='oak'?'speaking':'idle'); }
   if(kid){ kid.className='meet-char kid '+(L.who==='kid'?'speaking':'idle'); }
-  playVoice(L.audio,L.en);
   var acts=$('meetActs');
+  if(meetNeedTap&&meetIdx===0){
+    if(acts){
+      acts.innerHTML='<button class="btn btn-primary btn-block" onclick="meetStartListen()">🔊 点这里开始听大木博士说话</button>';
+    }
+    return;
+  }
+  playVoice(L.audio,L.en,!!fromGesture);
   if(acts){
     acts.innerHTML='<button class="btn btn-gray btn-sm" style="flex:1" onclick="meetSpeakAgain()">🔊 再听一次</button>'+
       '<button class="btn btn-primary btn-sm" style="flex:1.4" onclick="meetNext()">'+(meetIdx<lines.length-1?'下一句 ▶':'结束对话 🎉')+'</button>';
   }
 }
 function meetSpeakAgain(){
+  primeVoice();
+  meetNeedTap=false;
   var L=meetLines()[meetIdx];
-  playVoice(L.audio,L.en);
+  playVoice(L.audio,L.en,true);
   sfxClick();
 }
 function meetNext(){
+  primeVoice();
+  meetNeedTap=false;
   var lines=meetLines();
-  if(meetIdx<lines.length-1){ meetIdx++; meetRender(); sfxClick(); }
+  if(meetIdx<lines.length-1){ meetIdx++; meetRender(true); sfxClick(); }
   else{ meetFinish(); }
 }
 function meetFinish(){
@@ -2073,7 +2161,7 @@ function meetFinish(){
   }).join('');
   var acts=$('meetActs');
   if(acts){
-    acts.innerHTML='<button class="btn btn-yellow btn-block" onclick="openMeet()">🔁 再听一遍对话</button>'+
+    acts.innerHTML='<button class="btn btn-yellow btn-block" onclick="openMeet(true)">🔁 再听一遍对话</button>'+
       '<button class="btn btn-primary btn-block" onclick="closeModal();render()">'+
         (meetFirst?'完成啦，明天见！':'好啦！')+'</button>';
   }
@@ -2723,14 +2811,14 @@ function monCardHTML(m,idx){
     return '<span class="move">'+esc(mv.m)+(isNew?'<span class="new">新!</span>':'')+'</span>';
   }).join('');
   var srcMap={starter:'初始伙伴',wild:'野外捕捉',gym:'道馆伙伴',prize:'连击大奖',egg:'神秘蛋'};
-  return '<div class="mon-card mon-tap" onclick="playSkill(\''+m.id+'\')">'+
+  return '<div class="mon-card mon-tap" onclick="openTeamMon(\''+m.id+'\')">'+
     '<div class="mon-head" style="background:linear-gradient(135deg,'+tc(sp.type)+'33,'+tc(sp.type)+'14 65%,#fff)">'+
       '<div class="mon-ava" style="border-color:'+tc(sp.type)+'">'+pokeImgHTML(m.sid)+'</div>'+
       '<div class="mon-info">'+
         '<div class="mon-name"><b>'+esc(m.nick)+'</b>'+
           '<span class="type-tag" style="background:'+tc(sp.type)+'">'+sp.type+'</span>'+
           '<span class="lv-tag">Lv.'+m.level+'</span>'+
-          '<span class="skill-tag">▶ 技能</span></div>'+
+          '<span class="skill-tag">详情</span></div>'+
         '<div class="mon-sub">'+esc(srcMap[m.source]||'伙伴')+evoNote+'</div>'+
         '<div class="xp-wrap"><div class="xp-top"><span>经验 '+m.xp+'/'+need+'</span><span>'+(m.level>=50?'MAX':('Lv.'+(m.level+1)))+'</span></div>'+
         '<div class="xpbar"><div class="xpfill" style="width:'+pct+'%"></div></div></div>'+
@@ -2738,6 +2826,63 @@ function monCardHTML(m,idx){
     '</div>'+
     (moves.length?'<div class="mon-moves">'+movesHTML+'</div>':'')+
   '</div>';
+}
+function openTeamMon(mid){
+  var mon=null, ti=-1;
+  S.team.forEach(function(m,i){ if(m.id===mid){ mon=m; ti=i; } });
+  if(!mon) return;
+  var sp=spec(mon.sid); if(!sp) return;
+  var need=xpNeed(mon.level);
+  var pct=Math.min(100,Math.round(mon.xp/need*100));
+  var evo=nextEvo(mon);
+  var srcMap={starter:'初始伙伴',wild:'野外捕捉',gym:'道馆伙伴',prize:'连击大奖',egg:'神秘蛋'};
+  var learned=movesOf(mon);
+  var upcoming=(sp.moves||[]).filter(function(mv){ return mv.at>mon.level; }).slice(0,5);
+  var evoLine=evo
+    ? ('下一级形态：Lv.'+evo.at+' → '+(SPECIES[evo.to]?SPECIES[evo.to].name:evo.to))
+    : (sp.evo.length?'已是最终形态':'不会进化');
+  var chain=sp.evo.length
+    ? sp.evo.map(function(e){ return 'Lv.'+e.at+' → '+(SPECIES[e.to]?SPECIES[e.to].name:e.to); }).join('，')
+    : '—';
+  var learnedHTML=learned.length
+    ? learned.map(function(mv){
+        var info=(typeof MOVE_INFO!=='undefined'&&MOVE_INFO[mv.m])?MOVE_INFO[mv.m]:null;
+        var tip=info?(' · '+(info.t||'')+(info.p?(' '+info.p):'')):'';
+        return '<span class="md-move">'+esc(mv.m)+'<span class="lv">Lv.'+mv.at+tip+'</span></span>';
+      }).join('')
+    : '<p class="md-note">还没有学会招式</p>';
+  var nextHTML=upcoming.length
+    ? upcoming.map(function(mv){
+        return '<span class="md-move locked">'+esc(mv.m)+'<span class="lv">Lv.'+mv.at+' 解锁</span></span>';
+      }).join('')
+    : '<p class="md-note">没有更多可学招式了</p>';
+  var nickLine=(mon.nick!==sp.name)?('<div style="font-size:12px;color:#8a97ad;font-weight:700;margin-top:2px">本名 '+esc(sp.name)+'</div>'):'';
+  sfxClick();
+  showModal('<div class="dialog mon-detail">'+
+    '<div style="text-align:center">'+
+      '<div style="font-size:11px;font-weight:900;color:#8a97ad">No.'+('000'+dexNo(mon.sid)).slice(-3)+'</div>'+
+      '<div class="big-emoji" style="margin:4px 0">'+pokeImgHTML(mon.sid,'style="width:120px;height:120px;object-fit:contain"')+'</div>'+
+      '<h3 style="margin:2px 0 4px">'+esc(mon.nick)+'</h3>'+nickLine+
+      '<div style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:8px">'+
+        '<span class="type-tag" style="background:'+tc(sp.type)+'">'+sp.type+'</span>'+
+        '<span class="lv-tag" style="margin-left:0">Lv.'+mon.level+'</span>'+
+      '</div>'+
+      '<p class="lead" style="margin-top:10px">来源：'+esc(srcMap[mon.source]||'伙伴')+'</p>'+
+      '<div class="xp-wrap" style="max-width:280px;margin:10px auto 0;text-align:left">'+
+        '<div class="xp-top"><span>经验 '+mon.xp+'/'+need+'</span><span>'+(mon.level>=50?'MAX':('下一级 Lv.'+(mon.level+1)))+'</span></div>'+
+        '<div class="xpbar"><div class="xpfill" style="width:'+pct+'%"></div></div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="md-sec"><h4>已学招式</h4><div class="md-moves">'+learnedHTML+'</div></div>'+
+    '<div class="md-sec"><h4>即将学会</h4><div class="md-moves">'+nextHTML+'</div></div>'+
+    '<div class="md-sec"><h4>进化</h4><p class="md-note">'+esc(evoLine)+'<br>进化路线：'+esc(chain)+'</p></div>'+
+    '<div class="dlg-actions">'+
+      '<button class="btn btn-yellow btn-block" onclick="playSkill(\''+mon.id+'\')">⚡ 演示技能</button>'+
+      '<button class="btn btn-gray btn-block" onclick="playCry(\''+mon.sid+'\')">🔊 听叫声</button>'+
+      (ti>=0&&S.team.length>1?'<button class="btn btn-gray btn-block" onclick="closeModal();teamToBoxModal('+ti+')">📖 送回图鉴休息</button>':'')+
+      '<button class="btn btn-primary btn-block" onclick="closeModal()">关闭</button>'+
+    '</div></div>');
+  setTimeout(function(){ playCry(mon.sid); },180);
 }
 
 /* ================= 伙伴技能展示动画 ================= */
@@ -2782,9 +2927,10 @@ function playSkill(mid){
       '<div class="sk-line">'+esc(mon.nick)+' 使用了</div>'+
       '<div class="sk-move">「'+esc(mv)+'」</div></div>'+
     '<div class="sk-flash"></div>'+
-    '<button class="sk-close" onclick="closeSkill()">✕</button>'+
+    '<button class="sk-close" type="button" aria-label="关闭">✕</button>'+
     '<div class="sk-hint">点击任意处关闭</div>';
-  root.addEventListener('click',function(e){ if(e.target===root) closeSkill(); });
+  /* 装饰层铺满全屏，不能要求 e.target===root；任意点击（含宝可梦/文字）都关闭 */
+  root.addEventListener('click',function(){ closeSkill(); });
   document.body.appendChild(root);
   window.__skRoot=root;
   sfxSkill();
@@ -3827,13 +3973,15 @@ function delSubject(s){
 }
 function toggleSound(){
   S.sound=!S.sound;
-  if(S.sound){sfxOk();} save(); render();
+  SOUND=!!S.sound;
+  if(S.sound){ primeVoice(); sfxOk(); } else { stopVoice(); }
+  save(); render();
 }
 function exportSave(){
   var blob=new Blob([JSON.stringify(S,null,1)],{type:'application/json'});
   var a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
-  a.download='宝可梦作业激励-存档-'+todayStr()+'.json';
+  a.download='宝可梦激励-存档-'+todayStr()+'.json';
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(function(){URL.revokeObjectURL(a.href);},800);
   toast('存档已导出');
@@ -3866,6 +4014,7 @@ function doReset(){
 
 /* ================= 启动 ================= */
 function init(){
+  SOUND=!(S&&S.sound===false);
   renderHeader(); renderTabbar();
   var seal=checkSeal();
   if(seal==='joined'){
