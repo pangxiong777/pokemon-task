@@ -1315,21 +1315,14 @@ function pokeImg(sid){
   if(typeof ASSET_IMG!=='undefined'&&ASSET_IMG[n]) return ASSET_IMG[n];
   return 'assets/pokedex/'+n+'.png';
 }
-var POKE_IMG_PLACEHOLDER='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 function pokeImgAttrs(sid,extra){
   var n=pokeDexNo(sid), src=pokeImg(sid);
   var alt='';
   try{ alt=esc((spec(sid)&&spec(sid).name)||''); }catch(e){}
   var more=(extra||'');
-  var defer=/\bdata-defer\b/.test(more);
-  if(defer) more=more.replace(/\bdata-defer\b/g,'').trim();
   if(!/\bdecoding\s*=/.test(more)) more+=' decoding="async"';
   if(src.indexOf('data:')!==0){
     more+=' data-poke="'+n+'" data-fb="0" onerror="pokeImgFallback(this)"';
-  }
-  /* 图鉴全量用 IntersectionObserver 延后加载；勿用原生 loading=lazy（iPhone 动态页会卡住） */
-  if(defer && src.indexOf('data:')!==0){
-    return 'src="'+POKE_IMG_PLACEHOLDER+'" data-src="'+src+'" alt="'+alt+'" '+more;
   }
   return 'src="'+src+'" alt="'+alt+'" '+more;
 }
@@ -1350,34 +1343,7 @@ function pokeImgFallback(el){
     el.onerror=null;
   }catch(e){ try{ el.onerror=null; }catch(e2){} }
 }
-var __pokeIO=null;
-function hydratePokeImgs(root){
-  try{
-    var nodes=(root||document).querySelectorAll('img[data-src]');
-    if(!nodes.length) return;
-    var kick=function(img){
-      var s=img.getAttribute('data-src');
-      if(!s) return;
-      img.removeAttribute('data-src');
-      img.src=s;
-    };
-    if(!('IntersectionObserver' in window)){
-      for(var i=0;i<nodes.length;i++) kick(nodes[i]);
-      return;
-    }
-    if(__pokeIO){ try{ __pokeIO.disconnect(); }catch(e){} }
-    __pokeIO=new IntersectionObserver(function(entries){
-      for(var i=0;i<entries.length;i++){
-        var en=entries[i];
-        if(!en.isIntersecting) continue;
-        kick(en.target);
-        try{ __pokeIO.unobserve(en.target); }catch(e2){}
-      }
-    },{root:null,rootMargin:'280px 0px',threshold:0.01});
-    for(var j=0;j<nodes.length;j++) __pokeIO.observe(nodes[j]);
-  }catch(e){}
-}
-/* 预缓存队伍常用图，避免切页才开始下载 */
+/* 预缓存队伍常用图 */
 function preloadTeamImgs(){
   try{
     if(!S||!S.team||!S.team.length) return;
@@ -4143,7 +4109,6 @@ function render(){
   renderTabbar();
   if(curView==='work'){ var inp=$('workDesc'); if(inp && window.__workDesc){ inp.value=window.__workDesc; } }
   preloadTeamImgs();
-  hydratePokeImgs(v);
 }
 function go(v){ location.hash=v; }
 window.addEventListener('hashchange',function(){ render(); });
@@ -4595,7 +4560,7 @@ function viewDexHTML(){
     var got=!!S.dex[sid], sp=SPECIES[sid];
     grid+='<div class="dex-cell'+(got?' got':'')+'" '+(got?'onclick="dexMonInfo(\''+sid+'\')"':'')+'>'+
       '<div class="dc-no">No.'+('000'+n).slice(-3)+'</div>'+
-      '<div class="dc-ic">'+pokeImgHTML(sid,'data-defer style="width:44px;height:44px;object-fit:contain;'+(got?'':'filter:brightness(0);opacity:.22;"')+'"')+'</div>'+
+      '<div class="dc-ic">'+pokeImgHTML(sid,'style="width:44px;height:44px;object-fit:contain;'+(got?'':'filter:brightness(0);opacity:.22;"')+'"')+'</div>'+
       '<div class="dc-nm">'+(got?esc(sp.name):'？？？')+'</div></div>';
   }
   return '<div class="view">'+
