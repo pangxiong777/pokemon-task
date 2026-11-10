@@ -53,25 +53,29 @@ img{max-width:100%;}
 /* ===== 头部 ===== */
 header{
   position:sticky;top:0;z-index:60;
-  display:flex;align-items:center;gap:8px;
-  padding:11px 14px 12px 12px;
+  display:flex;align-items:center;gap:6px;
+  padding:11px 10px 12px;
   background:rgba(255,248,231,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   border-bottom:3px solid var(--pk-edge);
   box-shadow:inset 0 -3px 0 var(--pk-yellow), 0 6px 16px rgba(42,36,32,.08);
+  min-width:0;
 }
-.logo{display:flex;align-items:center;gap:9px;font-family:var(--font-display);font-weight:700;font-size:16.5px;letter-spacing:.4px;flex:1;min-width:0;white-space:nowrap;color:var(--pk-ink);}
-.logo img{flex:none;width:32px;height:32px;object-fit:contain;display:block;background:transparent;filter:drop-shadow(0 2px 0 rgba(42,36,32,.18));}
+.logo{display:flex;align-items:center;gap:7px;font-family:var(--font-display);font-weight:700;font-size:15px;letter-spacing:.2px;flex:1 1 auto;min-width:0;color:var(--pk-ink);overflow:hidden;}
+.logo span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.logo img{flex:none;width:30px;height:30px;object-fit:contain;display:block;background:transparent;filter:drop-shadow(0 2px 0 rgba(42,36,32,.18));}
 .logo svg{flex:none;width:26px;height:26px;}
-.hd-right{display:flex;align-items:center;gap:5px;flex:none;}
+.hd-right{display:flex;align-items:center;gap:4px;flex:0 0 auto;min-width:0;position:relative;z-index:1;}
+.hd-right .chip{padding:5px 7px;font-size:11px;}
+.hd-right .mode-btn{padding:6px 8px;font-size:11.5px;}
 /* 孩子切换 */
 .kid-switch{
-  display:inline-flex;align-items:center;gap:4px;max-width:104px;
+  display:inline-flex;align-items:center;gap:3px;max-width:88px;flex:none;
   background:linear-gradient(180deg,#FFF9E0,#FFE9A0);border:2px solid var(--pk-edge);border-radius:99px;
-  padding:4px 8px 4px 5px;font-size:12.5px;font-weight:900;color:#7A4E00;
+  padding:4px 7px 4px 5px;font-size:12px;font-weight:900;color:#7A4E00;
   box-shadow:0 2px 0 rgba(42,36,32,.12);
 }
 .kid-switch .ks-av{font-size:16px;line-height:1;}
-.kid-switch .ks-nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:52px;}
+.kid-switch .ks-nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:42px;}
 .kid-switch .ks-ar{font-size:10px;opacity:.7;}
 .kid-switch:active{transform:scale(.95);}
 .kid-sheet-warn{background:#fff6e5;border:1px dashed #f0c060;border-radius:12px;padding:8px 10px;font-size:12px;color:#8a6d3b;font-weight:700;line-height:1.55;margin-top:10px;}
@@ -132,7 +136,7 @@ main{padding:14px 14px 8px;}
   border-radius:var(--r-lg);padding:16px;margin-bottom:14px;
   border:3px solid var(--pk-edge);
   box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.85);
-  position:relative;
+  position:relative;max-width:100%;min-width:0;
 }
 .card h3{
   margin:0 0 10px;font-family:var(--font-display);font-size:16.5px;font-weight:700;
@@ -165,14 +169,24 @@ main{padding:14px 14px 8px;}
 .btn-lg{padding:15px 22px;font-size:17px;}
 
 /* ===== 输入 ===== */
-.field{margin-bottom:12px;}
+.field{margin-bottom:12px;min-width:0;max-width:100%;}
 .field label{display:block;font-size:13px;font-weight:800;color:var(--pk-ink-soft);margin-bottom:6px;}
 .field input,.field textarea,.field select{
-  width:100%;border:2.5px solid var(--pk-edge);border-radius:14px;
+  display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;
+  border:2.5px solid var(--pk-edge);border-radius:14px;
   padding:11px 13px;background:var(--pk-paper-2);outline:none;
   box-shadow:inset 0 2px 0 rgba(42,36,32,.04);
 }
+.field input[type="time"],.field input[type="number"],.field input[type="date"]{
+  -webkit-appearance:none;appearance:none;max-width:100%;
+}
 .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--pk-yellow-d);box-shadow:0 0 0 3px rgba(255,203,5,.35);}
+.inline-add{display:flex;gap:8px;align-items:center;width:100%;min-width:0;max-width:100%;}
+.inline-add input{
+  flex:1 1 auto;min-width:0;width:0;box-sizing:border-box;
+  border:2.5px solid var(--pk-edge);border-radius:14px;padding:10px 12px;background:var(--pk-paper-2);outline:none;
+}
+.inline-add .btn{flex:0 0 auto;}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
 .chip-opt{
   padding:9px 15px;border-radius:99px;background:var(--pk-paper);border:2.5px solid var(--pk-edge);
@@ -180,6 +194,19 @@ main{padding:14px 14px 8px;}
   box-shadow:0 2px 0 rgba(42,36,32,.12);
 }
 .chip-opt.on{background:linear-gradient(180deg,var(--pk-yellow-s),var(--pk-yellow));border-color:var(--pk-edge);color:#5D4300;}
+.chip-opt.care-pick{
+  display:inline-flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border-radius:18px;min-height:48px;
+}
+.chip-opt.care-pick img,.chip-opt.care-pick .care-pick-img{
+  width:40px;height:40px;object-fit:contain;flex:none;
+  background:radial-gradient(circle at 35% 30%,#fff,#F3EAD8);border-radius:50%;
+  border:2px solid var(--pk-edge);padding:2px;
+}
+.chip-opt.care-pick .care-pick-tx{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15;gap:2px;}
+.chip-opt.care-pick .care-pick-tx b{font-size:13.5px;font-weight:900;font-family:var(--font-display);}
+.chip-opt.care-pick .care-pick-tx i{font-style:normal;font-size:11px;font-weight:800;color:var(--pk-ink-soft);}
+.chip-opt.care-pick.on .care-pick-tx i{color:#7A4E00;}
+.chip-opt.care-pick .care-pick-tag{font-size:14px;line-height:1;margin-left:2px;}
 
 /* ===== 宝可梦卡 ===== */
 .mon-card{
@@ -3481,7 +3508,7 @@ function renderTabbar(){
   $('tabbar').innerHTML='<div class="nav-inner'+(tabs.length>6?' many':'')+'">'+html+'</div>';
 }
 function render(){
-  renderHeader(); renderTabbar();
+  renderHeader();
   var v=$('view');
   var wd=$('workDesc'); if(wd) window.__workDesc=wd.value;
   curView=curHash();
@@ -3499,6 +3526,8 @@ function render(){
     else if(curView==='dex'){ v.innerHTML=viewDexHTML(); }
     else { curView='team'; v.innerHTML=viewTeamHTML(); }
   }
+  /* 标签高亮必须在 curView 校正之后，否则会停在上一个页面 */
+  renderTabbar();
   if(curView==='work'){ var inp=$('workDesc'); if(inp && window.__workDesc){ inp.value=window.__workDesc; } }
 }
 function go(v){ location.hash=v; }
@@ -3619,7 +3648,11 @@ function viewCareHTML(){
   var list=S.team.map(function(m,i){
     var on=i===careSel;
     var tags=(st.feed&&S.care.feedMon===m.id?'🍖':'')+(st.bath&&S.care.bathMon===m.id?'🛁':'');
-    return '<button class="chip-opt'+(on?' on':'')+'" onclick="pickCareMon('+i+')">'+esc(m.nick)+' Lv.'+m.level+(tags?' '+tags:'')+'</button>';
+    return '<button class="chip-opt care-pick'+(on?' on':'')+'" onclick="pickCareMon('+i+')">'+
+      pokeImgHTML(m.sid,'class="care-pick-img"')+
+      '<span class="care-pick-tx"><b>'+esc(m.nick)+'</b><i>Lv.'+m.level+'</i></span>'+
+      (tags?'<span class="care-pick-tag">'+tags+'</span>':'')+
+    '</button>';
   }).join('');
   var foodBtns=FOODS.map(function(f,i){
     return '<button class="care-item'+(i===favIdx?' fav':'')+'" onclick="openCare(\'feed\',false,'+i+')">'+
@@ -4449,7 +4482,7 @@ function viewSettingsHTML(){
       '</div></div>'+
     '<div class="card"><h3>📚 任务类别</h3><div class="chips" id="subjChips">'+
       S.subjects.map(function(s){return '<button class="chip-opt" onclick="delSubject(\''+esc(s)+'\')">'+esc(s)+' ✕</button>';}).join('')+
-    '</div><div style="display:flex;gap:8px"><input id="newSubj" placeholder="添加任务，如：收拾玩具" style="flex:1;border:2px solid var(--pk-line);border-radius:14px;padding:10px 12px"><button class="btn btn-gray btn-sm" onclick="addSubject()">添加</button></div>'+
+    '</div><div class="inline-add"><input id="newSubj" placeholder="添加任务，如：收拾玩具"><button class="btn btn-gray btn-sm" onclick="addSubject()">添加</button></div>'+
     '<p style="font-size:11.5px;color:#b0a090;margin:8px 0 0;font-weight:600">点击已有任务可删除（至少保留 1 个）</p></div>'+
     '<div class="card"><h3>🎓 训练家 · 每周特别任务</h3>'+
       (trainerUnlocked()?
