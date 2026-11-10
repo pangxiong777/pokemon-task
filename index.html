@@ -191,19 +191,21 @@ main{padding:14px 14px 8px;}
   box-shadow:0 2px 0 rgba(42,36,32,.12);
 }
 .chip-opt.on{background:linear-gradient(180deg,var(--pk-yellow-s),var(--pk-yellow));border-color:var(--pk-edge);color:#5D4300;}
+.mon-pick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:4px;}
 .chip-opt.care-pick{
   display:inline-flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border-radius:18px;min-height:48px;
 }
+.mon-pick-grid .chip-opt.care-pick{width:100%;justify-content:flex-start;margin:0;}
 .chip-opt.care-pick img,.chip-opt.care-pick .care-pick-img{
   width:40px;height:40px;object-fit:contain;flex:none;
   background:radial-gradient(circle at 35% 30%,#fff,#F3EAD8);border-radius:50%;
   border:2px solid var(--pk-edge);padding:2px;
 }
-.chip-opt.care-pick .care-pick-tx{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15;gap:2px;}
-.chip-opt.care-pick .care-pick-tx b{font-size:13.5px;font-weight:900;font-family:var(--font-display);}
+.chip-opt.care-pick .care-pick-tx{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15;gap:2px;min-width:0;}
+.chip-opt.care-pick .care-pick-tx b{font-size:13.5px;font-weight:900;font-family:var(--font-display);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;}
 .chip-opt.care-pick .care-pick-tx i{font-style:normal;font-size:11px;font-weight:800;color:var(--pk-ink-soft);}
 .chip-opt.care-pick.on .care-pick-tx i{color:#7A4E00;}
-.chip-opt.care-pick .care-pick-tag{font-size:14px;line-height:1;margin-left:2px;}
+.chip-opt.care-pick .care-pick-tag{font-size:14px;line-height:1;margin-left:auto;flex:none;}
 
 /* ===== 宝可梦卡 ===== */
 .mon-card{
@@ -4123,7 +4125,7 @@ function viewCareHTML(){
       '<div style="display:flex;align-items:center;gap:10px"><div style="font-size:34px">🍚</div>'+
       '<div><b style="font-size:15.5px;font-weight:900">今日照顾 · '+sc.nm+'</b>'+
       '<div style="font-size:12.5px;color:#8a6d3b;font-weight:600;margin-top:2px">喂食、洗澡每天各一次。喂食可选 6 种食物、洗澡可选 4 种沐浴，动画一周 7 天场景不同，随时能回放！</div></div></div></div>'+
-    '<div class="card"><h3>照顾哪位伙伴？</h3><div class="chips">'+list+'</div>'+
+    '<div class="card"><h3>照顾哪位伙伴？</h3><div class="mon-pick-grid">'+list+'</div>'+
       '<div style="font-size:12.5px;color:#8a6d3b;font-weight:700">'+esc(mon.nick)+' 最爱的口味是 '+FOODS[favIdx].ic+' '+FOODS[favIdx].nm+'（喂它 +5 经验）</div>'+
     '</div>'+
     '<div class="card"><h3>🍖 喂食 · 点一种食物开饭</h3>'+
@@ -4318,10 +4320,9 @@ function viewArenaHTML(){
   var A=S.team[arenaA], B=S.team[arenaB];
   var chips=function(cur,who){
     return S.team.map(function(m,i){
-      var sp=spec(m.sid)||{};
       return '<button class="chip-opt care-pick'+(i===cur?' on':'')+'" onclick="pickArena(\''+who+'\','+i+')">'+
         pokeImgHTML(m.sid,'class="care-pick-img"')+
-        '<span class="care-pick-tx"><b>'+esc(m.nick)+'</b><i>Lv.'+m.level+(sp.type?(' · '+esc(sp.type)):'')+'</i></span>'+
+        '<span class="care-pick-tx"><b>'+esc(m.nick)+'</b><i>Lv.'+m.level+'</i></span>'+
       '</button>';
     }).join('');
   };
@@ -4341,8 +4342,8 @@ function viewArenaHTML(){
         (bw.open?(rec.count>=3?'今天已战满 3 场':'⚔️ 开始对战'):'🕗 未到对战时间')+'</button>'+
     '</div>'+
     (bw.open?'':'<div class="lock-note">⚔️ 队内对战每晚 <b>20:00 - 22:00</b> 开放。<br>白天好好打卡，晚上八点带着伙伴们来切磋吧！</div>')+
-    '<div class="card"><h3>选择左边出战的伙伴</h3><div class="chips">'+chips(arenaA,'A')+'</div></div>'+
-    '<div class="card"><h3>选择右边出战的伙伴</h3><div class="chips">'+chips(arenaB,'B')+'</div></div>'+
+    '<div class="card"><h3>选择左边出战的伙伴</h3><div class="mon-pick-grid">'+chips(arenaA,'A')+'</div></div>'+
+    '<div class="card"><h3>选择右边出战的伙伴</h3><div class="mon-pick-grid">'+chips(arenaB,'B')+'</div></div>'+
     '<div class="section-label">对战规则</div>'+
     '<div class="card" style="font-size:12.5px;line-height:1.75;color:#6b5a4a;font-weight:600">'+
       '⏰ 每晚 20:00 - 22:00 开放，每天最多 3 场<br>'+
