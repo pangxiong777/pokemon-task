@@ -270,14 +270,15 @@ main{padding:14px 14px 8px;}
 .hero-card .deco{display:none;}
 
 /* ===== 作业条目 ===== */
-.work-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px dashed var(--pk-line);}
+.work-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px dashed var(--pk-line);}
 .work-item:last-child{border-bottom:none;padding-bottom:2px;}
-.work-ico{width:44px;height:44px;border-radius:14px;flex:none;display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--pk-soft);}
+.work-ico{width:44px;height:44px;border-radius:14px;flex:none;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;background:var(--pk-soft);overflow:hidden;line-height:1;}
 .work-body{flex:1;min-width:0;}
-.work-body .t{font-weight:800;font-size:15px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
-.work-body .d{font-size:13px;color:#8a7a6a;margin-top:2px;word-break:break-all;}
+.work-body .t{font-weight:800;font-size:15px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;min-width:0;}
+.work-body .work-subj{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;}
+.work-body .d{font-size:13px;color:#8a7a6a;margin-top:2px;word-break:break-word;overflow-wrap:anywhere;}
 .work-time{font-size:11.5px;color:#b0a090;margin-top:3px;font-weight:600;}
-.status{font-size:11px;font-weight:900;border-radius:8px;padding:3px 9px;flex:none;}
+.status{font-size:11px;font-weight:900;border-radius:8px;padding:3px 9px;flex:none;margin-top:4px;white-space:nowrap;}
 .status.pending{background:#fff3d6;color:#a06800;}
 .status.approved{background:#e2f5e3;color:#2e7d32;}
 .status.deducted{background:#fde8e0;color:#c0392b;}
@@ -518,9 +519,30 @@ table.rec tr:last-child td{border-bottom:none;}
 .care-tub::after{content:'';position:absolute;left:6px;right:6px;top:3px;height:14px;border-radius:50%;background:rgba(255,255,255,.55);filter:blur(1px);}
 .care-shadow{position:absolute;left:50%;bottom:-12px;transform:translateX(-50%);width:96px;height:20px;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.34),rgba(0,0,0,0) 72%);filter:blur(2px);animation:careShadow 1.1s ease-in-out infinite;}
 @keyframes careShadow{0%,100%{transform:translateX(-50%) scale(1);opacity:.75;}50%{transform:translateX(-50%) scale(.86);opacity:.5;}}
-.care-mon{position:absolute;left:0;bottom:0;width:132px;height:132px;object-fit:contain;filter:drop-shadow(0 8px 10px rgba(0,0,0,.28)) saturate(1.06);animation:careBounce 1.1s ease-in-out infinite;}
+.care-mon{position:absolute;left:0;bottom:0;width:132px;height:132px;object-fit:contain;filter:drop-shadow(0 8px 10px rgba(0,0,0,.28)) saturate(1.06);animation:careBounce 1.1s ease-in-out infinite;transform-origin:50% 90%;}
 @keyframes careBounce{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-9px) scale(1.035);}}
-.care-sheen{position:absolute;inset:0;z-index:4;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,0) 38%,rgba(255,255,255,.3) 48%,rgba(255,255,255,0) 58%);background-size:280% 100%;animation:careSheen 3.4s ease-in-out infinite;}
+.care-mon.eat{animation:careEat .42s ease-in-out infinite;}
+@keyframes careEat{0%,100%{transform:translateY(0) scale(1,1) rotate(0);}35%{transform:translateY(4px) scale(1.06,.92) rotate(-2deg);}70%{transform:translateY(-6px) scale(.96,1.06) rotate(2deg);}}
+.care-mon.happy{animation:careHappy .55s ease-in-out infinite;}
+@keyframes careHappy{0%,100%{transform:translateY(0) rotate(0) scale(1);}50%{transform:translateY(-14px) rotate(-6deg) scale(1.08);}}
+.care-mon-bath{animation:careShake .7s ease-in-out infinite;}
+.care-mon.scrub{animation:careScrub .38s ease-in-out infinite;}
+@keyframes careScrub{0%,100%{transform:translateX(0) rotate(-3deg);}50%{transform:translateX(7px) rotate(4deg);}}
+.care-mon.rinse{animation:careRinse .7s ease-in-out infinite;}
+@keyframes careRinse{0%,100%{transform:translateY(0) scale(1);}40%{transform:translateY(-8px) scale(1.05);}70%{transform:translateY(3px) scale(.97);}}
+.care-mon.sparkle{animation:careHappy .6s ease-in-out infinite;filter:drop-shadow(0 8px 10px rgba(0,0,0,.28)) saturate(1.2) brightness(1.08);}
+.care-splash{
+  position:absolute;left:50%;bottom:48px;transform:translateX(-50%);z-index:4;pointer-events:none;
+  font-size:28px;opacity:0;
+}
+.care-splash.go{animation:careSplashPop .7s ease-out forwards;}
+@keyframes careSplashPop{0%{transform:translateX(-50%) scale(.4);opacity:0;}30%{opacity:1;transform:translateX(-50%) scale(1.15);}100%{transform:translateX(-50%) translateY(-36px) scale(1.3);opacity:0;}}
+.care-steam{position:absolute;left:50%;bottom:70px;width:120px;height:80px;transform:translateX(-50%);z-index:3;pointer-events:none;}
+.care-steam i{position:absolute;bottom:0;font-style:normal;font-size:18px;opacity:0;animation:steamUp 2.2s ease-out infinite;}
+@keyframes steamUp{0%{transform:translateY(0) scale(.6);opacity:0;}20%{opacity:.7;}100%{transform:translateY(-70px) scale(1.2);opacity:0;}}
+.care-chomp{position:absolute;z-index:5;font-size:22px;opacity:0;pointer-events:none;animation:chompPop .55s ease-out forwards;}
+@keyframes chompPop{0%{transform:scale(.3);opacity:0;}40%{opacity:1;transform:scale(1.2);}100%{transform:translateY(-24px) scale(.9);opacity:0;}}
+.care-sheen{position:absolute;inset:0;z-index:4;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,0) 38%,rgba(255,255,255,.3) 48%,rgba(255,255,255,0) 58%);background-size:280% 100%;animation:careSheen 3.4s ease-in-out infinite;}nfinite;}
 @keyframes careSheen{0%{background-position:180% 0;}55%,100%{background-position:-80% 0;}}
 .care-ground{position:absolute;left:0;right:0;bottom:0;height:54px;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(59,47,47,.28));z-index:1;}
 .care-bowl{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);font-size:40px;z-index:3;filter:drop-shadow(0 3px 4px rgba(0,0,0,.2));}
@@ -559,6 +581,10 @@ table.rec tr:last-child td{border-bottom:none;}
 .care-dish{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);font-size:30px;z-index:3;filter:drop-shadow(0 3px 4px rgba(0,0,0,.2));}
 .care-mon-bath{animation:careShake .7s ease-in-out infinite;}
 @keyframes careShake{0%,100%{transform:rotate(-2deg);}50%{transform:rotate(2deg);}}
+.care-stage.phase-eat .care-bowl{animation:bowlBounce .5s ease-in-out infinite;}
+@keyframes bowlBounce{0%,100%{transform:translateX(-50%) scale(1);}50%{transform:translateX(-50%) scale(1.08) translateY(2px);}}
+.care-stage.phase-scrub .care-tub{filter:brightness(1.08);}
+.care-stage.phase-rinse .water-rip{animation-duration:1.2s;}
 .favbit{position:absolute;top:44px;left:50%;transform:translateX(-50%);background:rgba(255,203,5,.94);color:#5d4300;font-size:12.5px;font-weight:900;padding:4px 10px;border-radius:99px;z-index:5;animation:favPop .5s ease-out;}
 @keyframes favPop{from{transform:translateX(-50%) scale(.5);opacity:0;}to{transform:translateX(-50%) scale(1);opacity:1;}}
 .petalbit{position:absolute;top:-24px;z-index:3;animation:petalFall 3s linear infinite;}
@@ -798,7 +824,27 @@ table.rec tr:last-child td{border-bottom:none;}
 @keyframes skIn{0%{transform:scale(.4) translateY(40px);opacity:0}100%{transform:scale(1) translateY(0);opacity:1}}
 .sk-mon{width:min(58vw,235px);height:auto;filter:drop-shadow(0 14px 26px rgba(0,0,0,.55));}
 .sk-mon-wrap.hit{animation:skAttack .55s ease-out both;}
+.sk-mon-wrap.dash{animation:skDash .62s ease-out both;}
+.sk-mon-wrap.cast{animation:skCast .7s ease-out both;}
+.sk-mon-wrap.quake{animation:skQuake .6s ease-out both;}
+.sk-mon-wrap.float{animation:skFloatPose .85s ease-in-out both;}
+.sk-mon-wrap.zap{animation:skZap .55s ease-out both;}
 @keyframes skAttack{0%{transform:translateY(0) scale(1)}30%{transform:translateY(-18px) scale(1.16) rotate(-3deg)}100%{transform:translateY(4px) scale(1.03)}}
+@keyframes skDash{0%{transform:translate(0,0) scale(1)}35%{transform:translate(42px,-10px) scale(1.12) rotate(6deg)}55%{transform:translate(-18px,6px) scale(.96) rotate(-4deg)}100%{transform:translate(0,0) scale(1)}}
+@keyframes skCast{0%{transform:scale(1) translateY(0)}25%{transform:scale(.92) translateY(8px)}55%{transform:scale(1.18) translateY(-22px)}100%{transform:scale(1.04) translateY(0)}}
+@keyframes skQuake{0%,100%{transform:translate(0,0)}20%{transform:translate(-10px,4px) rotate(-2deg)}40%{transform:translate(12px,-2px) rotate(2deg)}60%{transform:translate(-8px,3px)}80%{transform:translate(6px,0)}}
+@keyframes skFloatPose{0%{transform:translateY(0) scale(1)}40%{transform:translateY(-28px) scale(1.08)}100%{transform:translateY(-8px) scale(1.02)}}
+@keyframes skZap{0%,100%{transform:translate(0,0) skewX(0)}15%{transform:translate(8px,-4px) skewX(-4deg)}30%{transform:translate(-10px,2px) skewX(5deg)}50%{transform:translate(6px,-6px) skewX(-2deg)}70%{transform:translate(-4px,0)}}
+.sk-proj{
+  position:absolute;left:50%;top:42%;z-index:6;font-size:52px;pointer-events:none;
+  transform:translate(-50%,-50%);opacity:0;filter:drop-shadow(0 6px 12px rgba(0,0,0,.35));
+}
+.sk-proj.go-up{animation:skProjUp .7s ease-out forwards;}
+.sk-proj.go-burst{animation:skProjBurst .65s ease-out forwards;}
+.sk-proj.go-wave{animation:skProjWave .75s ease-out forwards;}
+@keyframes skProjUp{0%{transform:translate(-50%,-20%) scale(.35);opacity:0}25%{opacity:1}100%{transform:translate(-50%,-160%) scale(1.35);opacity:0}}
+@keyframes skProjBurst{0%{transform:translate(-50%,-50%) scale(.2);opacity:0}30%{opacity:1;transform:translate(-50%,-50%) scale(1.25)}100%{transform:translate(-50%,-50%) scale(2.1);opacity:0}}
+@keyframes skProjWave{0%{transform:translate(-50%,10%) scale(.4) rotate(-12deg);opacity:0}30%{opacity:1}100%{transform:translate(-50%,-130%) scale(1.3) rotate(18deg);opacity:0}}
 .sk-info{position:relative;z-index:6;text-align:center;margin-top:2px;animation:skUp .5s .4s both;}
 @keyframes skUp{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
 .sk-type{display:inline-block;color:#fff;font-size:11.5px;font-weight:900;padding:2px 12px;border-radius:99px;}
@@ -810,6 +856,9 @@ table.rec tr:last-child td{border-bottom:none;}
 @keyframes skFlash{0%{opacity:0}16%{opacity:.85}100%{opacity:0}}
 .sk-close{position:absolute;top:16px;right:16px;z-index:8;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.22);color:#fff;font-size:15px;font-weight:900;border:none;}
 .sk-hint{position:absolute;bottom:22px;left:0;right:0;text-align:center;color:rgba(255,255,255,.62);font-size:11.5px;font-weight:700;z-index:7;}
+.mon-detail .md-move.demoable{cursor:pointer;border:2px solid var(--pk-edge);background:var(--pk-paper);box-shadow:0 2px 0 rgba(42,36,32,.1);}
+.mon-detail .md-move.demoable:active{transform:scale(.97);}
+.mon-detail .md-tip{font-size:11.5px;color:#8a7a6a;font-weight:700;margin:6px 0 0;}
 
 /* ===== 图鉴 ===== */
 .dex-grid{display:flex;flex-wrap:wrap;gap:7px;}
@@ -892,12 +941,49 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2
 var AC=null, SOUND=true;
 function audio(){if(!SOUND)return null;if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){AC=null;}}return AC;}
 function beep(f,d,type,vol){var ac=audio();if(!ac)return;var o=ac.createOscillator(),g=ac.createGain();o.type=type||'sine';o.frequency.value=f;g.gain.setValueAtTime(vol||0.15,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+d);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d);}
+function beepSlide(f0,f1,d,type,vol){
+  var ac=audio(); if(!ac) return;
+  var o=ac.createOscillator(), g=ac.createGain(), t=ac.currentTime;
+  o.type=type||'sine'; o.frequency.setValueAtTime(f0,t); o.frequency.exponentialRampToValueAtTime(Math.max(40,f1),t+d);
+  g.gain.setValueAtTime(vol||0.1,t); g.gain.exponentialRampToValueAtTime(0.001,t+d);
+  o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+d);
+}
 function sfxClick(){beep(660,0.07,'triangle',0.08);}
 function sfxOk(){beep(660,0.1,'triangle',0.12);setTimeout(function(){beep(880,0.14,'triangle',0.12);},90);}
 function sfxBad(){beep(220,0.22,'sawtooth',0.08);}
 function sfxLevel(){[523,659,784,1047].forEach(function(f,i){setTimeout(function(){beep(f,0.16,'triangle',0.13);},i*110);});}
 function sfxCatch(){[660,880,1047,1319].forEach(function(f,i){setTimeout(function(){beep(f,0.12,'sine',0.13);},i*90);});}
 function sfxEvo(){[392,523,659,784,1047,1319].forEach(function(f,i){setTimeout(function(){beep(f,0.13,'sine',0.12);},i*95);});}
+/* 喂食：香味提示 → 咀嚼 → 满足 */
+function sfxFeedStart(foodIdx){
+  beepSlide(520,780,0.18,'sine',0.07);
+  setTimeout(function(){ beep(640+((foodIdx||0)%6)*40,0.08,'triangle',0.08); },120);
+}
+function sfxFeedMunch(i){
+  var base=180+((i||0)%4)*25;
+  beep(base,0.06,'square',0.07); setTimeout(function(){ beep(base*1.35,0.05,'sawtooth',0.05); },45);
+}
+function sfxFeedHappy(isFav){
+  var seq=isFav?[523,659,784,988]:[523,659,784];
+  seq.forEach(function(f,i){ setTimeout(function(){ beep(f,0.12,'triangle',0.09); },i*90); });
+}
+/* 洗澡：下水溅起 → 搓泡泡 → 冲干净 */
+function sfxBathStart(bathIdx){
+  beepSlide(420,180,0.22,'sine',0.09);
+  setTimeout(function(){ beep(140,0.12,'triangle',0.07); },80);
+  setTimeout(function(){ beep(260+(bathIdx||0)*30,0.08,'sine',0.06); },180);
+}
+function sfxBathBubble(i){
+  var f=700+((i||0)%5)*90+Math.random()*40;
+  beep(f,0.05,'sine',0.045); setTimeout(function(){ beep(f*1.25,0.04,'triangle',0.035); },40);
+}
+function sfxBathRinse(){
+  beepSlide(880,320,0.28,'sine',0.08);
+  setTimeout(function(){ beepSlide(640,220,0.22,'triangle',0.06); },120);
+}
+function sfxBathDone(){
+  [660,784,988].forEach(function(f,i){ setTimeout(function(){ beep(f,0.11,'sine',0.08); },i*100); });
+}
 
 /* ---------- 宝可梦叫声 ---------- */
 /* 每种宝可梦的叫声放在 assets/cries/<图鉴编号>.mp3。
@@ -934,7 +1020,7 @@ function cryFallback(sid){
 }
 
 /* ================= 图鉴数据 ================= */
-var TYPE_COLOR={草:'#43a047',火:'#ef6c00',水:'#1e88e5',电:'#f9a825',虫:'#7cb342',飞行:'#5c9bd6',一般:'#8d8d8d',龙:'#5c6bc0',超能力:'#8e24aa',岩石:'#8d6e63'};
+var TYPE_COLOR={草:'#43a047',火:'#ef6c00',水:'#1e88e5',电:'#f9a825',虫:'#7cb342',飞行:'#5c9bd6',一般:'#8d8d8d',龙:'#5c6bc0',超能力:'#8e24aa',岩石:'#8d6e63',地面:'#a1887f',毒:'#ab47bc',恶:'#5d4037',妖精:'#ec407a',冰:'#4fc3f7',格斗:'#e53935'};
 function tc(t){return TYPE_COLOR[t]||'#8d8d8d';}
 
 var SPECIES={
@@ -998,12 +1084,12 @@ function pokeImgHTML(sid,extra){
 }
 var GYMS=[
   {id:'rock',name:'岩石道馆',leader:'小刚',emoji:'🪨',type:'岩石',need:6,gift:'卡比兽封印球',giftIco:'🐻'},
-  {id:'water',name:'水系道馆',leader:'小霞',emoji:'💧',type:'水',need:8,gift:'捕捉券 ×2',giftIco:'🎣'},
-  {id:'electric',name:'电系道馆',leader:'马志士',emoji:'⚡',type:'电',need:10,gift:'捕捉券 ×2',giftIco:'🎣'},
+  {id:'water',name:'水系道馆',leader:'小霞',emoji:'💧',type:'水',need:8,gift:'精灵球 ×2',giftIco:'🔴'},
+  {id:'electric',name:'电系道馆',leader:'马志士',emoji:'⚡',type:'电',need:10,gift:'精灵球 ×2',giftIco:'🔴'},
   {id:'grass',name:'草系道馆',leader:'莉佳',emoji:'🌿',type:'草',need:13,gift:'下次任务经验 ×1.5',giftIco:'🌟'},
-  {id:'fire',name:'火系道馆',leader:'夏伯',emoji:'🔥',type:'火',need:16,gift:'捕捉券 ×3',giftIco:'🎣'},
-  {id:'psychic',name:'超能力道馆',leader:'娜姿',emoji:'🔮',type:'超能力',need:19,gift:'稀有捕捉券 ×1',giftIco:'💎'},
-  {id:'ground',name:'地面道馆',leader:'坂木',emoji:'🏜️',type:'地面',need:22,gift:'捕捉券 ×3',giftIco:'🎣'},
+  {id:'fire',name:'火系道馆',leader:'夏伯',emoji:'🔥',type:'火',need:16,gift:'精灵球 ×3',giftIco:'🔴'},
+  {id:'psychic',name:'超能力道馆',leader:'娜姿',emoji:'🔮',type:'超能力',need:19,gift:'大师球 ×1',giftIco:'🟣'},
+  {id:'ground',name:'地面道馆',leader:'坂木',emoji:'🏜️',type:'地面',need:22,gift:'精灵球 ×3',giftIco:'🔴'},
   {id:'dragon',name:'龙系道馆',leader:'渡',emoji:'🐉',type:'龙',need:25,gift:'神秘蛋',giftIco:'🥚'}
 ];
 var PRIZE_POOL=[{sid:'eevee',nm:'伊布',emoji:'🦊'},{sid:'growlithe',nm:'卡蒂狗',emoji:'🐕'},{sid:'dratini',nm:'迷你龙',emoji:'🐉'},{sid:'jigglypuff',nm:'皮皮',emoji:'🎈'}];
@@ -1019,7 +1105,7 @@ function defaultState(){
   return {
     v:1, childName:'吨吨', pin:'', deadline:'21:30', baseXP:20, fastMult:1.2,
     streakTarget:7, subjects:NEW_SUBJECTS.slice(),
-    /* 家长可调：每日挑战目标、奖励张数、周末免费捕捉次数 */
+    /* 家长可调：每日挑战目标、精灵球奖励个数、周末免费捕捉次数 */
     dailyTarget:7, dailyReward:1, weekendFree:3,
     sound:true, firstRun:true, team:[],
     homework:[], streak:{count:0,lastDate:null,lastPrize:0,record:0},
@@ -1064,8 +1150,19 @@ function load(){
   if(typeof s.dailyReward!=='number'||!(s.dailyReward>=1)) s.dailyReward=1;
   if(typeof s.weekendFree!=='number'||!(s.weekendFree>=0)) s.weekendFree=3;
   if(typeof s.fastMult!=='number'||!(s.fastMult>=1)) s.fastMult=1.2;
+  s.baseXP=coerceNum(s.baseXP,20,5,100);
+  s.streakTarget=coerceNum(s.streakTarget,7,3,14);
+  s.fastMult=Math.round(coerceNum(s.fastMult,1.2,1,3)*10)/10;
+  if(!s.deadline) s.deadline='21:30';
   /* 兼容：把老存档里未知物种（若数据更新前残留）也标记到图鉴 */
   return s;
+}
+function coerceNum(v,fallback,min,max){
+  var n=(typeof v==='number')?v:parseFloat(v);
+  if(isNaN(n)) return fallback;
+  if(min!=null&&n<min) return fallback;
+  if(max!=null&&n>max) return fallback;
+  return n;
 }
 /* save() 永远写入“当前孩子”的独立空间；KEY 只作为老存档的迁移来源 */
 function save(){
@@ -1160,6 +1257,10 @@ function normalizeState(s){
   if(typeof s.dailyReward!=='number'||!(s.dailyReward>=1)) s.dailyReward=1;
   if(typeof s.weekendFree!=='number'||!(s.weekendFree>=0)) s.weekendFree=3;
   if(typeof s.fastMult!=='number'||!(s.fastMult>=1)) s.fastMult=1.2;
+  s.baseXP=coerceNum(s.baseXP,20,5,100);
+  s.streakTarget=coerceNum(s.streakTarget,7,3,14);
+  s.fastMult=Math.round(coerceNum(s.fastMult,1.2,1,3)*10)/10;
+  if(!s.deadline) s.deadline='21:30';
   return s;
 }
 function dailyTarget(){ return Math.max(1,Math.min(20,S.dailyTarget|0||7)); }
@@ -1505,7 +1606,7 @@ function stats(){
 }
 function resetAll(){ var k=activeKid(); if(k) localStorage.removeItem(kidStorageKey(k.key)); S=defaultState(); if(k) S.childName=k.name; save(); }
 
-/* ================= 每日挑战奖励捕捉券（目标张数由家长设置） ================= */
+/* ================= 每日挑战奖励精灵球（目标个数由家长设置） ================= */
 function refreshDailyVoucher(){
   var t=todayStr();
   if(S.daily.date!==t){ S.daily={date:t,count:0,granted:false}; }
@@ -1625,37 +1726,65 @@ function openCare(action,replay,kind){
     '<div id="careDone"></div>'+
     '<div class="dlg-actions" id="careActs"></div></div>');
   var fx=$('careFx'), html='';
+  var stage=document.querySelector('#careDlg .care-stage');
+  var monEl=document.querySelector('#careDlg .care-mon');
+  function setMonPose(pose){
+    if(!monEl) return;
+    monEl.classList.remove('eat','happy','scrub','rinse','sparkle');
+    if(pose) monEl.classList.add(pose);
+  }
+  function setPhase(name){
+    if(!stage) return;
+    stage.classList.remove('phase-eat','phase-scrub','phase-rinse','phase-happy');
+    if(name) stage.classList.add(name);
+  }
   if(isFeed){
     /* 食物从上方画弧线落进碗里，落点有溅起的小碎屑 */
-    var n=(food.anim==='fb-pour'?6:10);
+    var n=(food.anim==='fb-pour'?8:12);
     for(var i=0;i<n;i++){
       var side=(i%2?'-':'')+((12+Math.random()*70)|0)+'px';
-      html+='<span class="foodbit '+food.anim+'" style="left:'+(6+Math.random()*70)+'%;--dx:'+side+';animation-delay:'+(0.1+i*0.18).toFixed(2)+'s">'+food.ic+'</span>';
+      html+='<span class="foodbit '+food.anim+'" style="left:'+(6+Math.random()*70)+'%;--dx:'+side+';animation-delay:'+(0.08+i*0.14).toFixed(2)+'s">'+food.ic+'</span>';
     }
     html+='<span class="care-dish">'+food.ic+'</span>';
-    for(var j=0;j<5;j++){ html+='<span class="heartbit" style="left:'+(18+Math.random()*62)+'%;animation-delay:'+(1.2+j*0.4).toFixed(2)+'s">❤️</span>'; }
-    for(var k=0;k<3;k++){ html+='<span class="crumbs" style="left:'+(42+k*6)+'%;animation-delay:'+(0.9+k*0.55).toFixed(2)+'s">✧</span>'; }
+    for(var j=0;j<6;j++){ html+='<span class="heartbit" style="left:'+(18+Math.random()*62)+'%;animation-delay:'+(1.1+j*0.35).toFixed(2)+'s">'+(isFav?'💖':'❤️')+'</span>'; }
+    for(var k=0;k<4;k++){ html+='<span class="crumbs" style="left:'+(40+k*7)+'%;animation-delay:'+(0.85+k*0.45).toFixed(2)+'s">✧</span>'; }
+    for(var c=0;c<4;c++){ html+='<span class="care-chomp" style="left:'+(30+c*12)+'%;bottom:'+(110+c*8)+'px;animation-delay:'+(1.35+c*0.38).toFixed(2)+'s">😋</span>'; }
     if(isFav){ html+='<span class="favbit">⭐ 最爱口味！</span>'; }
   }else{
-    /* 泡泡贴在宝可梦身上往上飘，配合水面反光 */
-    for(var i=0;i<12;i++){ var sz=(9+Math.random()*20)|0; html+='<span class="bubble" style="left:'+(10+Math.random()*78)+'%;width:'+sz+'px;height:'+sz+'px;animation-delay:'+(Math.random()*1.6).toFixed(2)+'s"></span>'; }
-    for(var s2=0;s2<5;s2++){ var ss=(4+Math.random()*7)|0; html+='<span class="bubble stick" style="left:'+(28+Math.random()*44)+'%;width:'+ss+'px;height:'+ss+'px;animation-delay:'+(Math.random()*2).toFixed(2)+'s"></span>'; }
-    if(bi===1){ for(var p=0;p<12;p++){ html+='<span class="petalbit" style="left:'+(4+Math.random()*86)+'%;font-size:'+(14+Math.random()*10).toFixed(0)+'px;animation-delay:'+(Math.random()*2).toFixed(2)+'s">🌸</span>'; } }
-    if(bi===2){ for(var f=0;f<9;f++){ html+='<span class="foambit" style="left:'+(6+Math.random()*82)+'%;bottom:'+(12+Math.random()*54)+'px;animation-delay:'+(Math.random()*1.5).toFixed(2)+'s"></span>'; } }
+    /* 泡泡、蒸汽、溅水，按沐浴种类加强特效 */
+    html+='<div class="care-steam"><i style="left:18%;animation-delay:0s">☁️</i><i style="left:48%;animation-delay:.4s">💨</i><i style="left:72%;animation-delay:.8s">☁️</i></div>';
+    html+='<div class="care-splash" id="careSplash">💦</div>';
+    for(var i=0;i<14;i++){ var sz=(9+Math.random()*22)|0; html+='<span class="bubble" style="left:'+(10+Math.random()*78)+'%;width:'+sz+'px;height:'+sz+'px;animation-delay:'+(Math.random()*1.6).toFixed(2)+'s"></span>'; }
+    for(var s2=0;s2<6;s2++){ var ss=(4+Math.random()*8)|0; html+='<span class="bubble stick" style="left:'+(28+Math.random()*44)+'%;width:'+ss+'px;height:'+ss+'px;animation-delay:'+(Math.random()*2).toFixed(2)+'s"></span>'; }
+    if(bi===1){ for(var p=0;p<14;p++){ html+='<span class="petalbit" style="left:'+(4+Math.random()*86)+'%;font-size:'+(14+Math.random()*10).toFixed(0)+'px;animation-delay:'+(Math.random()*2).toFixed(2)+'s">🌸</span>'; } }
+    if(bi===2){ for(var f=0;f<10;f++){ html+='<span class="foambit" style="left:'+(6+Math.random()*82)+'%;bottom:'+(12+Math.random()*54)+'px;animation-delay:'+(Math.random()*1.5).toFixed(2)+'s"></span>'; } }
     if(bi===3){ for(var dk=0;dk<3;dk++){ html+='<span class="duckbit" style="left:'+(12+dk*28+Math.random()*8)+'%;animation-delay:'+(dk*0.3).toFixed(2)+'s">🦆</span>'; } }
     else{ html+='<span class="duckbit" style="left:'+(18+Math.random()*46)+'%">🦆</span>'; }
-    for(var j2=0;j2<6;j2++){ html+='<span class="sparklebit" style="left:'+(10+Math.random()*78)+'%;top:'+(18+Math.random()*52)+'%;animation-delay:'+(Math.random()*1.2).toFixed(2)+'s">✨</span>'; }
-    html+='<div class="water-rip"></div>';
+    for(var j2=0;j2<8;j2++){ html+='<span class="sparklebit" style="left:'+(10+Math.random()*78)+'%;top:'+(18+Math.random()*52)+'%;animation-delay:'+(Math.random()*1.2).toFixed(2)+'s">✨</span>'; }
+    html+='<div class="water-rip"></div><div class="water-rip" style="animation-delay:.8s;bottom:18px;width:120px"></div>';
   }
   fx.innerHTML=html;
-  if(replay){ sfxClick(); } else { sfxOk(); }
+  /* 分阶段动作 + 专属音效（不再只用通用点击音） */
+  if(isFeed){
+    sfxFeedStart(fi);
+    setMonPose('eat'); setPhase('phase-eat');
+    for(var mi=0;mi<5;mi++){ (function(ii){ setTimeout(function(){ sfxFeedMunch(ii+fi); }, 420+ii*320); })(mi); }
+    setTimeout(function(){ setMonPose('happy'); setPhase('phase-happy'); sfxFeedHappy(isFav); }, 2100);
+  }else{
+    sfxBathStart(bi);
+    var splash=$('careSplash'); if(splash){ setTimeout(function(){ splash.classList.add('go'); },180); }
+    setMonPose('scrub'); setPhase('phase-scrub');
+    for(var bi2=0;bi2<6;bi2++){ (function(ii){ setTimeout(function(){ sfxBathBubble(ii+bi); }, 380+ii*280); })(bi2); }
+    setTimeout(function(){ setMonPose('rinse'); setPhase('phase-rinse'); sfxBathRinse(); }, 2000);
+    setTimeout(function(){ setMonPose('sparkle'); setPhase('phase-happy'); sfxBathDone(); }, 3000);
+  }
   var lines=isFeed
     ? [mon.nick+' 闻到 '+food.nm+' 的香味跑过来啦！','啊呜啊呜，'+food.nm+'真好吃！',(isFav?'这是它最爱的一口，开心得原地转圈！':'摸摸圆滚滚的肚子，好满足～')]
-    : [bath.nm+'准备好啦，'+mon.nick+' 乖乖坐好～','搓搓搓，搓出好多泡泡～','冲干净啦，香喷喷！'];
+    : [bath.nm+'准备好啦，'+mon.nick+' 扑通跳进浴缸～','搓搓搓，搓出好多泡泡～','冲干净啦，香喷喷亮晶晶！'];
   var li=0;
   (function step(){
     var cap=$('careCap');
-    if(cap&&li<lines.length){ cap.textContent=lines[li]; li++; setTimeout(step,1350); return; }
+    if(cap&&li<lines.length){ cap.textContent=lines[li]; li++; setTimeout(step,1450); return; }
     var doneHTML='';
     if(!replay){
       var target=S.team.filter(function(x){return x.id===mon.id;})[0];
@@ -1672,8 +1801,8 @@ function openCare(action,replay,kind){
       doneHTML='<p class="lead" style="color:#43a047;font-weight:900;margin:6px 0 2px">'+esc(mon.nick)+' +'+gain+' 经验！'+(isFav?'（最爱的口味，多 +2）':'')+'</p>'+lv;
       if(ev.some(function(e){return e.type==='evo';})){ sfxEvo(); confetti(); }
       else if(ev.length){ sfxLevel(); confetti(); }
-      else{ sfxOk(); confetti(); }
-    }else{ sfxOk(); }
+      else{ if(isFeed) sfxFeedHappy(isFav); else sfxBathDone(); confetti(); }
+    }else{ if(isFeed) sfxFeedHappy(isFav); else sfxBathDone(); }
     var don=$('careDone'); if(don) don.innerHTML=doneHTML;
     var acts=$('careActs');
     if(acts) acts.innerHTML='<button class="btn btn-yellow btn-block" onclick="openCare(\''+action+'\',true,'+kind+')">🔁 再看一遍动画</button>'+
@@ -3376,8 +3505,8 @@ function openTeamMon(mid){
   var learnedHTML=learned.length
     ? learned.map(function(mv){
         var info=(typeof MOVE_INFO!=='undefined'&&MOVE_INFO[mv.m])?MOVE_INFO[mv.m]:null;
-        var tip=info?(' · '+(info.t||'')+(info.p?(' '+info.p):'')):'';
-        return '<span class="md-move">'+esc(mv.m)+'<span class="lv">Lv.'+mv.at+tip+'</span></span>';
+        var tip=info?(' · '+(info.t||'')+(info.p!=null?(' '+info.p):'')):'';
+        return '<button type="button" class="md-move demoable" onclick="playSkill(\''+mon.id+'\','+JSON.stringify(mv.m)+')">'+esc(mv.m)+'<span class="lv">Lv.'+mv.at+tip+' · 点我演示</span></button>';
       }).join('')
     : '<p class="md-note">还没有学会招式</p>';
   var nextHTML=upcoming.length
@@ -3402,11 +3531,11 @@ function openTeamMon(mid){
         '<div class="xpbar"><div class="xpfill" style="width:'+pct+'%"></div></div>'+
       '</div>'+
     '</div>'+
-    '<div class="md-sec"><h4>已学招式</h4><div class="md-moves">'+learnedHTML+'</div></div>'+
+    '<div class="md-sec"><h4>已学招式</h4><div class="md-moves">'+learnedHTML+'</div><p class="md-tip">点招式可指定演示；也可点下方按钮选一个</p></div>'+
     '<div class="md-sec"><h4>即将学会</h4><div class="md-moves">'+nextHTML+'</div></div>'+
     '<div class="md-sec"><h4>进化</h4><p class="md-note">'+esc(evoLine)+'<br>进化路线：'+esc(chain)+'</p></div>'+
     '<div class="dlg-actions">'+
-      '<button class="btn btn-yellow btn-block" onclick="playSkill(\''+mon.id+'\')">⚡ 演示技能</button>'+
+      '<button class="btn btn-yellow btn-block" onclick="pickSkillDemo(\''+mon.id+'\')">⚡ 选招式演示</button>'+
       '<button class="btn btn-gray btn-block" onclick="playCry(\''+mon.sid+'\')">🔊 听叫声</button>'+
       (ti>=0&&S.team.length>1?'<button class="btn btn-gray btn-block" onclick="closeModal();teamToBoxModal('+ti+')">📖 送回图鉴休息</button>':'')+
       '<button class="btn btn-primary btn-block" onclick="closeModal()">关闭</button>'+
@@ -3416,34 +3545,103 @@ function openTeamMon(mid){
 
 /* ================= 伙伴技能展示动画 ================= */
 var SKILL_FX={
-  '火':{e:['🔥','🔥','💥'],anim:'sk-rise'},
-  '水':{e:['💧','💧','🌊'],anim:'sk-fall'},
-  '电':{e:['⚡','⚡','✨'],anim:'sk-burst'},
-  '草':{e:['🍃','🌿','🍀'],anim:'sk-swirl'},
-  '岩石':{e:['🪨','💥','⭐'],anim:'sk-drop'},
-  '地面':{e:['🪨','💨','⛰️'],anim:'sk-drop'},
-  '超能力':{e:['🔮','✨','🌀'],anim:'sk-swirl'},
-  '龙':{e:['🐉','✨','💫'],anim:'sk-burst'},
-  '虫':{e:['🐛','🍃','✨'],anim:'sk-swirl'},
-  '飞行':{e:['🌪️','🪶','💨'],anim:'sk-swirl'},
-  '毒':{e:['☠️','💜','💨'],anim:'sk-rise'},
-  '妖精':{e:['💗','✨','🌸'],anim:'sk-burst'},
-  '一般':{e:['⭐','✨','💫'],anim:'sk-burst'}
+  '火':{e:['🔥','🔥','💥'],anim:'sk-rise',proj:'go-up',pose:'cast'},
+  '水':{e:['💧','💧','🌊'],anim:'sk-fall',proj:'go-wave',pose:'cast'},
+  '电':{e:['⚡','⚡','✨'],anim:'sk-burst',proj:'go-burst',pose:'zap'},
+  '草':{e:['🍃','🌿','🍀'],anim:'sk-swirl',proj:'go-wave',pose:'cast'},
+  '岩石':{e:['🪨','💥','⭐'],anim:'sk-drop',proj:'go-burst',pose:'quake'},
+  '地面':{e:['🪨','💨','⛰️'],anim:'sk-drop',proj:'go-burst',pose:'quake'},
+  '超能力':{e:['🔮','✨','🌀'],anim:'sk-swirl',proj:'go-burst',pose:'cast'},
+  '龙':{e:['🐉','✨','💫'],anim:'sk-burst',proj:'go-up',pose:'dash'},
+  '虫':{e:['🐛','🍃','✨'],anim:'sk-swirl',proj:'go-wave',pose:'hit'},
+  '飞行':{e:['🌪️','🪶','💨'],anim:'sk-swirl',proj:'go-wave',pose:'dash'},
+  '毒':{e:['☠️','💜','💨'],anim:'sk-rise',proj:'go-up',pose:'cast'},
+  '妖精':{e:['💗','✨','🌸'],anim:'sk-burst',proj:'go-burst',pose:'float'},
+  '恶':{e:['🌑','💥','💜'],anim:'sk-burst',proj:'go-burst',pose:'dash'},
+  '冰':{e:['❄️','🧊','✨'],anim:'sk-fall',proj:'go-wave',pose:'cast'},
+  '一般':{e:['⭐','✨','💫'],anim:'sk-burst',proj:'go-burst',pose:'hit'}
 };
-function sfxSkill(){
-  beep(300,0.08,'square',0.06);
-  setTimeout(function(){beep(760,0.1,'sawtooth',0.07);},110);
-  setTimeout(function(){beep(1080,0.2,'triangle',0.09);},240);
+function skillPose(info,fx){
+  if(info&&(info.heal||info.p===0)) return 'float';
+  if(fx&&fx.pose) return fx.pose;
+  return 'hit';
 }
-function playSkill(mid){
+function stopCry(){
+  try{ if(cryEl){ cryEl.pause(); cryEl.currentTime=0; } }catch(e){}
+}
+function sfxSkill(type){
+  stopCry();
+  type=type||'一般';
+  if(type==='火'){
+    beep(190,0.1,'sawtooth',0.08); setTimeout(function(){beep(360,0.16,'sawtooth',0.1);},70);
+    setTimeout(function(){beep(520,0.22,'triangle',0.08);},180);
+  }else if(type==='水'){
+    beep(480,0.08,'sine',0.07); setTimeout(function(){beep(360,0.12,'sine',0.08);},90);
+    setTimeout(function(){beep(260,0.2,'triangle',0.09);},200);
+  }else if(type==='电'){
+    beep(980,0.05,'square',0.07); setTimeout(function(){beep(1400,0.05,'square',0.08);},60);
+    setTimeout(function(){beep(760,0.14,'sawtooth',0.09);},130); setTimeout(function(){beep(1600,0.08,'square',0.06);},240);
+  }else if(type==='草'){
+    beep(520,0.08,'triangle',0.07); setTimeout(function(){beep(660,0.12,'sine',0.08);},100);
+    setTimeout(function(){beep(784,0.18,'triangle',0.08);},220);
+  }else if(type==='岩石'||type==='地面'){
+    beep(120,0.14,'sawtooth',0.09); setTimeout(function(){beep(90,0.18,'square',0.08);},110);
+    setTimeout(function(){beep(160,0.12,'triangle',0.07);},240);
+  }else if(type==='飞行'||type==='龙'){
+    beep(420,0.08,'sine',0.07); setTimeout(function(){beep(640,0.1,'triangle',0.08);},80);
+    setTimeout(function(){beep(880,0.16,'sine',0.09);},180);
+  }else if(type==='超能力'||type==='妖精'){
+    beep(700,0.1,'sine',0.07); setTimeout(function(){beep(940,0.12,'triangle',0.08);},120);
+    setTimeout(function(){beep(1180,0.2,'sine',0.08);},240);
+  }else if(type==='毒'||type==='恶'){
+    beep(240,0.12,'sawtooth',0.07); setTimeout(function(){beep(180,0.16,'square',0.08);},120);
+    setTimeout(function(){beep(300,0.14,'triangle',0.07);},250);
+  }else if(type==='冰'){
+    beep(860,0.07,'sine',0.06); setTimeout(function(){beep(1100,0.1,'triangle',0.07);},90);
+    setTimeout(function(){beep(1320,0.16,'sine',0.08);},200);
+  }else{
+    beep(340,0.08,'square',0.07); setTimeout(function(){beep(520,0.1,'triangle',0.08);},90);
+    setTimeout(function(){beep(700,0.16,'sine',0.08);},200);
+  }
+}
+function pickSkillDemo(mid){
   var mon=null; S.team.forEach(function(m){ if(m.id===mid) mon=m; });
   if(!mon) return;
-  var sp=spec(mon.sid), col=tc(sp.type);
+  var list=movesOf(mon);
+  if(!list.length){ sfxBad(); toast('还没有学会招式'); return; }
+  if(list.length===1){ playSkill(mid,list[0].m); return; }
+  var btns=list.map(function(mv){
+    var info=MOVE_INFO[mv.m]||{t:'一般',p:30};
+    var col=tc(info.t||'一般');
+    return '<button class="btn btn-block btn-sm" style="justify-content:space-between;margin-bottom:8px" onclick="closeTopModal();playSkill(\''+mid+'\','+JSON.stringify(mv.m)+')">'+
+      '<span>⚡ '+esc(mv.m)+'</span><span class="type-tag" style="background:'+col+';margin:0">'+esc(info.t||'一般')+'</span></button>';
+  }).join('');
+  showModal('<div class="dialog"><h3>选一个招式演示</h3><p class="lead">'+esc(mon.nick)+' 已学会这些招式</p><div class="dlg-actions" style="margin-top:12px">'+btns+
+    '<button class="btn btn-gray btn-block" onclick="closeTopModal()">取消</button></div></div>');
+}
+function closeTopModal(){
+  var r=$('modalRoot'); if(r&&r.lastChild) r.removeChild(r.lastChild);
+}
+function playSkill(mid,moveName){
+  var mon=null; S.team.forEach(function(m){ if(m.id===mid) mon=m; });
+  if(!mon) return;
+  stopCry();
+  closeSkill();
+  var sp=spec(mon.sid);
   var mvList=movesOf(mon);
-  var mv=mvList.length?mvList[Math.floor(Math.random()*mvList.length)].m:'撞击';
-  var fx=SKILL_FX[sp.type]||SKILL_FX['一般'];
+  var known={}; mvList.forEach(function(x){ known[x.m]=true; });
+  var mv=moveName;
+  if(!mv||!known[mv]){
+    if(moveName){ toast('还没学会这个招式'); }
+    mv=mvList.length?mvList[mvList.length-1].m:'撞击';
+  }
+  var info=MOVE_INFO[mv]||{t:sp.type||'一般',p:30};
+  var mtype=info.t||sp.type||'一般';
+  var col=tc(mtype);
+  var fx=SKILL_FX[mtype]||SKILL_FX['一般'];
+  var pose=skillPose(info,fx);
   var parts='';
-  for(var i=0;i<16;i++){
+  for(var i=0;i<18;i++){
     parts+='<span class="sk-p '+fx.anim+'" style="left:'+(5+Math.random()*86)+'%;top:'+(16+Math.random()*54)+'%;font-size:'+((13+Math.random()*17)|0)+'px;animation-delay:'+(Math.random()*0.9).toFixed(2)+'s">'+fx.e[i%fx.e.length]+'</span>';
   }
   var root=document.createElement('div');
@@ -3451,22 +3649,21 @@ function playSkill(mid){
   root.innerHTML='<div class="sk-aura" style="background:radial-gradient(circle at 50% 44%,'+col+'cc 0%,'+col+'33 40%,rgba(10,12,18,.94) 74%)"></div>'+
     '<div class="sk-rays" style="color:'+col+'"></div>'+
     '<div class="sk-parts">'+parts+'</div>'+
+    '<div class="sk-proj '+(fx.proj||'go-burst')+'">'+fx.e[0]+'</div>'+
     '<div class="sk-mon-wrap"><img class="sk-mon" '+pokeImgAttrs(mon.sid)+'></div>'+
-    '<div class="sk-info"><span class="sk-type" style="background:'+col+'">'+esc(sp.type)+'</span>'+
+    '<div class="sk-info"><span class="sk-type" style="background:'+col+'">'+esc(mtype)+'招式</span>'+
       '<div class="sk-line">'+esc(mon.nick)+' 使用了</div>'+
       '<div class="sk-move">「'+esc(mv)+'」</div></div>'+
     '<div class="sk-flash"></div>'+
     '<button class="sk-close" type="button" aria-label="关闭">✕</button>'+
     '<div class="sk-hint">点击任意处关闭</div>';
-  /* 装饰层铺满全屏，不能要求 e.target===root；任意点击（含宝可梦/文字）都关闭 */
   root.addEventListener('click',function(){ closeSkill(); });
   document.body.appendChild(root);
   window.__skRoot=root;
-  sfxSkill();
-  /* 伙伴亮相时叫一声：用这只宝可梦自己的叫声，辨识度更高 */
-  setTimeout(function(){ playCry(mon.sid); },280);
-  setTimeout(function(){ var f=root.querySelector('.sk-flash'); if(f) f.classList.add('go'); },720);
-  setTimeout(function(){ var w=root.querySelector('.sk-mon-wrap'); if(w) w.classList.add('hit'); },760);
+  sfxSkill(mtype);
+  setTimeout(function(){ var p=root.querySelector('.sk-proj'); if(p) p.classList.add(fx.proj||'go-burst'); },420);
+  setTimeout(function(){ var f=root.querySelector('.sk-flash'); if(f) f.classList.add('go'); },680);
+  setTimeout(function(){ var w=root.querySelector('.sk-mon-wrap'); if(w) w.classList.add(pose); },720);
 }
 function closeSkill(){ var r=window.__skRoot; if(r){ r.remove(); window.__skRoot=null; } }
 
@@ -3731,9 +3928,9 @@ function viewWorkHTML(){
         '<div style="text-align:center;font-weight:900;font-size:15px">'+approvedToday+'/'+todays.length+'<div style="font-size:10.5px;color:#8a6d3b">已通过</div></div>'+
       '</div>'+
       '<div style="margin-top:10px;background:rgba(255,255,255,.65);border-radius:12px;padding:8px 12px">'+
-        '<div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:800;color:#8a6d3b"><span>🎯 每日挑战 · 集满 '+dailyTarget()+' 个送捕捉券 ×'+dailyReward()+'</span><span>'+approvedToday+'/'+dailyTarget()+'</span></div>'+
+        '<div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:800;color:#8a6d3b"><span>🎯 每日挑战 · 集满 '+dailyTarget()+' 个送精灵球 ×'+dailyReward()+'</span><span>'+approvedToday+'/'+dailyTarget()+'</span></div>'+
         '<div class="xpbar" style="margin-top:5px;height:8px"><div class="xpfill" style="width:'+Math.min(100,Math.round(approvedToday/dailyTarget()*100))+'%"></div></div>'+
-        (approvedToday>=dailyTarget()?'<div style="font-size:12px;color:#2e7d32;font-weight:800;margin-top:4px">🎉 今日捕捉券已到手，周末去探险吧！</div>':'')+
+        (approvedToday>=dailyTarget()?'<div style="font-size:12px;color:#2e7d32;font-weight:800;margin-top:4px">🎉 今日精灵球已到手，周末去探险吧！</div>':'')+
       '</div></div>'+
     rejectTip+
     '<div class="card"><h3>✍️ 提交今天的任务</h3>'+
@@ -3753,9 +3950,11 @@ function workItemHTML(h){
   else if(h.status==='deducted'){stTxt='扣减 +'+h.xp;stCls='deducted';}
   else{stTxt='被驳回';stCls='rejected';}
   var fastTxt=h.fast?'<span class="fast-tag">快手 ×'+S.fastMult+'</span>':'';
+  var ico=(h.subject&&String(h.subject).charAt(0))||'📝';
   return '<div class="work-item">'+
-    '<div class="work-ico">'+esc(h.subject)+'</div>'+
-    '<div class="work-body"><div class="t">'+esc(h.desc)+' '+fastTxt+'</div>'+
+    '<div class="work-ico" title="'+esc(h.subject)+'">'+esc(ico)+'</div>'+
+    '<div class="work-body"><div class="t"><span class="work-subj">'+esc(h.subject)+'</span> '+fastTxt+'</div>'+
+    (h.desc?'<div class="d">'+esc(h.desc)+'</div>':'')+
     '<div class="work-time">'+fmtCN(h.date)+' '+h.submitAt+' 提交'+(h.note?(' · 家长留言：'+esc(h.note)):'')+'</div></div>'+
     '<span class="status '+stCls+'">'+stTxt+'</span>'+
   '</div>';
@@ -4022,11 +4221,11 @@ function viewCatchHTML(){
     '<div class="card" style="background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border:1.5px solid #a5d6a7">'+
       '<div style="display:flex;align-items:center;gap:10px"><div style="font-size:34px">🌲</div>'+
       '<div><b style="font-size:15.5px;font-weight:900">野外探险</b>'+
-      '<div style="font-size:12.5px;color:#33691e;font-weight:600;margin-top:2px">每周末 '+weekendFreeMax()+' 次免费机会 · 捕捉券 '+S.items.vouchers+' 张 · 稀有券 '+S.items.rareVouchers+' 张</div>'+
-      '<div style="font-size:12px;color:#2e7d32;font-weight:700;margin-top:3px">🎯 每天通过 7 个任务，再送 1 张捕捉券！</div></div></div>'+
+      '<div style="font-size:12.5px;color:#33691e;font-weight:600;margin-top:2px">每周末 '+weekendFreeMax()+' 次免费机会 · 精灵球 '+S.items.vouchers+' 个 · 大师球 '+S.items.rareVouchers+' 个</div>'+
+      '<div style="font-size:12px;color:#2e7d32;font-weight:700;margin-top:3px">🎯 每天通过 '+dailyTarget()+' 个任务，再送 '+dailyReward()+' 个精灵球！</div></div></div>'+
       '<div style="display:flex;gap:8px;margin-top:12px">'+
-        '<button class="btn btn-green btn-sm" style="flex:1" '+(weekend&&(c.free>0||S.items.vouchers>0)?'':'disabled')+' onclick="startCatch(false)">🎣 出发探险（剩 '+c.free+' 次）</button>'+
-        '<button class="btn btn-yellow btn-sm" style="flex:1" '+(weekend&&S.items.rareVouchers>0?'':'disabled')+' onclick="startCatch(true)">💎 稀有券（'+S.items.rareVouchers+'）</button>'+
+        '<button class="btn btn-green btn-sm" style="flex:1" '+(weekend&&(c.free>0||S.items.vouchers>0)?'':'disabled')+' onclick="startCatch(false)">🔴 出发探险（剩 '+c.free+' 次）</button>'+
+        '<button class="btn btn-yellow btn-sm" style="flex:1" '+(weekend&&S.items.rareVouchers>0?'':'disabled')+' onclick="startCatch(true)">🟣 大师球（'+S.items.rareVouchers+'）</button>'+
       '</div></div>'+
     lock+
     /* 钓鱼：天天开放，每天 3 次，只能切磋拿经验 */
@@ -4366,8 +4565,8 @@ function showResultModal(hw,xp,events,prize,deduct,voucher){
   var voucherHTML='';
   if(voucher){
     voucherHTML='<div style="background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border:1.5px solid #a5d6a7;border-radius:16px;padding:10px 12px;margin:10px 0 0">'+
-      '<b style="color:#2e7d32;font-size:15px">🎣 每日挑战达成！获得捕捉券 ×'+dailyReward()+'</b>'+
-      '<div style="font-size:12.5px;color:#33691e;font-weight:600;margin-top:2px">今天已完成 '+dailyTarget()+' 个任务，捕捉券已放入背包，周末野外探险可以用！</div></div>';
+      '<b style="color:#2e7d32;font-size:15px">🔴 每日挑战达成！获得精灵球 ×'+dailyReward()+'</b>'+
+      '<div style="font-size:12.5px;color:#33691e;font-weight:600;margin-top:2px">今天已完成 '+dailyTarget()+' 个任务，精灵球已放入背包，周末野外探险可以用！</div></div>';
   }
   var evs='';
   events.forEach(function(ev){
@@ -4465,18 +4664,18 @@ function viewSettingsHTML(){
       '<div class="field"><label>连击大奖天数</label><input id="setStreak" type="number" min="3" max="14" value="'+S.streakTarget+'"></div>'+
       '<button class="btn btn-primary btn-block" onclick="saveRules()">保存规则</button></div>'+
     '<div class="card"><h3>🎯 每日挑战与捕捉</h3>'+
-      '<p style="font-size:12.5px;color:#8a7a6a;margin:0 0 10px;font-weight:600">孩子当天通过审核的任务达到目标数，自动发放捕捉券。</p>'+
+      '<p style="font-size:12.5px;color:#8a7a6a;margin:0 0 10px;font-weight:600">孩子当天通过审核的任务达到目标数，自动发放精灵球。</p>'+
       '<div class="field"><label>每日挑战目标（集满几个任务）</label><input id="setDailyTarget" type="number" min="1" max="20" value="'+dailyTarget()+'"></div>'+
-      '<div class="field"><label>达成后发放捕捉券张数</label><input id="setDailyReward" type="number" min="1" max="5" value="'+dailyReward()+'"></div>'+
+      '<div class="field"><label>达成后发放精灵球个数</label><input id="setDailyReward" type="number" min="1" max="5" value="'+dailyReward()+'"></div>'+
       '<div class="field"><label>周末免费捕捉次数</label><input id="setWeekendFree" type="number" min="0" max="7" value="'+weekendFreeMax()+'"></div>'+
       '<button class="btn btn-primary btn-block" onclick="saveChallenge()">保存挑战设置</button>'+
       '<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--pk-line)">'+
-        '<div style="font-size:13px;font-weight:800;margin-bottom:8px">🎒 背包补给（当前捕捉券 <b style="color:#2e7d32">'+S.items.vouchers+'</b> · 稀有券 <b style="color:#6a1b9a">'+S.items.rareVouchers+'</b>）</div>'+
+        '<div style="font-size:13px;font-weight:800;margin-bottom:8px">🎒 背包补给（当前精灵球 <b style="color:#2e7d32">'+S.items.vouchers+'</b> · 大师球 <b style="color:#6a1b9a">'+S.items.rareVouchers+'</b>）</div>'+
         '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
-          '<button class="btn btn-green btn-sm" style="flex:1" onclick="adjustVoucher(1)">捕捉券 +1</button>'+
-          '<button class="btn btn-gray btn-sm" style="flex:1" onclick="adjustVoucher(-1)">捕捉券 −1</button>'+
-          '<button class="btn btn-yellow btn-sm" style="flex:1" onclick="adjustRareVoucher(1)">稀有券 +1</button>'+
-          '<button class="btn btn-gray btn-sm" style="flex:1" onclick="adjustRareVoucher(-1)">稀有券 −1</button>'+
+          '<button class="btn btn-green btn-sm" style="flex:1" onclick="adjustVoucher(1)">精灵球 +1</button>'+
+          '<button class="btn btn-gray btn-sm" style="flex:1" onclick="adjustVoucher(-1)">精灵球 −1</button>'+
+          '<button class="btn btn-yellow btn-sm" style="flex:1" onclick="adjustRareVoucher(1)">大师球 +1</button>'+
+          '<button class="btn btn-gray btn-sm" style="flex:1" onclick="adjustRareVoucher(-1)">大师球 −1</button>'+
         '</div>'+
         '<p style="font-size:11.5px;color:#b0a090;margin:8px 0 0;font-weight:600">例如设成「集满 3 个送 1 张」，孩子更容易拿到周末探险机会</p>'+
       '</div></div>'+
@@ -4523,44 +4722,69 @@ function viewSettingsHTML(){
       '<p style="font-size:11.5px;color:#b0a090;margin:10px 0 0;font-weight:600">导出保存进度，换设备或换浏览器时可以导入继续</p></div>'+
   '</div>';
 }
+function applyChildSettingsForm(){
+  var n=$('setName'); if(n){ var nm=n.value.trim(); if(nm) S.childName=nm; }
+  var p=$('setPin'); if(p) S.pin=p.value.trim();
+  return null;
+}
+function applyRulesForm(){
+  var d=$('setDeadline'), b=$('setBase'), st=$('setStreak'), f=$('setFast');
+  if(!d&&!b&&!st&&!f) return null;
+  if(d){
+    var dv=(d.value||'').trim();
+    if(!dv) return '请填写快手奖励截止时间';
+    S.deadline=dv;
+  }
+  if(b){
+    var bv=parseInt(String(b.value).trim(),10);
+    if(!(bv>=5&&bv<=100)) return '单次任务基础经验请填 5～100';
+    S.baseXP=bv;
+  }
+  if(st){
+    var sv=parseInt(String(st.value).trim(),10);
+    if(!(sv>=3&&sv<=14)) return '连击大奖天数请填 3～14';
+    S.streakTarget=sv;
+  }
+  if(f){
+    var fm=parseFloat(String(f.value).trim());
+    if(!(!isNaN(fm)&&fm>=1&&fm<=3)) return '快手经验倍率请填 1～3';
+    S.fastMult=Math.round(fm*10)/10;
+  }
+  return null;
+}
 function saveSettings(){
-  var n=$('setName').value.trim(); if(n) S.childName=n;
-  S.pin=$('setPin').value.trim();
-  sfxOk(); save(); render(); toast('设置已保存');
+  var err=applyChildSettingsForm()||applyRulesForm();
+  if(err){ sfxBad(); toast(err); return; }
+  var ak=activeKid(); if(ak){ ak.name=S.childName; saveKids(); }
+  sfxOk(); save(); render(); toast('设置已保存（含激励规则）');
 }
 function saveRules(){
-  var d=$('setDeadline').value;
-  var b=parseInt($('setBase').value,10);
-  var st=parseInt($('setStreak').value,10);
-  var fm=parseFloat($('setFast').value);
-  if(d) S.deadline=d;
-  if(b>=5&&b<=100) S.baseXP=b;
-  if(st>=3&&st<=14) S.streakTarget=st;
-  if(!isNaN(fm)&&fm>=1&&fm<=3) S.fastMult=Math.round(fm*10)/10;
-  sfxOk(); save(); render(); toast('规则已保存');
+  var err=applyRulesForm();
+  if(err){ sfxBad(); toast(err); return; }
+  sfxOk(); save(); render(); toast('规则已保存：单次经验 '+S.baseXP+' · 倍率 ×'+S.fastMult);
 }
 function saveChallenge(){
   var t=parseInt($('setDailyTarget').value,10);
   var r=parseInt($('setDailyReward').value,10);
   var w=parseInt($('setWeekendFree').value,10);
   if(!(t>=1&&t<=20)){ toast('每日目标请填 1～20'); return; }
-  if(!(r>=1&&r<=5)){ toast('奖励张数请填 1～5'); return; }
+  if(!(r>=1&&r<=5)){ toast('精灵球个数请填 1～5'); return; }
   if(!(w>=0&&w<=7)){ toast('周末免费次数请填 0～7'); return; }
   S.dailyTarget=t; S.dailyReward=r; S.weekendFree=w;
-  /* 若今天已达标但还没发券（例如刚把目标从 7 改成 3），立刻补发 */
+  /* 若今天已达标但还没发精灵球（例如刚把目标从 7 改成 3），立刻补发 */
   var just=refreshDailyVoucher();
   sfxOk(); save(); render();
-  toast(just?('挑战设置已保存，并补发了今日捕捉券 ×'+dailyReward()):'挑战设置已保存');
+  toast(just?('挑战设置已保存，并补发了今日精灵球 ×'+dailyReward()):'挑战设置已保存');
 }
 function adjustVoucher(n){
   S.items.vouchers=Math.max(0,(S.items.vouchers||0)+n);
   sfxClick(); save(); render();
-  toast('捕捉券：'+S.items.vouchers+' 张');
+  toast('精灵球：'+S.items.vouchers+' 个');
 }
 function adjustRareVoucher(n){
   S.items.rareVouchers=Math.max(0,(S.items.rareVouchers||0)+n);
   sfxClick(); save(); render();
-  toast('稀有券：'+S.items.rareVouchers+' 张');
+  toast('大师球：'+S.items.rareVouchers+' 个');
 }
 function addSubject(){
   var v=$('newSubj').value.trim();
