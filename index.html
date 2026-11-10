@@ -949,10 +949,47 @@ function pickWeighted(list){var total=list.reduce(function(a,x){return a+x.w;},0
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
 
 /* ================= 声音 ================= */
-var AC=null, SOUND=true, AUDIO_UNLOCKED=false;
-function audio(){if(!SOUND)return null;if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){AC=null;}}return AC;}
-/* iOS/Safari：必须在用户手势里同步解锁（静音 buffer + resume） */
+var AC=null, SOUND=true, AUDIO_UNLOCKED=false, HTML_BEEP_URL=null, HTML_BEEP_EL=null;
+function audio(){
+  try{ SOUND=!(S&&S.sound===false); }catch(e){}
+  if(!SOUND) return null;
+  if(!AC){ try{ AC=new (window.AudioContext||window.webkitAudioContext)(); }catch(e2){ AC=null; } }
+  return AC;
+}
+function makeBeepWavUrl(freq,dur,vol){
+  try{
+    var sr=22050, n=Math.max(1, Math.floor(sr*(dur||0.12)));
+    var buf=new ArrayBuffer(44+n*2), v=new DataView(buf);
+    function ws(o,s){ for(var i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); }
+    ws(0,'RIFF'); v.setUint32(4,36+n*2,true); ws(8,'WAVE'); ws(12,'fmt ');
+    v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
+    v.setUint32(24,sr,true); v.setUint32(28,sr*2,true); v.setUint16(32,2,true); v.setUint16(34,16,true);
+    ws(36,'data'); v.setUint32(40,n*2,true);
+    var f=freq||880, amp=vol==null?0.55:vol;
+    for(var i=0;i<n;i++){
+      var t=i/sr, env=Math.min(1, i/(sr*0.01))*Math.max(0,1-i/n);
+      var s=Math.sin(2*Math.PI*f*t)*amp*env;
+      v.setInt16(44+i*2, (s*0x7FFF)|0, true);
+    }
+    return URL.createObjectURL(new Blob([buf],{type:'audio/wav'}));
+  }catch(e){ return null; }
+}
+function playHtmlBeep(freq){
+  try{
+    if(!SOUND) return;
+    var url=makeBeepWavUrl(freq||720,0.14,0.7);
+    if(!url) return;
+    var a=new Audio(url);
+    a.setAttribute('playsinline','playsinline');
+    a.volume=1;
+    var p=a.play();
+    if(p&&p.catch) p.catch(function(){});
+    setTimeout(function(){ try{ URL.revokeObjectURL(url); }catch(e){} },800);
+  }catch(e){}
+}
+/* iOS/Safari：手势里同步 resume + 静音 buffer + HTMLAudio 预热 */
 function unlockAudio(){
+  try{ SOUND=!(S&&S.sound===false); }catch(e){}
   if(!SOUND) return null;
   var ac=audio(); if(!ac) return null;
   try{ if(ac.state==='suspended'&&ac.resume) ac.resume(); }catch(e){}
@@ -961,13 +998,23 @@ function unlockAudio(){
       var buf=ac.createBuffer(1,1,ac.sampleRate||22050);
       var src=ac.createBufferSource();
       src.buffer=buf; src.connect(ac.destination); src.start(0);
-      AUDIO_UNLOCKED=true;
     }catch(e2){}
     try{
       var o=ac.createOscillator(), g=ac.createGain();
       g.gain.value=0.0001; o.connect(g); g.connect(ac.destination);
-      o.start(0); o.stop(ac.currentTime+0.02);
+      o.start(0); o.stop(ac.currentTime+0.03);
     }catch(e3){}
+    try{
+      if(!HTML_BEEP_URL) HTML_BEEP_URL=makeBeepWavUrl(660,0.08,0.01);
+      if(HTML_BEEP_URL){
+        HTML_BEEP_EL=new Audio(HTML_BEEP_URL);
+        HTML_BEEP_EL.setAttribute('playsinline','playsinline');
+        HTML_BEEP_EL.volume=0.01;
+        var hp=HTML_BEEP_EL.play();
+        if(hp&&hp.then) hp.then(function(){ try{ HTML_BEEP_EL.pause(); HTML_BEEP_EL.currentTime=0; }catch(e4){} }).catch(function(){});
+      }
+    }catch(e5){}
+    AUDIO_UNLOCKED=true;
   }
   return ac;
 }
@@ -975,30 +1022,50 @@ function ensureAudio(){
   if(!SOUND) return null;
   return unlockAudio();
 }
-/* 等 AudioContext 真正跑起来再发声（解决 iOS 上 resume 异步导致首段静音） */
 function withAudio(fn){
   if(!SOUND||!fn) return;
   var ac=unlockAudio();
-  if(!ac){ try{fn();}catch(e){} return; }
-  if(ac.state==='running'){ try{fn();}catch(e){} return; }
-  var go=function(){ try{fn();}catch(e){} };
+  if(!ac){ try{fn(null);}catch(e){} return; }
+  if(ac.state==='running'){ try{fn(ac);}catch(e){} return; }
+  var go=function(){ try{fn(ac);}catch(e){} };
   try{
     var p=ac.resume?ac.resume():null;
     if(p&&typeof p.then==='function'){ p.then(go).catch(go); return; }
   }catch(e){}
   go();
 }
+function toneAt(ac,f,t0,d,type,vol){
+  if(!ac) return;
+  try{
+    var o=ac.createOscillator(), g=ac.createGain(), v=Math.max(0.001, vol||0.2);
+    o.type=type||'sine';
+    o.frequency.setValueAtTime(Math.max(40,f||440), t0);
+    g.gain.setValueAtTime(v, t0);
+    try{ g.gain.exponentialRampToValueAtTime(0.001, t0+(d||0.1)); }
+    catch(e){ g.gain.linearRampToValueAtTime(0.001, t0+(d||0.1)); }
+    o.connect(g); g.connect(ac.destination);
+    o.start(t0); o.stop(t0+(d||0.1)+0.03);
+  }catch(e){}
+}
+function slideAt(ac,f0,f1,t0,d,type,vol){
+  if(!ac) return;
+  try{
+    var o=ac.createOscillator(), g=ac.createGain(), v=Math.max(0.001, vol||0.18);
+    o.type=type||'sine';
+    o.frequency.setValueAtTime(Math.max(40,f0||200), t0);
+    try{ o.frequency.exponentialRampToValueAtTime(Math.max(40,f1||200), t0+(d||0.2)); }
+    catch(e){ o.frequency.linearRampToValueAtTime(Math.max(40,f1||200), t0+(d||0.2)); }
+    g.gain.setValueAtTime(v, t0);
+    try{ g.gain.exponentialRampToValueAtTime(0.001, t0+(d||0.2)); }
+    catch(e2){ g.gain.linearRampToValueAtTime(0.001, t0+(d||0.2)); }
+    o.connect(g); g.connect(ac.destination);
+    o.start(t0); o.stop(t0+(d||0.2)+0.03);
+  }catch(e){}
+}
 function beep(f,d,type,vol){
   if(!SOUND) return;
   var ac=unlockAudio(); if(!ac) return;
-  var play=function(){
-    try{
-      var o=ac.createOscillator(), g=ac.createGain(), t=ac.currentTime, v=Math.max(0.001, vol||0.15);
-      o.type=type||'sine'; o.frequency.setValueAtTime(Math.max(40,f||440), t);
-      g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.001, t+(d||0.1));
-      o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+(d||0.1)+0.02);
-    }catch(e){}
-  };
+  var play=function(){ toneAt(ac,f,ac.currentTime,d,type,vol); };
   if(ac.state==='running'){ play(); return; }
   try{
     var p=ac.resume&&ac.resume();
@@ -1009,16 +1076,7 @@ function beep(f,d,type,vol){
 function beepSlide(f0,f1,d,type,vol){
   if(!SOUND) return;
   var ac=unlockAudio(); if(!ac) return;
-  var play=function(){
-    try{
-      var o=ac.createOscillator(), g=ac.createGain(), t=ac.currentTime, v=Math.max(0.001, vol||0.12);
-      o.type=type||'sine';
-      o.frequency.setValueAtTime(Math.max(40,f0||200), t);
-      o.frequency.exponentialRampToValueAtTime(Math.max(40,f1||200), t+(d||0.2));
-      g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.001, t+(d||0.2));
-      o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+(d||0.2)+0.02);
-    }catch(e){}
-  };
+  var play=function(){ slideAt(ac,f0,f1,ac.currentTime,d,type,vol); };
   if(ac.state==='running'){ play(); return; }
   try{
     var p=ac.resume&&ac.resume();
@@ -3033,15 +3091,51 @@ function wearOutfit(id){
 function trainerTask(){ return trainerS().task; }
 function trainerDays(){ var t=trainerS(); return t.days.length; }
 function trainerDoneToday(){ var t=trainerS(); return t.days.indexOf(todayStr())>=0; }
-function trainerPresetList(){
+function ensureTrainerPresets(){
   var t=trainerS();
-  var custom=Array.isArray(t.presets)?t.presets:[];
-  var seen={}, out=[];
-  custom.concat(TRAINER_PRESETS).forEach(function(p){
-    p=String(p||'').trim(); if(!p||seen[p]) return;
-    seen[p]=1; out.push(p);
-  });
-  return out;
+  if(!Array.isArray(t.presets)) t.presets=[];
+  if(!t.presetsSeeded){
+    if(!t.presets.length) t.presets=TRAINER_PRESETS.slice();
+    t.presetsSeeded=true;
+    save();
+  }
+  return t.presets;
+}
+function trainerPresetList(){ return ensureTrainerPresets().slice(); }
+function selectTrainerPreset(i){
+  var list=ensureTrainerPresets();
+  var p=list[i]; if(p==null) return;
+  var a=$('trPresetNew'), b=$('trTaskInput');
+  if(a) a.value=p;
+  if(b) b.value=p;
+  window.__trPresetIdx=i;
+  sfxClick();
+}
+function saveTrainerPreset(){
+  var el=$('trPresetNew'); if(!el) return;
+  var v=el.value.trim();
+  if(!v){ toast('先写模板内容'); return; }
+  if(v.length>40){ toast('模板太长啦，控制在 40 字以内'); return; }
+  var t=trainerS(); ensureTrainerPresets();
+  var idx=window.__trPresetIdx;
+  if(idx!=null && idx>=0 && idx<t.presets.length){
+    t.presets[idx]=v;
+    toast('模板已修改');
+  }else{
+    if(t.presets.indexOf(v)>=0){ toast('这个模板已经有了'); return; }
+    t.presets.push(v);
+    toast('模板已添加');
+  }
+  window.__trPresetIdx=null;
+  if(el) el.value='';
+  save(); sfxOk(); render();
+}
+function delTrainerPreset(i){
+  var t=trainerS(); ensureTrainerPresets();
+  if(i<0||i>=t.presets.length) return;
+  t.presets.splice(i,1);
+  if(window.__trPresetIdx===i) window.__trPresetIdx=null;
+  save(); sfxClick(); render(); toast('模板已删除');
 }
 function publishTrainerTask(){
   var el=$('trTaskInput'); if(!el) return;
@@ -3052,11 +3146,10 @@ function publishTrainerTask(){
   var changed=t.task!==v;
   t.task=v; t.taskDate=todayStr();
   if(changed) t.days=[];
-  if(!Array.isArray(t.presets)) t.presets=[];
-  if(TRAINER_PRESETS.indexOf(v)<0){
-    t.presets=t.presets.filter(function(x){return x!==v;});
+  ensureTrainerPresets();
+  if(t.presets.indexOf(v)<0){
     t.presets.unshift(v);
-    if(t.presets.length>8) t.presets=t.presets.slice(0,8);
+    if(t.presets.length>20) t.presets=t.presets.slice(0,20);
   }
   save(); sfxOk(); render();
   toast(changed?'本周特别任务已发布':'本周特别任务已更新');
@@ -3636,48 +3729,55 @@ function stopCry(){
 function sfxSkill(type){
   stopCry();
   type=type||'一般';
-  /* 先在当前手势里同步解锁并打出第一下，避免手机只播动画不出声 */
-  try{ unlockAudio(); }catch(e0){}
-  beep(220,0.08,'square',0.32);
-  withAudio(function(){
-    /* 手机外放音量再抬高一档 */
+  try{ SOUND=!(S&&S.sound===false); }catch(e0){}
+  if(!SOUND) return;
+  /* 手势内同步解锁：WebAudio + HTMLAudio，避免 iPhone setTimeout 丢手势导致无声 */
+  var ac=null;
+  try{ ac=unlockAudio(); }catch(e1){}
+  try{ playHtmlBeep(type==='电'?1200:(type==='火'?320:720)); }catch(e2){}
+  var run=function(ctx){
+    if(!ctx) return;
+    var t0=ctx.currentTime+0.01;
+    var note=function(f,at,d,ty,v){ toneAt(ctx,f,t0+at,d,ty,v); };
+    var slide=function(a,b,at,d,ty,v){ slideAt(ctx,a,b,t0+at,d,ty,v); };
+    note(240,0,0.09,'square',0.4);
     if(type==='火'){
-      beep(190,0.14,'sawtooth',0.36); setTimeout(function(){beep(360,0.2,'sawtooth',0.38);},70);
-      setTimeout(function(){beep(520,0.26,'triangle',0.32);},180);
-      setTimeout(function(){beep(720,0.18,'sawtooth',0.26);},320);
+      note(190,0.05,0.14,'sawtooth',0.4); note(360,0.14,0.2,'sawtooth',0.42);
+      note(520,0.28,0.24,'triangle',0.36); note(720,0.42,0.18,'sawtooth',0.3);
     }else if(type==='水'){
-      beep(480,0.12,'sine',0.34); setTimeout(function(){beep(360,0.16,'sine',0.36);},90);
-      setTimeout(function(){beep(260,0.24,'triangle',0.32);},200);
-      setTimeout(function(){beepSlide(400,180,0.22,'sine',0.28);},340);
+      note(480,0.04,0.12,'sine',0.4); note(360,0.14,0.16,'sine',0.4);
+      note(260,0.26,0.22,'triangle',0.36); slide(400,180,0.4,0.22,'sine',0.32);
     }else if(type==='电'){
-      beep(980,0.08,'square',0.34); setTimeout(function(){beep(1400,0.08,'square',0.36);},60);
-      setTimeout(function(){beep(760,0.18,'sawtooth',0.36);},130); setTimeout(function(){beep(1600,0.12,'square',0.3);},240);
+      note(980,0.02,0.08,'square',0.42); note(1400,0.1,0.08,'square',0.4);
+      note(760,0.18,0.16,'sawtooth',0.4); note(1600,0.32,0.12,'square',0.34);
     }else if(type==='草'){
-      beep(520,0.12,'triangle',0.34); setTimeout(function(){beep(660,0.16,'sine',0.36);},100);
-      setTimeout(function(){beep(784,0.22,'triangle',0.32);},220);
+      note(520,0.04,0.12,'triangle',0.4); note(660,0.14,0.16,'sine',0.4);
+      note(784,0.28,0.22,'triangle',0.36);
     }else if(type==='岩石'||type==='地面'){
-      beep(120,0.18,'sawtooth',0.38); setTimeout(function(){beep(90,0.22,'square',0.36);},110);
-      setTimeout(function(){beep(160,0.16,'triangle',0.3);},240);
+      note(120,0.02,0.18,'sawtooth',0.44); note(90,0.16,0.22,'square',0.4);
+      note(160,0.32,0.16,'triangle',0.34);
     }else if(type==='飞行'||type==='龙'){
-      beep(420,0.12,'sine',0.34); setTimeout(function(){beep(640,0.14,'triangle',0.36);},80);
-      setTimeout(function(){beep(880,0.2,'sine',0.32);},180);
+      note(420,0.04,0.12,'sine',0.4); note(640,0.14,0.14,'triangle',0.4);
+      note(880,0.26,0.2,'sine',0.36);
     }else if(type==='超能力'||type==='妖精'){
-      beep(700,0.14,'sine',0.34); setTimeout(function(){beep(940,0.16,'triangle',0.36);},120);
-      setTimeout(function(){beep(1180,0.24,'sine',0.32);},240);
+      note(700,0.04,0.14,'sine',0.4); note(940,0.16,0.16,'triangle',0.4);
+      note(1180,0.3,0.22,'sine',0.36);
     }else if(type==='毒'||type==='恶'){
-      beep(240,0.16,'sawtooth',0.34); setTimeout(function(){beep(180,0.2,'square',0.36);},120);
-      setTimeout(function(){beep(300,0.18,'triangle',0.3);},250);
+      note(240,0.04,0.16,'sawtooth',0.4); note(180,0.16,0.2,'square',0.4);
+      note(300,0.32,0.18,'triangle',0.34);
     }else if(type==='冰'){
-      beep(860,0.1,'sine',0.32); setTimeout(function(){beep(1100,0.14,'triangle',0.34);},90);
-      setTimeout(function(){beep(1320,0.2,'sine',0.32);},200);
+      note(860,0.04,0.1,'sine',0.38); note(1100,0.14,0.14,'triangle',0.4);
+      note(1320,0.28,0.2,'sine',0.36);
     }else if(type==='格斗'||type==='虫'){
-      beep(280,0.12,'square',0.36); setTimeout(function(){beep(180,0.14,'sawtooth',0.34);},80);
-      setTimeout(function(){beep(420,0.18,'triangle',0.3);},200);
+      note(280,0.02,0.12,'square',0.42); note(180,0.12,0.14,'sawtooth',0.4);
+      note(420,0.26,0.18,'triangle',0.34);
     }else{
-      beep(340,0.12,'square',0.34); setTimeout(function(){beep(520,0.14,'triangle',0.36);},90);
-      setTimeout(function(){beep(700,0.2,'sine',0.32);},200);
+      note(340,0.04,0.12,'square',0.4); note(520,0.14,0.14,'triangle',0.4);
+      note(700,0.28,0.2,'sine',0.36);
     }
-  });
+  };
+  if(ac&&ac.state==='running'){ run(ac); return; }
+  withAudio(function(ctx){ run(ctx||ac); });
 }
 function findMonById(mid){
   var mon=null, id=String(mid||'');
@@ -3784,7 +3884,12 @@ function closeSkill(){
     var t=ev&&ev.target;
     if(!t||!t.closest) return;
     if(t.closest('[data-skill-demo],[data-skill-pick]')){
-      try{ SOUND=!(S&&S.sound===false); unlockAudio(); }catch(e){}
+      try{
+        SOUND=!(S&&S.sound===false);
+        unlockAudio();
+        /* iPhone：在 touchstart 里先响一下，把音频会话叫醒 */
+        playHtmlBeep(520);
+      }catch(e){}
     }
   }
   root.addEventListener('touchstart',armSkillAudio,{passive:true,capture:true});
@@ -3797,7 +3902,7 @@ function closeSkill(){
     var pick=t.closest('[data-skill-pick]');
     if(pick){
       ev.preventDefault();
-      try{ SOUND=!(S&&S.sound===false); unlockAudio(); }catch(e){}
+      try{ SOUND=!(S&&S.sound===false); unlockAudio(); playHtmlBeep(600); }catch(e){}
       pickSkillDemo(pick.getAttribute('data-mid'));
       return;
     }
@@ -4871,19 +4976,30 @@ function viewSettingsHTML(){
     '<p style="font-size:11.5px;color:#b0a090;margin:8px 0 0;font-weight:600">点击已有任务可删除（至少保留 1 个）</p></div>'+
     '<div class="card"><h3>🎓 训练家 · 每周特别任务</h3>'+
       '<div class="tr-setnow">本周任务：'+(trainerS().task?esc(trainerS().task):'<b style="color:#b0a090">还没有发布</b>')+' · 已打卡 <b>'+trainerDays()+'</b>/7 天'+(trainerUnlocked()?'':' · <span style="color:#c62828">训练家未解锁</span>')+'</div>'+
-      '<div class="field"><label>自定义任务内容（随便写，孩子每天点一次「我完成了」）</label>'+
-        '<textarea id="trTaskInput" rows="2" maxlength="40" placeholder="自己写，例如：每天读一本绘本 / 每天跳绳 100 下">'+esc(trainerS().task)+'</textarea></div>'+
-      '<div class="chips">'+trainerPresetList().map(function(p){
-        return '<button class="chip-opt" type="button" onclick=\'useTrainerPreset('+JSON.stringify(String(p))+')\'>'+esc(p)+'</button>';
-      }).join('')+'</div>'+
+      '<div class="field"><label>本周发布给孩子的任务</label>'+
+        '<textarea id="trTaskInput" rows="2" maxlength="40" placeholder="例如：每天读一本绘本">'+esc(trainerS().task)+'</textarea></div>'+
       '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">'+
-        '<button class="btn btn-primary btn-sm" style="flex:1" onclick="publishTrainerTask()">发布 / 更新</button>'+
+        '<button class="btn btn-primary btn-sm" style="flex:1" onclick="publishTrainerTask()">发布 / 更新本周任务</button>'+
         '<button class="btn btn-gray btn-sm" style="flex:1" onclick="resetTrainerDays()">清空本周打卡</button>'+
-        (trainerS().task?'<button class="btn btn-gray btn-sm" style="flex:1" onclick="clearTrainerTask()">清除任务</button>':'')+
+        (trainerS().task?'<button class="btn btn-gray btn-sm" style="flex:1" onclick="clearTrainerTask()">清除本周任务</button>':'')+
       '</div>'+
-      '<p style="font-size:11.5px;color:#b0a090;margin:8px 0 0;font-weight:600">'+(trainerUnlocked()
-        ?'可自由填写；自定义过的内容会留在常用模板。孩子在「训练家」页打卡，满 7 天解锁时装。'
-        :'现在就可以先写好并发布。等孩子通过第 2 个道馆（水系）解锁训练家后，就能在训练家页看到并打卡。')+'</p>'+
+      '<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--pk-line)">'+
+        '<div style="font-size:13px;font-weight:800;margin-bottom:8px">📋 常用任务模板（可增加 / 修改 / 删除）</div>'+
+        '<div class="chips">'+ensureTrainerPresets().map(function(p,i){
+          return '<button class="chip-opt" type="button" onclick="selectTrainerPreset('+i+')" title="点一下填入并编辑">'+esc(p)+
+            ' <span onclick="event.stopPropagation();delTrainerPreset('+i+')" style="margin-left:4px;opacity:.75">✕</span></button>';
+        }).join('')+
+        (ensureTrainerPresets().length?'':'<span style="font-size:12px;color:#b0a090;font-weight:600">还没有模板，在下面添加一条吧</span>')+
+        '</div>'+
+        '<div class="inline-add" style="margin-top:8px">'+
+          '<input id="trPresetNew" maxlength="40" placeholder="新模板，或点上面模板后在这里改">'+
+          '<button class="btn btn-gray btn-sm" type="button" onclick="saveTrainerPreset()">保存模板</button>'+
+        '</div>'+
+        '<p style="font-size:11.5px;color:#b0a090;margin:8px 0 0;font-weight:600">点模板可填入本周任务并修改；点 ✕ 删除；下面输入后点「保存模板」可新增或覆盖。</p>'+
+      '</div>'+
+      '<p style="font-size:11.5px;color:#b0a090;margin:10px 0 0;font-weight:600">'+(trainerUnlocked()
+        ?'孩子在「训练家」页打卡，满 7 天解锁时装。'
+        :'现在就能先写好并发布；孩子通过水系道馆解锁训练家后即可打卡。')+'</p>'+
     '</div>'+
     '<div class="card"><h3>👨‍👩‍👧‍👦 孩子管理</h3>'+
       '<p style="font-size:12.5px;color:#8a7a6a;margin:0 0 10px;font-weight:600">每个孩子有独立的宝可梦队伍、徽章和打卡记录。最多 3 个。</p>'+
