@@ -542,7 +542,7 @@ table.rec tr:last-child td{border-bottom:none;}
 @keyframes steamUp{0%{transform:translateY(0) scale(.6);opacity:0;}20%{opacity:.7;}100%{transform:translateY(-70px) scale(1.2);opacity:0;}}
 .care-chomp{position:absolute;z-index:5;font-size:22px;opacity:0;pointer-events:none;animation:chompPop .55s ease-out forwards;}
 @keyframes chompPop{0%{transform:scale(.3);opacity:0;}40%{opacity:1;transform:scale(1.2);}100%{transform:translateY(-24px) scale(.9);opacity:0;}}
-.care-sheen{position:absolute;inset:0;z-index:4;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,0) 38%,rgba(255,255,255,.3) 48%,rgba(255,255,255,0) 58%);background-size:280% 100%;animation:careSheen 3.4s ease-in-out infinite;}nfinite;}
+.care-sheen{position:absolute;inset:0;z-index:4;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,0) 38%,rgba(255,255,255,.3) 48%,rgba(255,255,255,0) 58%);background-size:280% 100%;animation:careSheen 3.4s ease-in-out infinite;}
 @keyframes careSheen{0%{background-position:180% 0;}55%,100%{background-position:-80% 0;}}
 .care-ground{position:absolute;left:0;right:0;bottom:0;height:54px;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(59,47,47,.28));z-index:1;}
 .care-bowl{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);font-size:40px;z-index:3;filter:drop-shadow(0 3px 4px rgba(0,0,0,.2));}
@@ -775,7 +775,12 @@ table.rec tr:last-child td{border-bottom:none;}
 .tr-fx{position:absolute;inset:0;pointer-events:none;z-index:5;}
 .tr-fxbit{position:absolute;font-size:20px;animation:trBit 1.8s ease-in-out infinite;}
 @keyframes trBit{0%,100%{transform:translateY(0) scale(1);opacity:.9}50%{transform:translateY(-14px) scale(1.15);opacity:1}}
-.tr-ball{position:absolute;left:32%;top:40%;font-size:20px;animation:trBall 1.6s ease-in-out infinite;}
+.tr-ball{position:absolute;left:32%;top:40%;animation:trBall 1.6s ease-in-out infinite;line-height:0;}
+.ball-ico{display:inline-block;vertical-align:-0.22em;flex-shrink:0;overflow:visible;filter:drop-shadow(0 1px 0 rgba(0,0,0,.2));}
+.ball-ico.lg{vertical-align:-0.32em;}
+.btn .ball-ico{margin-right:5px;}
+.ball-pair{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;}
+.ball-pair + .ball-pair{margin-left:8px;}
 @keyframes trBall{0%{transform:translate(0,0) rotate(0)}45%{transform:translate(120px,-70px) rotate(300deg)}80%{transform:translate(210px,20px) rotate(620deg);opacity:.9}100%{transform:translate(210px,20px) rotate(620deg);opacity:0}}
 .tr-pal{position:absolute;right:8%;bottom:8px;width:78px;height:78px;object-fit:contain;animation:trPal 1.2s ease-in-out infinite;filter:drop-shadow(0 4px 8px rgba(0,0,0,.2));}
 @keyframes trPal{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
@@ -803,7 +808,7 @@ table.rec tr:last-child td{border-bottom:none;}
 @keyframes trSheen{0%{background-position:170% 0;}60%,100%{background-position:-70% 0;}}
 .tr-stage .tr-actor{z-index:4;}
 /* 技能舞台 */
-.sk-mask{position:fixed;inset:0;z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;animation:skFade .18s ease-out;}
+.sk-mask{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;animation:skFade .18s ease-out;background:rgba(10,12,18,.92);}
 @keyframes skFade{from{opacity:0}to{opacity:1}}
 .sk-aura{position:absolute;inset:0;}
 .sk-rays{position:absolute;left:50%;top:44%;width:150vmax;height:150vmax;transform:translate(-50%,-50%);background:repeating-conic-gradient(from 0deg,currentColor 0deg 5deg,transparent 5deg 17deg);opacity:.10;animation:skSpin 10s linear infinite;}
@@ -940,49 +945,80 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2
 /* ================= 声音 ================= */
 var AC=null, SOUND=true;
 function audio(){if(!SOUND)return null;if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){AC=null;}}return AC;}
-function beep(f,d,type,vol){var ac=audio();if(!ac)return;var o=ac.createOscillator(),g=ac.createGain();o.type=type||'sine';o.frequency.value=f;g.gain.setValueAtTime(vol||0.15,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+d);o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+d);}
-function beepSlide(f0,f1,d,type,vol){
-  var ac=audio(); if(!ac) return;
-  var o=ac.createOscillator(), g=ac.createGain(), t=ac.currentTime;
-  o.type=type||'sine'; o.frequency.setValueAtTime(f0,t); o.frequency.exponentialRampToValueAtTime(Math.max(40,f1),t+d);
-  g.gain.setValueAtTime(vol||0.1,t); g.gain.exponentialRampToValueAtTime(0.001,t+d);
-  o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+d);
+/* iOS/Safari 常把 AudioContext 挂起；每次发声前都尝试 resume */
+function ensureAudio(){
+  if(!SOUND) return null;
+  var ac=audio();
+  if(ac&&ac.state==='suspended'&&ac.resume){
+    try{ ac.resume(); }catch(e){}
+  }
+  return ac;
 }
-function sfxClick(){beep(660,0.07,'triangle',0.08);}
-function sfxOk(){beep(660,0.1,'triangle',0.12);setTimeout(function(){beep(880,0.14,'triangle',0.12);},90);}
-function sfxBad(){beep(220,0.22,'sawtooth',0.08);}
-function sfxLevel(){[523,659,784,1047].forEach(function(f,i){setTimeout(function(){beep(f,0.16,'triangle',0.13);},i*110);});}
-function sfxCatch(){[660,880,1047,1319].forEach(function(f,i){setTimeout(function(){beep(f,0.12,'sine',0.13);},i*90);});}
-function sfxEvo(){[392,523,659,784,1047,1319].forEach(function(f,i){setTimeout(function(){beep(f,0.13,'sine',0.12);},i*95);});}
-/* 喂食：香味提示 → 咀嚼 → 满足 */
+function beep(f,d,type,vol){
+  var ac=ensureAudio(); if(!ac) return;
+  try{
+    var o=ac.createOscillator(), g=ac.createGain(), t=ac.currentTime, v=Math.max(0.001, vol||0.15);
+    o.type=type||'sine'; o.frequency.setValueAtTime(Math.max(40,f||440), t);
+    g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.001, t+(d||0.1));
+    o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+(d||0.1)+0.02);
+  }catch(e){}
+}
+function beepSlide(f0,f1,d,type,vol){
+  var ac=ensureAudio(); if(!ac) return;
+  try{
+    var o=ac.createOscillator(), g=ac.createGain(), t=ac.currentTime, v=Math.max(0.001, vol||0.12);
+    o.type=type||'sine';
+    o.frequency.setValueAtTime(Math.max(40,f0||200), t);
+    o.frequency.exponentialRampToValueAtTime(Math.max(40,f1||200), t+(d||0.2));
+    g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.001, t+(d||0.2));
+    o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+(d||0.2)+0.02);
+  }catch(e){}
+}
+function sfxClick(){beep(660,0.07,'triangle',0.1);}
+function sfxOk(){beep(660,0.1,'triangle',0.14);setTimeout(function(){beep(880,0.14,'triangle',0.14);},90);}
+function sfxBad(){beep(220,0.22,'sawtooth',0.1);}
+function sfxLevel(){[523,659,784,1047].forEach(function(f,i){setTimeout(function(){beep(f,0.16,'triangle',0.14);},i*110);});}
+function sfxCatch(){[660,880,1047,1319].forEach(function(f,i){setTimeout(function(){beep(f,0.12,'sine',0.14);},i*90);});}
+function sfxEvo(){[392,523,659,784,1047,1319].forEach(function(f,i){setTimeout(function(){beep(f,0.13,'sine',0.13);},i*95);});}
+/* 喂食：香味提示 → 咀嚼 → 满足（音量加大，确保手机可听） */
 function sfxFeedStart(foodIdx){
-  beepSlide(520,780,0.18,'sine',0.07);
-  setTimeout(function(){ beep(640+((foodIdx||0)%6)*40,0.08,'triangle',0.08); },120);
+  ensureAudio();
+  beepSlide(520,820,0.2,'sine',0.18);
+  setTimeout(function(){ beep(700+((foodIdx||0)%6)*45,0.1,'triangle',0.16); },100);
+  setTimeout(function(){ beep(420,0.08,'square',0.12); },220);
 }
 function sfxFeedMunch(i){
-  var base=180+((i||0)%4)*25;
-  beep(base,0.06,'square',0.07); setTimeout(function(){ beep(base*1.35,0.05,'sawtooth',0.05); },45);
+  ensureAudio();
+  var base=200+((i||0)%4)*30;
+  beep(base,0.08,'square',0.16); setTimeout(function(){ beep(base*1.4,0.06,'sawtooth',0.12); },50);
 }
 function sfxFeedHappy(isFav){
-  var seq=isFav?[523,659,784,988]:[523,659,784];
-  seq.forEach(function(f,i){ setTimeout(function(){ beep(f,0.12,'triangle',0.09); },i*90); });
+  ensureAudio();
+  var seq=isFav?[523,659,784,988,1175]:[523,659,784,988];
+  seq.forEach(function(f,i){ setTimeout(function(){ beep(f,0.14,'triangle',0.16); },i*95); });
 }
 /* 洗澡：下水溅起 → 搓泡泡 → 冲干净 */
 function sfxBathStart(bathIdx){
-  beepSlide(420,180,0.22,'sine',0.09);
-  setTimeout(function(){ beep(140,0.12,'triangle',0.07); },80);
-  setTimeout(function(){ beep(260+(bathIdx||0)*30,0.08,'sine',0.06); },180);
+  ensureAudio();
+  beepSlide(480,160,0.26,'sine',0.2);
+  setTimeout(function(){ beep(150,0.14,'triangle',0.16); },70);
+  setTimeout(function(){ beep(280+(bathIdx||0)*35,0.1,'sine',0.14); },160);
+  setTimeout(function(){ beep(520,0.06,'square',0.1); },260);
 }
 function sfxBathBubble(i){
-  var f=700+((i||0)%5)*90+Math.random()*40;
-  beep(f,0.05,'sine',0.045); setTimeout(function(){ beep(f*1.25,0.04,'triangle',0.035); },40);
+  ensureAudio();
+  var f=760+((i||0)%5)*100;
+  beep(f,0.07,'sine',0.12); setTimeout(function(){ beep(f*1.2,0.05,'triangle',0.1); },45);
 }
 function sfxBathRinse(){
-  beepSlide(880,320,0.28,'sine',0.08);
-  setTimeout(function(){ beepSlide(640,220,0.22,'triangle',0.06); },120);
+  ensureAudio();
+  beepSlide(980,280,0.32,'sine',0.18);
+  setTimeout(function(){ beepSlide(720,200,0.26,'triangle',0.14); },110);
+  setTimeout(function(){ beep(360,0.1,'sine',0.12); },240);
 }
 function sfxBathDone(){
-  [660,784,988].forEach(function(f,i){ setTimeout(function(){ beep(f,0.11,'sine',0.08); },i*100); });
+  ensureAudio();
+  [660,784,988,1175].forEach(function(f,i){ setTimeout(function(){ beep(f,0.13,'sine',0.16); },i*100); });
 }
 
 /* ---------- 宝可梦叫声 ---------- */
@@ -1082,14 +1118,44 @@ function pokeImgAttrs(sid,extra){
 function pokeImgHTML(sid,extra){
   return '<img '+pokeImgAttrs(sid,extra)+'>';
 }
+/* 精灵球 / 大师球图标（SVG，替代红紫圆点 emoji） */
+function ballIco(kind,px){
+  px=px||18;
+  var master=kind==='master'||kind==='rare';
+  var cls='ball-ico'+(px>=26?' lg':'');
+  if(master){
+    return '<svg class="'+cls+'" width="'+px+'" height="'+px+'" viewBox="0 0 64 64" aria-hidden="true" focusable="false">'+
+      '<circle cx="32" cy="32" r="30" fill="#1a1a1a"/>'+
+      '<path d="M5 32a27 27 0 0 1 54 0" fill="#7B1FA2"/>'+
+      '<path d="M12 30c5-12 11-16 20-16 4.2 0 8 1.2 11 3.4C39 12 34 10 28 12c-8 2-13 9-16 18z" fill="#F06292"/>'+
+      '<path d="M52 30c-5-12-11-16-20-16-4.2 0-8 1.2-11 3.4C25 12 30 10 36 12c8 2 13 9 16 18z" fill="#F06292"/>'+
+      '<path d="M5 32a27 27 0 0 0 54 0" fill="#F5F5F5"/>'+
+      '<rect x="5" y="29" width="54" height="6" rx="1" fill="#1a1a1a"/>'+
+      '<circle cx="32" cy="32" r="8.5" fill="#F5F5F5" stroke="#1a1a1a" stroke-width="3.5"/>'+
+      '<circle cx="32" cy="32" r="3.6" fill="#CFCFCF" stroke="#1a1a1a" stroke-width="1.3"/>'+
+      '<text x="32" y="24" text-anchor="middle" font-size="12" font-weight="900" fill="#FF80AB" stroke="#4A148C" stroke-width=".5" font-family="Fredoka,Arial Black,sans-serif">M</text>'+
+      '</svg>';
+  }
+  return '<svg class="'+cls+'" width="'+px+'" height="'+px+'" viewBox="0 0 64 64" aria-hidden="true" focusable="false">'+
+    '<circle cx="32" cy="32" r="30" fill="#1a1a1a"/>'+
+    '<path d="M5 32a27 27 0 0 1 54 0" fill="#EE1515"/>'+
+    '<path d="M5 32a27 27 0 0 0 54 0" fill="#F5F5F5"/>'+
+    '<rect x="5" y="29" width="54" height="6" rx="1" fill="#1a1a1a"/>'+
+    '<circle cx="32" cy="32" r="8.5" fill="#F5F5F5" stroke="#1a1a1a" stroke-width="3.5"/>'+
+    '<circle cx="32" cy="32" r="3.6" fill="#CFCFCF" stroke="#1a1a1a" stroke-width="1.3"/>'+
+    '</svg>';
+}
+function ballLabel(kind,text,px){
+  return '<span class="ball-pair">'+ballIco(kind,px||18)+'<span>'+text+'</span></span>';
+}
 var GYMS=[
   {id:'rock',name:'岩石道馆',leader:'小刚',emoji:'🪨',type:'岩石',need:6,gift:'卡比兽封印球',giftIco:'🐻'},
-  {id:'water',name:'水系道馆',leader:'小霞',emoji:'💧',type:'水',need:8,gift:'精灵球 ×2',giftIco:'🔴'},
-  {id:'electric',name:'电系道馆',leader:'马志士',emoji:'⚡',type:'电',need:10,gift:'精灵球 ×2',giftIco:'🔴'},
+  {id:'water',name:'水系道馆',leader:'小霞',emoji:'💧',type:'水',need:8,gift:'精灵球 ×2',giftIco:'poke'},
+  {id:'electric',name:'电系道馆',leader:'马志士',emoji:'⚡',type:'电',need:10,gift:'精灵球 ×2',giftIco:'poke'},
   {id:'grass',name:'草系道馆',leader:'莉佳',emoji:'🌿',type:'草',need:13,gift:'下次任务经验 ×1.5',giftIco:'🌟'},
-  {id:'fire',name:'火系道馆',leader:'夏伯',emoji:'🔥',type:'火',need:16,gift:'精灵球 ×3',giftIco:'🔴'},
-  {id:'psychic',name:'超能力道馆',leader:'娜姿',emoji:'🔮',type:'超能力',need:19,gift:'大师球 ×1',giftIco:'🟣'},
-  {id:'ground',name:'地面道馆',leader:'坂木',emoji:'🏜️',type:'地面',need:22,gift:'精灵球 ×3',giftIco:'🔴'},
+  {id:'fire',name:'火系道馆',leader:'夏伯',emoji:'🔥',type:'火',need:16,gift:'精灵球 ×3',giftIco:'poke'},
+  {id:'psychic',name:'超能力道馆',leader:'娜姿',emoji:'🔮',type:'超能力',need:19,gift:'大师球 ×1',giftIco:'master'},
+  {id:'ground',name:'地面道馆',leader:'坂木',emoji:'🏜️',type:'地面',need:22,gift:'精灵球 ×3',giftIco:'poke'},
   {id:'dragon',name:'龙系道馆',leader:'渡',emoji:'🐉',type:'龙',need:25,gift:'神秘蛋',giftIco:'🥚'}
 ];
 var PRIZE_POOL=[{sid:'eevee',nm:'伊布',emoji:'🦊'},{sid:'growlithe',nm:'卡蒂狗',emoji:'🐕'},{sid:'dratini',nm:'迷你龙',emoji:'🐉'},{sid:'jigglypuff',nm:'皮皮',emoji:'🎈'}];
@@ -1689,6 +1755,8 @@ function careStatus(){
   return {feed:S.care.feedDate===t,bath:S.care.bathDate===t};
 }
 function openCare(action,replay,kind){
+  /* 必须在用户手势里立刻解锁音频，否则 iPhone 上后续音效会被静音 */
+  try{ primeVoice(); ensureAudio(); }catch(e){}
   var isFeed=action==='feed';
   var st=careStatus();
   var done=isFeed?st.feed:st.bath;
@@ -2128,24 +2196,29 @@ function playArena(A,B,sim,rewardOK,cfg){
     if(ended) return; ended=true;
     var winMon=(sim.winner==='A'?A:B), loseMon=(sim.winner==='A'?B:A);
 
-    /* 钓鱼比试：只有自己的伙伴拿经验；对手是水里的野生宝可梦，不带走、不可捕捉 */
+    /* 钓鱼比试：自己的伙伴拿经验；水系野生宝可梦可再用精灵球捕捉 */
     if(cfg.mode==='fish'){
       var won=sim.winner==='A';
       var gain=won?(cfg.winXP||14):(cfg.loseXP||6);
       var evs=addXP(A,gain);
       save();
       if(won){ sfxEvo(); confetti(); } else { sfxOk(); }
+      window.__fishFoe=B;
+      var balls=S.items.vouchers||0, rares=S.items.rareVouchers||0;
       var fe=$('arenaEnd');
       if(fe) fe.innerHTML=(won?'<div class="big-emoji">🏆</div><h3>比试赢了！</h3>'
                               :'<div class="big-emoji">💦</div><h3>差一点点…</h3>')+
-        '<p class="lead">'+(won?esc(B.nick)+' 被 '+esc(A.nick)+' 的实力打动，甩甩尾巴游回深水里了。'
-                                :esc(B.nick)+' 在水里太灵活了，下次再来挑战它吧！')+'</p>'+
+        '<p class="lead">'+(won?esc(B.nick)+' 被 '+esc(A.nick)+' 的实力打动，在水边喘着气。'
+                                :esc(B.nick)+' 在水里太灵活了，不过它还没游走！')+'</p>'+
         '<p class="lead" style="margin:6px 0 2px"><b style="color:#43a047">'+esc(A.nick)+' +'+gain+' 经验</b></p>'+
         lvHTML(evs)+
-        '<p class="lead" style="font-size:12.5px;color:#8a7a6a">水里的宝可梦只能切磋，不能带走哦～</p>'+
+        '<p class="lead" style="font-size:12.5px;color:#0d5f7a;display:flex;align-items:center;justify-content:center;gap:5px;flex-wrap:wrap">想留下它的话，可以丢出 '+ballIco('poke',16)+' 精灵球捕捉！</p>'+
         '<div class="dlg-actions">'+
-        (fishLeft()>0?'<button class="btn btn-yellow btn-block" onclick="closeModal();startFish()">🎣 再钓一次（今天还剩 '+fishLeft()+' 次）</button>':'')+
-        '<button class="btn btn-primary btn-block" onclick="closeModal();render()">🐟 收杆回家</button></div>';
+        (balls>0?'<button class="btn btn-green btn-block" onclick="fishCatch(false)">'+ballLabel('poke','精灵球捕捉（'+balls+'）')+'</button>':'')+
+        (rares>0?'<button class="btn btn-yellow btn-block" onclick="fishCatch(true)">'+ballLabel('master','大师球捕捉（'+rares+'）')+'</button>':'')+
+        (balls<=0&&rares<=0?'<p class="lead" style="font-size:12.5px;color:#8a7a6a">背包里没有球了，先去做任务赚几个吧</p>':'')+
+        (fishLeft()>0?'<button class="btn btn-primary btn-block" onclick="closeModal();startFish()">🎣 再钓一次（今天还剩 '+fishLeft()+' 次）</button>':'')+
+        '<button class="btn btn-gray btn-block" onclick="closeModal();render()">🐟 收杆回家</button></div>';
       render();
       return;
     }
@@ -2643,12 +2716,9 @@ try{
   }
 }catch(e){}
 function primeVoice(){
+  try{ ensureAudio(); }catch(e){}
   if(voicePrimed) return;
   voicePrimed=true;
-  try{
-    var ac=audio();
-    if(ac&&ac.state==='suspended'&&ac.resume) ac.resume();
-  }catch(e){}
   try{
     if(window.speechSynthesis){
       refreshEnVoice();
@@ -3292,7 +3362,7 @@ function playTrainerScene(replay,afterClose){
   }).join('');
   var fx='';
   if(sc.act==='run') fx='<span class="tr-fxbit" style="left:16%;bottom:14px;animation-delay:.2s">💨</span><span class="tr-fxbit" style="left:24%;bottom:6px;animation-delay:.7s">💨</span>';
-  if(sc.act==='throw') fx='<span class="tr-ball">🔴</span>';
+  if(sc.act==='throw') fx='<span class="tr-ball">'+ballIco('poke',22)+'</span>';
   if(sc.act==='highfive'){
     var pal=S.team.length?S.team[Math.floor(Math.random()*S.team.length)]:null;
     fx=(pal?'<img class="tr-pal" '+pokeImgAttrs(pal.sid)+'>':'')+'<span class="tr-fxbit" style="left:58%;top:44%;animation-delay:.5s">🤝</span>';
@@ -3468,7 +3538,7 @@ function monCardHTML(m,idx){
     var isNew=mv.at===m.level;
     return '<span class="move">'+esc(mv.m)+(isNew?'<span class="new">新!</span>':'')+'</span>';
   }).join('');
-  var srcMap={starter:'初始伙伴',wild:'野外捕捉',gym:'道馆伙伴',prize:'连击大奖',egg:'神秘蛋'};
+  var srcMap={starter:'初始伙伴',wild:'野外捕捉',fish:'江边钓鱼',gym:'道馆伙伴',prize:'连击大奖',egg:'神秘蛋'};
   return '<div class="mon-card mon-tap" onclick="openTeamMon(\''+m.id+'\')">'+
     '<div class="mon-head" style="background:linear-gradient(135deg,'+tc(sp.type)+'33,'+tc(sp.type)+'14 65%,#fff)">'+
       '<div class="mon-ava" style="border-color:'+tc(sp.type)+'">'+pokeImgHTML(m.sid)+'</div>'+
@@ -3487,13 +3557,13 @@ function monCardHTML(m,idx){
 }
 function openTeamMon(mid){
   var mon=null, ti=-1;
-  S.team.forEach(function(m,i){ if(m.id===mid){ mon=m; ti=i; } });
+  S.team.forEach(function(m,i){ if(String(m.id)===String(mid)){ mon=m; ti=i; } });
   if(!mon) return;
   var sp=spec(mon.sid); if(!sp) return;
   var need=xpNeed(mon.level);
   var pct=Math.min(100,Math.round(mon.xp/need*100));
   var evo=nextEvo(mon);
-  var srcMap={starter:'初始伙伴',wild:'野外捕捉',gym:'道馆伙伴',prize:'连击大奖',egg:'神秘蛋'};
+  var srcMap={starter:'初始伙伴',wild:'野外捕捉',fish:'江边钓鱼',gym:'道馆伙伴',prize:'连击大奖',egg:'神秘蛋'};
   var learned=movesOf(mon);
   var upcoming=(sp.moves||[]).filter(function(mv){ return mv.at>mon.level; }).slice(0,5);
   var evoLine=evo
@@ -3506,7 +3576,7 @@ function openTeamMon(mid){
     ? learned.map(function(mv){
         var info=(typeof MOVE_INFO!=='undefined'&&MOVE_INFO[mv.m])?MOVE_INFO[mv.m]:null;
         var tip=info?(' · '+(info.t||'')+(info.p!=null?(' '+info.p):'')):'';
-        return '<button type="button" class="md-move demoable" onclick="playSkill(\''+mon.id+'\','+JSON.stringify(mv.m)+')">'+esc(mv.m)+'<span class="lv">Lv.'+mv.at+tip+' · 点我演示</span></button>';
+        return '<button type="button" class="md-move demoable" data-skill-demo="1" data-mid="'+esc(mon.id)+'" data-move="'+esc(mv.m)+'">'+esc(mv.m)+'<span class="lv">Lv.'+mv.at+tip+' · 点我演示</span></button>';
       }).join('')
     : '<p class="md-note">还没有学会招式</p>';
   var nextHTML=upcoming.length
@@ -3535,7 +3605,7 @@ function openTeamMon(mid){
     '<div class="md-sec"><h4>即将学会</h4><div class="md-moves">'+nextHTML+'</div></div>'+
     '<div class="md-sec"><h4>进化</h4><p class="md-note">'+esc(evoLine)+'<br>进化路线：'+esc(chain)+'</p></div>'+
     '<div class="dlg-actions">'+
-      '<button class="btn btn-yellow btn-block" onclick="pickSkillDemo(\''+mon.id+'\')">⚡ 选招式演示</button>'+
+      '<button type="button" class="btn btn-yellow btn-block" data-skill-pick="1" data-mid="'+esc(mon.id)+'">⚡ 选招式演示</button>'+
       '<button class="btn btn-gray btn-block" onclick="playCry(\''+mon.sid+'\')">🔊 听叫声</button>'+
       (ti>=0&&S.team.length>1?'<button class="btn btn-gray btn-block" onclick="closeModal();teamToBoxModal('+ti+')">📖 送回图鉴休息</button>':'')+
       '<button class="btn btn-primary btn-block" onclick="closeModal()">关闭</button>'+
@@ -3559,7 +3629,8 @@ var SKILL_FX={
   '妖精':{e:['💗','✨','🌸'],anim:'sk-burst',proj:'go-burst',pose:'float'},
   '恶':{e:['🌑','💥','💜'],anim:'sk-burst',proj:'go-burst',pose:'dash'},
   '冰':{e:['❄️','🧊','✨'],anim:'sk-fall',proj:'go-wave',pose:'cast'},
-  '一般':{e:['⭐','✨','💫'],anim:'sk-burst',proj:'go-burst',pose:'hit'}
+  '一般':{e:['⭐','✨','💫'],anim:'sk-burst',proj:'go-burst',pose:'hit'},
+  '格斗':{e:['👊','💥','💢'],anim:'sk-burst',proj:'go-burst',pose:'hit'}
 };
 function skillPose(info,fx){
   if(info&&(info.heal||info.p===0)) return 'float';
@@ -3604,68 +3675,110 @@ function sfxSkill(type){
     setTimeout(function(){beep(700,0.16,'sine',0.08);},200);
   }
 }
+function findMonById(mid){
+  var mon=null, id=String(mid||'');
+  (S.team||[]).forEach(function(m){ if(String(m.id)===id) mon=m; });
+  if(!mon){ (S.box||[]).forEach(function(m){ if(String(m.id)===id) mon=m; }); }
+  return mon;
+}
 function pickSkillDemo(mid){
-  var mon=null; S.team.forEach(function(m){ if(m.id===mid) mon=m; });
-  if(!mon) return;
+  var mon=findMonById(mid);
+  if(!mon){ toast('找不到这只伙伴'); return; }
   var list=movesOf(mon);
   if(!list.length){ sfxBad(); toast('还没有学会招式'); return; }
-  if(list.length===1){ playSkill(mid,list[0].m); return; }
+  if(list.length===1){ playSkill(mon.id,list[0].m); return; }
   var btns=list.map(function(mv){
     var info=MOVE_INFO[mv.m]||{t:'一般',p:30};
     var col=tc(info.t||'一般');
-    return '<button class="btn btn-block btn-sm" style="justify-content:space-between;margin-bottom:8px" onclick="closeTopModal();playSkill(\''+mid+'\','+JSON.stringify(mv.m)+')">'+
+    return '<button type="button" class="btn btn-block btn-sm" style="justify-content:space-between;margin-bottom:8px" data-skill-demo="1" data-mid="'+esc(mon.id)+'" data-move="'+esc(mv.m)+'">'+
       '<span>⚡ '+esc(mv.m)+'</span><span class="type-tag" style="background:'+col+';margin:0">'+esc(info.t||'一般')+'</span></button>';
   }).join('');
   showModal('<div class="dialog"><h3>选一个招式演示</h3><p class="lead">'+esc(mon.nick)+' 已学会这些招式</p><div class="dlg-actions" style="margin-top:12px">'+btns+
-    '<button class="btn btn-gray btn-block" onclick="closeTopModal()">取消</button></div></div>');
+    '<button type="button" class="btn btn-gray btn-block" data-close-top="1">取消</button></div></div>');
 }
 function closeTopModal(){
   var r=$('modalRoot'); if(r&&r.lastChild) r.removeChild(r.lastChild);
 }
 function playSkill(mid,moveName){
-  var mon=null; S.team.forEach(function(m){ if(m.id===mid) mon=m; });
-  if(!mon) return;
-  stopCry();
-  closeSkill();
-  var sp=spec(mon.sid);
-  var mvList=movesOf(mon);
-  var known={}; mvList.forEach(function(x){ known[x.m]=true; });
-  var mv=moveName;
-  if(!mv||!known[mv]){
-    if(moveName){ toast('还没学会这个招式'); }
-    mv=mvList.length?mvList[mvList.length-1].m:'撞击';
+  try{
+    var mon=findMonById(mid);
+    if(!mon){ toast('找不到这只伙伴'); return; }
+    try{ primeVoice(); ensureAudio(); }catch(e0){}
+    stopCry();
+    closeSkill();
+    try{ closeModal(); }catch(eClose){}
+    var sp=spec(mon.sid)||{type:'一般',name:mon.nick};
+    var mvList=movesOf(mon);
+    var known={}; mvList.forEach(function(x){ known[x.m]=true; });
+    var mv=moveName;
+    if(!mv||!known[mv]){
+      if(moveName){ toast('还没学会这个招式'); }
+      mv=mvList.length?mvList[mvList.length-1].m:'撞击';
+    }
+    var info=(typeof MOVE_INFO!=='undefined'&&MOVE_INFO[mv])?MOVE_INFO[mv]:{t:sp.type||'一般',p:30};
+    var mtype=info.t||sp.type||'一般';
+    var col=tc(mtype);
+    var fx=(typeof SKILL_FX!=='undefined'&&SKILL_FX[mtype])?SKILL_FX[mtype]:(SKILL_FX&&SKILL_FX['一般'])||{e:['⭐','✨','💫'],anim:'sk-burst',proj:'go-burst',pose:'hit'};
+    var pose=skillPose(info,fx);
+    var parts='', i;
+    for(i=0;i<18;i++){
+      parts+='<span class="sk-p '+fx.anim+'" style="left:'+(5+Math.random()*86)+'%;top:'+(16+Math.random()*54)+'%;font-size:'+((13+Math.random()*17)|0)+'px;animation-delay:'+(Math.random()*0.9).toFixed(2)+'s">'+fx.e[i%fx.e.length]+'</span>';
+    }
+    var root=document.createElement('div');
+    root.className='sk-mask';
+    root.style.cssText='position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(10,12,18,.92);overflow:hidden;';
+    root.innerHTML='<div class="sk-aura" style="background:radial-gradient(circle at 50% 44%,'+col+'cc 0%,'+col+'33 40%,rgba(10,12,18,.94) 74%)"></div>'+
+      '<div class="sk-rays" style="color:'+col+'"></div>'+
+      '<div class="sk-parts">'+parts+'</div>'+
+      '<div class="sk-proj" id="skProj">'+fx.e[0]+'</div>'+
+      '<div class="sk-mon-wrap"><img class="sk-mon" '+pokeImgAttrs(mon.sid)+'></div>'+
+      '<div class="sk-info"><span class="sk-type" style="background:'+col+'">'+esc(mtype)+'招式</span>'+
+        '<div class="sk-line">'+esc(mon.nick)+' 使用了</div>'+
+        '<div class="sk-move">「'+esc(mv)+'」</div></div>'+
+      '<div class="sk-flash"></div>'+
+      '<button class="sk-close" type="button" aria-label="关闭">✕</button>'+
+      '<div class="sk-hint">点击任意处关闭</div>';
+    root.addEventListener('click',function(){ closeSkill(); });
+    document.body.appendChild(root);
+    window.__skRoot=root;
+    try{ sfxSkill(mtype); }catch(e1){}
+    setTimeout(function(){ var p=root.querySelector('#skProj'); if(p) p.classList.add(fx.proj||'go-burst'); },420);
+    setTimeout(function(){ var f=root.querySelector('.sk-flash'); if(f) f.classList.add('go'); },680);
+    setTimeout(function(){ var w=root.querySelector('.sk-mon-wrap'); if(w) w.classList.add(pose); },720);
+  }catch(err){
+    try{ toast('技能演示失败，请刷新后再试'); }catch(e2){}
   }
-  var info=MOVE_INFO[mv]||{t:sp.type||'一般',p:30};
-  var mtype=info.t||sp.type||'一般';
-  var col=tc(mtype);
-  var fx=SKILL_FX[mtype]||SKILL_FX['一般'];
-  var pose=skillPose(info,fx);
-  var parts='';
-  for(var i=0;i<18;i++){
-    parts+='<span class="sk-p '+fx.anim+'" style="left:'+(5+Math.random()*86)+'%;top:'+(16+Math.random()*54)+'%;font-size:'+((13+Math.random()*17)|0)+'px;animation-delay:'+(Math.random()*0.9).toFixed(2)+'s">'+fx.e[i%fx.e.length]+'</span>';
-  }
-  var root=document.createElement('div');
-  root.className='sk-mask';
-  root.innerHTML='<div class="sk-aura" style="background:radial-gradient(circle at 50% 44%,'+col+'cc 0%,'+col+'33 40%,rgba(10,12,18,.94) 74%)"></div>'+
-    '<div class="sk-rays" style="color:'+col+'"></div>'+
-    '<div class="sk-parts">'+parts+'</div>'+
-    '<div class="sk-proj '+(fx.proj||'go-burst')+'">'+fx.e[0]+'</div>'+
-    '<div class="sk-mon-wrap"><img class="sk-mon" '+pokeImgAttrs(mon.sid)+'></div>'+
-    '<div class="sk-info"><span class="sk-type" style="background:'+col+'">'+esc(mtype)+'招式</span>'+
-      '<div class="sk-line">'+esc(mon.nick)+' 使用了</div>'+
-      '<div class="sk-move">「'+esc(mv)+'」</div></div>'+
-    '<div class="sk-flash"></div>'+
-    '<button class="sk-close" type="button" aria-label="关闭">✕</button>'+
-    '<div class="sk-hint">点击任意处关闭</div>';
-  root.addEventListener('click',function(){ closeSkill(); });
-  document.body.appendChild(root);
-  window.__skRoot=root;
-  sfxSkill(mtype);
-  setTimeout(function(){ var p=root.querySelector('.sk-proj'); if(p) p.classList.add(fx.proj||'go-burst'); },420);
-  setTimeout(function(){ var f=root.querySelector('.sk-flash'); if(f) f.classList.add('go'); },680);
-  setTimeout(function(){ var w=root.querySelector('.sk-mon-wrap'); if(w) w.classList.add(pose); },720);
 }
 function closeSkill(){ var r=window.__skRoot; if(r){ r.remove(); window.__skRoot=null; } }
+/* 技能演示：用 data-* 委托，避免 inline onclick 引号/移除节点导致无响应 */
+(function bindSkillDemoClicks(){
+  var root=document.getElementById('modalRoot');
+  if(!root||root.__skillDemoBound) return;
+  root.__skillDemoBound=true;
+  root.addEventListener('click',function(ev){
+    var t=ev.target;
+    if(!t||!t.closest) return;
+    var closeBtn=t.closest('[data-close-top]');
+    if(closeBtn){ ev.preventDefault(); closeTopModal(); return; }
+    var pick=t.closest('[data-skill-pick]');
+    if(pick){
+      ev.preventDefault();
+      pickSkillDemo(pick.getAttribute('data-mid'));
+      return;
+    }
+    var demo=t.closest('[data-skill-demo]');
+    if(demo){
+      ev.preventDefault();
+      var mid=demo.getAttribute('data-mid');
+      var move=demo.getAttribute('data-move');
+      /* 延后一帧：先让当前点击结束，再拆弹窗，避免 WebKit 中断后续逻辑 */
+      setTimeout(function(){ playSkill(mid, move); }, 0);
+    }
+  });
+})();
+window.playSkill=playSkill;
+window.pickSkillDemo=pickSkillDemo;
+window.closeSkill=closeSkill;
 
 /* ================= 头部/导航 ================= */
 function renderHeader(){
@@ -3928,9 +4041,9 @@ function viewWorkHTML(){
         '<div style="text-align:center;font-weight:900;font-size:15px">'+approvedToday+'/'+todays.length+'<div style="font-size:10.5px;color:#8a6d3b">已通过</div></div>'+
       '</div>'+
       '<div style="margin-top:10px;background:rgba(255,255,255,.65);border-radius:12px;padding:8px 12px">'+
-        '<div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:800;color:#8a6d3b"><span>🎯 每日挑战 · 集满 '+dailyTarget()+' 个送精灵球 ×'+dailyReward()+'</span><span>'+approvedToday+'/'+dailyTarget()+'</span></div>'+
+        '<div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:800;color:#8a6d3b;gap:8px"><span style="display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap">🎯 每日挑战 · 集满 '+dailyTarget()+' 个送 '+ballIco('poke',15)+' 精灵球 ×'+dailyReward()+'</span><span>'+approvedToday+'/'+dailyTarget()+'</span></div>'+
         '<div class="xpbar" style="margin-top:5px;height:8px"><div class="xpfill" style="width:'+Math.min(100,Math.round(approvedToday/dailyTarget()*100))+'%"></div></div>'+
-        (approvedToday>=dailyTarget()?'<div style="font-size:12px;color:#2e7d32;font-weight:800;margin-top:4px">🎉 今日精灵球已到手，周末去探险吧！</div>':'')+
+        (approvedToday>=dailyTarget()?'<div style="font-size:12px;color:#2e7d32;font-weight:800;margin-top:4px;display:flex;align-items:center;gap:4px">🎉 今日 '+ballIco('poke',14)+' 精灵球已到手，周末去探险吧！</div>':'')+
       '</div></div>'+
     rejectTip+
     '<div class="card"><h3>✍️ 提交今天的任务</h3>'+
@@ -3990,7 +4103,7 @@ function viewGymHTML(){
         :'<span class="badge-tag">Lv.'+g.need+'</span>');
     return '<div class="gym-row"><div class="gym-ico" style="background:linear-gradient(135deg,'+tc(g.type)+','+tc(g.type)+'cc)">'+g.emoji+'</div>'+
       '<div class="gym-info"><b>'+g.name+' <span class="badge-tag got">'+g.leader+'</span></b>'+
-      '<div class="need">需要队伍平均等级 Lv.'+g.need+'（当前 '+avg+'）· 胜利礼物：'+esc(g.gift)+'</div></div>'+btn+'</div>';
+      '<div class="need">需要队伍平均等级 Lv.'+g.need+'（当前 '+avg+'）· 胜利礼物：'+(g.giftIco==='poke'||g.giftIco==='master'?ballLabel(g.giftIco,esc(g.gift),15):esc(g.gift))+'</div></div>'+btn+'</div>';
   }).join('');
   var badgeWall=GYMS.map(function(g){
     var got=S.badges.indexOf(g.id)>=0;
@@ -4043,7 +4156,7 @@ function openBattleModal(g,win){
 function winBattle(g){
   sfxEvo(); confetti();
   var res=addBadge(g.id);
-  var end='<div class="big-emoji">🏅</div><h3>获得 '+g.name+' 徽章！</h3><p class="lead">'+esc(g.gift)+' 到手啦！</p>';
+  var end='<div class="big-emoji">🏅</div><h3>获得 '+g.name+' 徽章！</h3><p class="lead" style="display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap">'+(g.giftIco==='poke'||g.giftIco==='master'?ballIco(g.giftIco,22):'')+' '+esc(g.gift)+' 到手啦！</p>';
   if(g.id==='rock'){
     end='<div class="big-emoji">'+pokeImgHTML('snorlax','style="width:120px;height:120px;object-fit:contain"')+'</div><h3>获得卡比兽封印球！</h3><p class="lead">沉睡的卡比兽需要 7 天才能苏醒…<br>这 7 天里坚持打卡，它醒来就更有力量！</p>';
   }else if(g.id==='dragon'){
@@ -4221,19 +4334,19 @@ function viewCatchHTML(){
     '<div class="card" style="background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border:1.5px solid #a5d6a7">'+
       '<div style="display:flex;align-items:center;gap:10px"><div style="font-size:34px">🌲</div>'+
       '<div><b style="font-size:15.5px;font-weight:900">野外探险</b>'+
-      '<div style="font-size:12.5px;color:#33691e;font-weight:600;margin-top:2px">每周末 '+weekendFreeMax()+' 次免费机会 · 精灵球 '+S.items.vouchers+' 个 · 大师球 '+S.items.rareVouchers+' 个</div>'+
-      '<div style="font-size:12px;color:#2e7d32;font-weight:700;margin-top:3px">🎯 每天通过 '+dailyTarget()+' 个任务，再送 '+dailyReward()+' 个精灵球！</div></div></div>'+
+      '<div style="font-size:12.5px;color:#33691e;font-weight:600;margin-top:2px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px">每周末 '+weekendFreeMax()+' 次免费机会 · '+ballLabel('poke','精灵球 '+S.items.vouchers+' 个',16)+' · '+ballLabel('master','大师球 '+S.items.rareVouchers+' 个',16)+'</div>'+
+      '<div style="font-size:12px;color:#2e7d32;font-weight:700;margin-top:3px;display:flex;align-items:center;gap:4px;flex-wrap:wrap">🎯 每天通过 '+dailyTarget()+' 个任务，再送 '+ballIco('poke',15)+' 精灵球 ×'+dailyReward()+'！</div></div></div>'+
       '<div style="display:flex;gap:8px;margin-top:12px">'+
-        '<button class="btn btn-green btn-sm" style="flex:1" '+(weekend&&(c.free>0||S.items.vouchers>0)?'':'disabled')+' onclick="startCatch(false)">🔴 出发探险（剩 '+c.free+' 次）</button>'+
-        '<button class="btn btn-yellow btn-sm" style="flex:1" '+(weekend&&S.items.rareVouchers>0?'':'disabled')+' onclick="startCatch(true)">🟣 大师球（'+S.items.rareVouchers+'）</button>'+
+        '<button class="btn btn-green btn-sm" style="flex:1" '+(weekend&&(c.free>0||S.items.vouchers>0)?'':'disabled')+' onclick="startCatch(false)">'+ballLabel('poke','出发探险（剩 '+c.free+' 次）',16)+'</button>'+
+        '<button class="btn btn-yellow btn-sm" style="flex:1" '+(weekend&&S.items.rareVouchers>0?'':'disabled')+' onclick="startCatch(true)">'+ballLabel('master','大师球（'+S.items.rareVouchers+'）',16)+'</button>'+
       '</div></div>'+
     lock+
-    /* 钓鱼：天天开放，每天 3 次，只能切磋拿经验 */
+    /* 钓鱼：天天开放，每天 3 次；可切磋拿经验，也可花精灵球捕捉 */
     '<div class="card" style="background:linear-gradient(135deg,#e3f4ff,#eef9ff);border:1.5px solid #8fd0ea">'+
       '<div style="display:flex;align-items:center;gap:10px"><div style="font-size:34px">🎣</div>'+
       '<div><b style="font-size:15.5px;font-weight:900">江边钓鱼</b>'+
-      '<div style="font-size:12.5px;color:#0d5f7a;font-weight:600;margin-top:2px">每天 3 次 · 只能钓到水系宝可梦 · 可以切磋拿经验</div>'+
-      '<div style="font-size:12px;color:#1565c0;font-weight:700;margin-top:3px">🐟 水里的宝可梦不能带走，打赢了伙伴才长经验</div></div></div>'+
+      '<div style="font-size:12.5px;color:#0d5f7a;font-weight:600;margin-top:2px">每天 3 次 · 只遇水系宝可梦 · 可切磋 / 可捕捉</div>'+
+      '<div style="font-size:12px;color:#1565c0;font-weight:700;margin-top:3px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px">🐟 钓上来后可比试拿经验，也可用球带走 · '+ballLabel('poke',String(S.items.vouchers),15)+' · '+ballLabel('master',String(S.items.rareVouchers),15)+'</div></div></div>'+
       '<div style="margin-top:12px">'+
         '<button class="btn '+(fl>0?'btn-primary':'btn-gray')+' btn-block" '+(fl>0?'':'disabled')+' onclick="startFish()">'+(fl>0?('🎣 去钓鱼（今天还剩 '+fl+' 次）'):'今天钓满啦，明天再来')+'</button>'+
       '</div></div>'+
@@ -4242,9 +4355,9 @@ function viewCatchHTML(){
     '</div>'+
   '</div>';
 }
-/* ================= 钓鱼（每天 3 次 · 只能切磋，不能捕捉） ================= */
+/* ================= 钓鱼（每天 3 次 · 可切磋 / 可捕捉） ================= */
 var FISH_DAILY=3;
-/* 只钓水系宝可梦：越稀有权重越低，但钓到就能打一场拿经验 */
+/* 只钓水系宝可梦：越稀有权重越低 */
 var FISH_POOL=[
   {w:26,v:'magikarp'},{w:14,v:'poliwag'},{w:12,v:'psyduck'},{w:10,v:'goldeen'},
   {w:9,v:'krabby'},{w:9,v:'staryu'},{w:8,v:'shellder'},{w:8,v:'horsea'},
@@ -4266,6 +4379,31 @@ function fishFoe(){
   var base=avgLevel()||5;
   var lv=Math.max(3,Math.min(40,base+rnd(3)-1));
   return {id:'foe_'+uid(),sid:sid,nick:spec(sid).name,level:lv,xp:0,source:'fish'};
+}
+function fishCatchInfo(sid){
+  var w=26, i;
+  for(i=0;i<FISH_POOL.length;i++){ if(FISH_POOL[i].v===sid){ w=FISH_POOL[i].w; break; } }
+  if(w<=1) return {zone:14,catchRate:0.28};
+  if(w<=2) return {zone:18,catchRate:0.42};
+  if(w<=5) return {zone:22,catchRate:0.55};
+  if(w<=10) return {zone:28,catchRate:0.7};
+  return {zone:34,catchRate:0.85};
+}
+function fishActsHTML(){
+  var me=S.team[fishPick]||S.team[0];
+  var balls=S.items.vouchers||0, rares=S.items.rareVouchers||0;
+  var chips='';
+  if(S.team.length>1){
+    if(fishPick>=S.team.length) fishPick=0;
+    chips='<div class="chips" style="margin:10px 0 4px">'+S.team.map(function(m,i){
+      return '<button class="chip'+(i===fishPick?' on':'')+'" onclick="fishPickMon('+i+')">'+pokeImgHTML(m.sid,'style="width:22px;height:22px;object-fit:contain;vertical-align:-5px"')+' '+esc(m.nick)+' Lv.'+m.level+'</button>';
+    }).join('')+'</div>';
+  }
+  return chips+
+    '<button class="btn btn-primary btn-block btn-lg" onclick="fishFight()">⚔️ 派 '+(me?esc(me.nick):'伙伴')+' 比试一场</button>'+
+    '<button class="btn btn-green btn-block" '+(balls>0?'':'disabled')+' onclick="fishCatch(false)">'+ballLabel('poke','精灵球捕捉（'+balls+'）')+'</button>'+
+    (rares>0?'<button class="btn btn-yellow btn-block" onclick="fishCatch(true)">'+ballLabel('master','大师球捕捉（'+rares+'）')+'</button>':'')+
+    '<button class="btn btn-gray btn-block" onclick="fishRelease()">🐟 放它回去</button>';
 }
 function fishStageHTML(kind,foe){
   var water='<div class="fish-far"></div>'+
@@ -4335,35 +4473,19 @@ function fishHook(){
   /* 替换整个舞台为"上钩"画面 */
   stage.outerHTML=fishStageHTML('done',foe);
   sfxCatch();
-  if(cap) cap.innerHTML='钓到了 <b>'+esc(foe.nick)+'</b>！（Lv.'+foe.level+'）<br><span style="font-size:12.5px;color:#8a7a6a">水里的宝可梦不能带走，但可以比试一场拿经验！</span>';
-  var chips='';
-  if(S.team.length>1){
-    if(fishPick>=S.team.length) fishPick=0;
-    chips='<div class="chips" style="margin:10px 0 4px">'+S.team.map(function(m,i){
-      return '<button class="chip'+(i===fishPick?' on':'')+'" onclick="fishPickMon('+i+')">'+pokeImgHTML(m.sid,'style="width:22px;height:22px;object-fit:contain;vertical-align:-5px"')+' '+esc(m.nick)+' Lv.'+m.level+'</button>';
-    }).join('')+'</div>';
-  }
-  var me=S.team[fishPick]||S.team[0];
-  acts.innerHTML=chips+
-    '<button class="btn btn-green btn-block btn-lg" onclick="fishFight()">⚔️ 派 '+esc(me.nick)+' 比试一场</button>'+
-    '<button class="btn btn-gray btn-block" onclick="fishRelease()">🐟 放它回去</button>';
+  if(cap) cap.innerHTML='钓到了 <b>'+esc(foe.nick)+'</b>！（Lv.'+foe.level+'）<br><span style="font-size:12.5px;color:#0d5f7a">可以比试拿经验，也可以丢出精灵球捕捉带走！</span>';
+  acts.innerHTML=fishActsHTML();
 }
 function fishPickMon(i){
   sfxClick();
   fishPick=i;
   var acts=$('fishActs');
-  var me=S.team[fishPick]||S.team[0];
-  var foe=window.__fishFoe;
   if(!acts) return;
-  var chips=S.team.map(function(m,j){
-    return '<button class="chip'+(j===fishPick?' on':'')+'" onclick="fishPickMon('+j+')">'+pokeImgHTML(m.sid,'style="width:22px;height:22px;object-fit:contain;vertical-align:-5px"')+' '+esc(m.nick)+' Lv.'+m.level+'</button>';
-  }).join('');
-  acts.innerHTML='<div class="chips" style="margin:10px 0 4px">'+chips+'</div>'+
-    '<button class="btn btn-green btn-block btn-lg" onclick="fishFight()">⚔️ 派 '+esc(me.nick)+' 比试一场</button>'+
-    '<button class="btn btn-gray btn-block" onclick="fishRelease()">🐟 放它回去</button>';
+  acts.innerHTML=fishActsHTML();
 }
 function fishRelease(){
   sfxClick();
+  window.__fishFoe=null;
   toast('你把它放回了水里，它甩甩尾巴游走了');
   closeModal(); render();
 }
@@ -4377,6 +4499,32 @@ function fishFight(){
   closeModal();
   playArena(me,foe,sim,false,{mode:'fish',title:'🎣 江边比试',winXP:14,loseXP:6});
 }
+function fishCatch(useRare){
+  sfxClick();
+  var foe=window.__fishFoe;
+  if(!foe){ toast('它已经游走了'); return; }
+  if(useRare){
+    if((S.items.rareVouchers||0)<=0){ toast('没有大师球了'); return; }
+    S.items.rareVouchers--;
+  }else{
+    if((S.items.vouchers||0)<=0){ toast('没有精灵球了，先去做任务赚几个吧'); return; }
+    S.items.vouchers--;
+  }
+  save();
+  var rates=fishCatchInfo(foe.sid);
+  if(useRare){ rates={zone:30,catchRate:0.92}; }
+  var e={sid:foe.sid,zone:rates.zone,catchRate:rates.catchRate,level:foe.level||5,source:'fish'};
+  var sp=spec(e.sid);
+  closeModal();
+  var m=showModal('<div class="dialog" id="catchDlg"><div class="catch-stage" id="catchStage">'+
+    '<div class="big">'+pokeImgHTML(e.sid,'style="width:130px;height:130px;object-fit:contain"')+'</div>'+
+    '<h3 style="margin-top:6px">钓到的 '+esc(sp.name)+'！</h3>'+
+    '<p class="lead" style="display:flex;flex-direction:column;align-items:center;gap:6px">江边浪花四溅…<br><span style="display:inline-flex;align-items:center;gap:6px">准备好丢出 '+ballIco(useRare?'master':'poke',20)+(useRare?' 大师球':' 精灵球')+' 了吗？</span></p>'+
+    '<div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="catchAim()">💪 准备好啦！</button></div></div></div>');
+  window.__catch={e:e,m:m,aim:null,ball:useRare?'master':'poke'};
+  window.__fishFoe=null;
+  render();
+}
 
 function startCatch(useRare){
   sfxClick();
@@ -4386,18 +4534,20 @@ function startCatch(useRare){
   var m=showModal('<div class="dialog" id="catchDlg"><div class="catch-stage" id="catchStage">'+
     '<div class="big">'+pokeImgHTML(e.sid,'style="width:130px;height:130px;object-fit:contain"')+'</div>'+
     '<h3 style="margin-top:6px">'+esc(sp.name)+' 出现了！</h3>'+
-    '<p class="lead">草丛里传来沙沙声…<br>准备好精灵球了吗？</p>'+
+    '<p class="lead" style="display:flex;flex-direction:column;align-items:center;gap:6px">草丛里传来沙沙声…<br><span style="display:inline-flex;align-items:center;gap:6px">准备好 '+ballIco(useRare?'master':'poke',20)+(useRare?' 大师球':' 精灵球')+' 了吗？</span></p>'+
     '<div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="catchAim()">💪 准备好啦！</button></div></div></div>');
-  window.__catch={e:e,m:m,aim:null};
+  window.__catch={e:e,m:m,aim:null,ball:useRare?'master':'poke'};
 }
 function catchAim(){
   sfxClick();
   var c=window.__catch;
+  var ball=c.ball||'poke';
+  var ballName=ball==='master'?'大师球':'精灵球';
   $('catchStage').innerHTML='<h3 style="margin-top:4px">瞄准！</h3>'+
     '<p class="lead">等红色指针移动到绿色区域时投球！</p>'+
     '<div class="aim-box"><div class="aim-hint"><span>太早</span><span>命中区</span><span>太晚</span></div>'+
     '<div class="aim"><div class="target" id="aimTarget" style="left:'+(50-c.e.zone/2)+'%;width:'+c.e.zone+'%"></div><div class="marker" id="aimMarker" style="left:0%"></div></div></div>'+
-    '<div class="dlg-actions"><button class="btn btn-primary btn-block btn-lg" onclick="catchThrow()">⚡ 投出精灵球！</button></div>';
+    '<div class="dlg-actions"><button class="btn btn-primary btn-block btn-lg" onclick="catchThrow()">'+ballLabel(ball,'投出'+ballName+'！',20)+'</button></div>';
   var pos=8,dir=1,speed=1.4;
   c.aim={pos:pos,dir:dir,speed:speed};
   c.timer=setInterval(function(){
@@ -4415,7 +4565,7 @@ function catchThrow(){
   var hit=Math.abs(pos-50)<=zone/2;
   var stage=$('catchStage');
   if(!hit){
-    stage.innerHTML='<div class="big">😮💨</div><h3>哎呀，偏了！</h3><p class="lead">精灵球擦着草丛飞过去了…<br>'+esc(spec(c.e.sid).name)+'跑掉了。</p>'+
+    stage.innerHTML='<div class="big">😮💨</div><h3>哎呀，偏了！</h3><p class="lead" style="display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:inline-flex;align-items:center;gap:5px">'+ballIco(c.ball||'poke',20)+' 擦着飞过去了…</span><br>'+esc(spec(c.e.sid).name)+'跑掉了。</p>'+
       '<div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="closeModal()">下次再来！</button></div>';
     sfxBad(); render(); return;
   }
@@ -4423,22 +4573,24 @@ function catchThrow(){
   if(success){
     sfxCatch(); confetti();
     var sp=spec(c.e.sid);
-    stage.innerHTML='<div class="big">🎉</div><h3>抓到啦！</h3><p class="lead">'+esc(sp.name)+' 加入了你的队伍！</p>';
+    var src=c.e.source||'wild';
+    var lv=c.e.level||5;
+    stage.innerHTML='<div class="big" style="display:flex;align-items:center;justify-content:center;gap:8px">'+ballIco(c.ball||'poke',36)+'🎉</div><h3>抓到啦！</h3><p class="lead">'+esc(sp.name)+(src==='fish'?('（Lv.'+lv+'）'):'')+' 加入了你的队伍！</p>';
     setTimeout(function(){
-      var r=tryAddMon(c.e.sid,'wild');
+      var r=tryAddMon(c.e.sid,src,lv);
       if(!r.boxed){
         stage.innerHTML+='<div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="closeModal()">太棒了！</button></div>';
         render();
       }else{
-        stage.innerHTML='<div class="big">🎉</div><h3>抓到啦！</h3><p class="lead">'+esc(sp.name)+' 已存入<b>图鉴</b>保管！<br>队伍满了？可以替换队员上场，或随时在图鉴里切换。</p>'+
-          '<div class="dlg-actions"><button class="btn btn-yellow btn-block" onclick="openReplace(\''+c.e.sid+'\',\'wild\')">🔄 挑选替换上场</button>'+
+        stage.innerHTML='<div class="big" style="display:flex;align-items:center;justify-content:center;gap:8px">'+ballIco(c.ball||'poke',36)+'🎉</div><h3>抓到啦！</h3><p class="lead">'+esc(sp.name)+' 已存入<b>图鉴</b>保管！<br>队伍满了？可以替换队员上场，或随时在图鉴里切换。</p>'+
+          '<div class="dlg-actions"><button class="btn btn-yellow btn-block" onclick="openReplace(\''+c.e.sid+'\',\''+src+'\')">🔄 挑选替换上场</button>'+
           '<button class="btn btn-primary btn-block" onclick="closeModal();go(\'dex\')">📖 去看看图鉴</button></div>';
         render();
       }
     },400);
   }else{
     sfxBad();
-    stage.innerHTML='<div class="big">😢</div><h3>哎呀，跑掉了…</h3><p class="lead">精灵球晃了三次，还是被挣脱了！<br>下次见面一定抓住你！</p>'+
+    stage.innerHTML='<div class="big">😢</div><h3>哎呀，跑掉了…</h3><p class="lead" style="display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:inline-flex;align-items:center;gap:5px">'+ballIco(c.ball||'poke',20)+' 晃了三次，还是被挣脱了！</span><br>下次见面一定抓住你！</p>'+
       '<div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="closeModal()">没关系，继续！</button></div>';
     render();
   }
@@ -4565,7 +4717,7 @@ function showResultModal(hw,xp,events,prize,deduct,voucher){
   var voucherHTML='';
   if(voucher){
     voucherHTML='<div style="background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border:1.5px solid #a5d6a7;border-radius:16px;padding:10px 12px;margin:10px 0 0">'+
-      '<b style="color:#2e7d32;font-size:15px">🔴 每日挑战达成！获得精灵球 ×'+dailyReward()+'</b>'+
+      '<b style="color:#2e7d32;font-size:15px;display:inline-flex;align-items:center;gap:6px">'+ballIco('poke',20)+' 每日挑战达成！获得精灵球 ×'+dailyReward()+'</b>'+
       '<div style="font-size:12.5px;color:#33691e;font-weight:600;margin-top:2px">今天已完成 '+dailyTarget()+' 个任务，精灵球已放入背包，周末野外探险可以用！</div></div>';
   }
   var evs='';
@@ -4670,12 +4822,12 @@ function viewSettingsHTML(){
       '<div class="field"><label>周末免费捕捉次数</label><input id="setWeekendFree" type="number" min="0" max="7" value="'+weekendFreeMax()+'"></div>'+
       '<button class="btn btn-primary btn-block" onclick="saveChallenge()">保存挑战设置</button>'+
       '<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--pk-line)">'+
-        '<div style="font-size:13px;font-weight:800;margin-bottom:8px">🎒 背包补给（当前精灵球 <b style="color:#2e7d32">'+S.items.vouchers+'</b> · 大师球 <b style="color:#6a1b9a">'+S.items.rareVouchers+'</b>）</div>'+
+        '<div style="font-size:13px;font-weight:800;margin-bottom:8px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px">🎒 背包补给 · '+ballLabel('poke','精灵球 <b style="color:#2e7d32">'+S.items.vouchers+'</b>',16)+' · '+ballLabel('master','大师球 <b style="color:#6a1b9a">'+S.items.rareVouchers+'</b>',16)+'</div>'+
         '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
-          '<button class="btn btn-green btn-sm" style="flex:1" onclick="adjustVoucher(1)">精灵球 +1</button>'+
-          '<button class="btn btn-gray btn-sm" style="flex:1" onclick="adjustVoucher(-1)">精灵球 −1</button>'+
-          '<button class="btn btn-yellow btn-sm" style="flex:1" onclick="adjustRareVoucher(1)">大师球 +1</button>'+
-          '<button class="btn btn-gray btn-sm" style="flex:1" onclick="adjustRareVoucher(-1)">大师球 −1</button>'+
+          '<button class="btn btn-green btn-sm" style="flex:1" onclick="adjustVoucher(1)">'+ballLabel('poke','+1',15)+'</button>'+
+          '<button class="btn btn-gray btn-sm" style="flex:1" onclick="adjustVoucher(-1)">'+ballLabel('poke','−1',15)+'</button>'+
+          '<button class="btn btn-yellow btn-sm" style="flex:1" onclick="adjustRareVoucher(1)">'+ballLabel('master','+1',15)+'</button>'+
+          '<button class="btn btn-gray btn-sm" style="flex:1" onclick="adjustRareVoucher(-1)">'+ballLabel('master','−1',15)+'</button>'+
         '</div>'+
         '<p style="font-size:11.5px;color:#b0a090;margin:8px 0 0;font-weight:600">例如设成「集满 3 个送 1 张」，孩子更容易拿到周末探险机会</p>'+
       '</div></div>'+
