@@ -1260,7 +1260,7 @@ function carePickHTML(m,opts){
   var sp=spec(m.sid)||{};
   var style=carePickBgStyle(sp.type)+(opts.style?(';'+opts.style):'');
   var cls='chip-opt care-pick'+(opts.on?' on':'');
-  var body=pokeImgHTML(m.sid,'class="care-pick-img" loading="eager"')+
+  var body=pokeImgHTML(m.sid,'class="care-pick-img"')+
     '<span class="care-pick-tx"><b>'+esc(m.nick)+'</b><i>Lv.'+m.level+'</i></span>'+
     (opts.tag?'<span class="care-pick-tag">'+opts.tag+'</span>':'');
   if(opts.as==='div'){
@@ -1308,27 +1308,28 @@ var POKE_IMG={bulbasaur:1,ivysaur:2,venusaur:3,charmander:4,charmeleon:5,chariza
 /* 钓鱼用到的水系伙伴（图鉴图已齐全，补上编号才能正确出图） */
 psyduck:54,golduck:55,poliwag:60,poliwhirl:61,poliwrath:62,slowpoke:79,slowbro:80,seel:86,dewgong:87,shellder:90,cloyster:91,krabby:98,kingler:99,horsea:116,seadra:117,goldeen:118,seaking:119,staryu:120,starmie:121,lapras:131,vaporeon:134};
 function pokeDexNo(sid){ return ('000'+((POKE_IMG&&POKE_IMG[sid])||1)).slice(-3); }
-/* 本地优先；缺失时走 jsDelivr 像素图（小而快），再退官方大图 */
-function pokeImgCdn(n){
-  var num=String(parseInt(n,10)||1);
-  return 'https://cdn.jsdelivr.net/gh/PokeAPI/sprites@master/sprites/pokemon/'+num+'.png';
-}
-function pokeImgCdnHi(n){ return 'https://assets.pokemon.com/assets/cms2/img/pokedex/detail/'+n+'.png'; }
+/* 本地优先；失败再退官方 CDN（与本地同款图鉴立绘） */
+function pokeImgCdn(n){ return 'https://assets.pokemon.com/assets/cms2/img/pokedex/detail/'+n+'.png'; }
 function pokeImg(sid){
   var n=pokeDexNo(sid);
   if(typeof ASSET_IMG!=='undefined'&&ASSET_IMG[n]) return ASSET_IMG[n];
   return 'assets/pokedex/'+n+'.png';
 }
+var POKE_IMG_PLACEHOLDER='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 function pokeImgAttrs(sid,extra){
   var n=pokeDexNo(sid), src=pokeImg(sid);
   var alt='';
   try{ alt=esc((spec(sid)&&spec(sid).name)||''); }catch(e){}
   var more=(extra||'');
-  /* 默认异步解码；未写 loading 时用 lazy（图鉴大量图片不堵首屏） */
+  var defer=/\bdata-defer\b/.test(more);
+  if(defer) more=more.replace(/\bdata-defer\b/g,'').trim();
   if(!/\bdecoding\s*=/.test(more)) more+=' decoding="async"';
-  if(!/\bloading\s*=/.test(more)) more+=' loading="lazy"';
   if(src.indexOf('data:')!==0){
     more+=' data-poke="'+n+'" data-fb="0" onerror="pokeImgFallback(this)"';
+  }
+  /* 图鉴全量用 IntersectionObserver 延后加载；勿用原生 loading=lazy（iPhone 动态页会卡住） */
+  if(defer && src.indexOf('data:')!==0){
+    return 'src="'+POKE_IMG_PLACEHOLDER+'" data-src="'+src+'" alt="'+alt+'" '+more;
   }
   return 'src="'+src+'" alt="'+alt+'" '+more;
 }
@@ -1342,16 +1343,39 @@ function pokeImgFallback(el){
     var step=parseInt(el.getAttribute('data-fb')||'0',10)||0;
     if(step<=0){
       el.setAttribute('data-fb','1');
+      el.referrerPolicy='no-referrer';
       el.src=pokeImgCdn(n);
-      return;
-    }
-    if(step===1){
-      el.setAttribute('data-fb','2');
-      el.src=pokeImgCdnHi(n);
       return;
     }
     el.onerror=null;
   }catch(e){ try{ el.onerror=null; }catch(e2){} }
+}
+var __pokeIO=null;
+function hydratePokeImgs(root){
+  try{
+    var nodes=(root||document).querySelectorAll('img[data-src]');
+    if(!nodes.length) return;
+    var kick=function(img){
+      var s=img.getAttribute('data-src');
+      if(!s) return;
+      img.removeAttribute('data-src');
+      img.src=s;
+    };
+    if(!('IntersectionObserver' in window)){
+      for(var i=0;i<nodes.length;i++) kick(nodes[i]);
+      return;
+    }
+    if(__pokeIO){ try{ __pokeIO.disconnect(); }catch(e){} }
+    __pokeIO=new IntersectionObserver(function(entries){
+      for(var i=0;i<entries.length;i++){
+        var en=entries[i];
+        if(!en.isIntersecting) continue;
+        kick(en.target);
+        try{ __pokeIO.unobserve(en.target); }catch(e2){}
+      }
+    },{root:null,rootMargin:'280px 0px',threshold:0.01});
+    for(var j=0;j<nodes.length;j++) __pokeIO.observe(nodes[j]);
+  }catch(e){}
 }
 /* 预缓存队伍常用图，避免切页才开始下载 */
 function preloadTeamImgs(){
@@ -2375,10 +2399,10 @@ function playArena(A,B,sim,rewardOK,cfg){
     '<h3 style="margin:0 0 8px">'+(cfg.title||'⚔️ 队内对战')+'</h3>'+
     '<div class="arena" id="arenaStage">'+
       '<div class="vs-badge">VS</div>'+
-      '<div class="arena-side left"><img id="imgA" class="fighter" '+pokeImgAttrs(A.sid,'loading="eager"')+'>'+
+      '<div class="arena-side left"><img id="imgA" class="fighter" '+pokeImgAttrs(A.sid)+'>'+
         '<div class="hp-wrap"><div class="hp-name">'+esc(A.nick)+' <span>Lv.'+A.level+'</span></div>'+
         '<div class="hpbar hpbar2"><div class="hpfill" id="hpA" style="width:100%"></div></div></div></div>'+
-      '<div class="arena-side right"><img id="imgB" class="fighter" '+pokeImgAttrs(B.sid,'loading="eager"')+'>'+
+      '<div class="arena-side right"><img id="imgB" class="fighter" '+pokeImgAttrs(B.sid)+'>'+
         '<div class="hp-wrap"><div class="hp-name">'+esc(B.nick)+' <span>Lv.'+B.level+'</span></div>'+
         '<div class="hpbar hpbar2"><div class="hpfill" id="hpB" style="width:100%"></div></div></div></div>'+
       '<div id="arenaNumA" class="dmg-layer"></div><div id="arenaNumB" class="dmg-layer"></div>'+
@@ -3767,7 +3791,7 @@ function monCardHTML(m,idx){
   var srcMap={starter:'初始伙伴',wild:'野外捕捉',fish:'江边钓鱼',gym:'道馆伙伴',prize:'连击大奖',egg:'神秘蛋'};
   return '<div class="mon-card mon-tap" onclick="openTeamMon(\''+m.id+'\')">'+
     '<div class="mon-head" style="background:linear-gradient(135deg,'+tc(sp.type)+'33,'+tc(sp.type)+'14 65%,#fff)">'+
-      '<div class="mon-ava" style="border-color:'+tc(sp.type)+'">'+pokeImgHTML(m.sid,'loading="eager"')+'</div>'+
+      '<div class="mon-ava" style="border-color:'+tc(sp.type)+'">'+pokeImgHTML(m.sid)+'</div>'+
       '<div class="mon-info">'+
         '<div class="mon-name"><b>'+esc(m.nick)+'</b>'+
           '<span class="type-tag" style="background:'+tc(sp.type)+'">'+sp.type+'</span>'+
@@ -4119,6 +4143,7 @@ function render(){
   renderTabbar();
   if(curView==='work'){ var inp=$('workDesc'); if(inp && window.__workDesc){ inp.value=window.__workDesc; } }
   preloadTeamImgs();
+  hydratePokeImgs(v);
 }
 function go(v){ location.hash=v; }
 window.addEventListener('hashchange',function(){ render(); });
@@ -4570,7 +4595,7 @@ function viewDexHTML(){
     var got=!!S.dex[sid], sp=SPECIES[sid];
     grid+='<div class="dex-cell'+(got?' got':'')+'" '+(got?'onclick="dexMonInfo(\''+sid+'\')"':'')+'>'+
       '<div class="dc-no">No.'+('000'+n).slice(-3)+'</div>'+
-      '<div class="dc-ic">'+pokeImgHTML(sid,'style="width:44px;height:44px;object-fit:contain;'+(got?'':'filter:brightness(0);opacity:.22;"')+'"')+'</div>'+
+      '<div class="dc-ic">'+pokeImgHTML(sid,'data-defer style="width:44px;height:44px;object-fit:contain;'+(got?'':'filter:brightness(0);opacity:.22;"')+'"')+'</div>'+
       '<div class="dc-nm">'+(got?esc(sp.name):'？？？')+'</div></div>';
   }
   return '<div class="view">'+
