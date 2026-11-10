@@ -1129,6 +1129,81 @@ function sfxBathDone(){
   ensureAudio();
   [660,784,988,1175].forEach(function(f,i){ setTimeout(function(){ beep(f,0.13,'sine',0.16); },i*100); });
 }
+/* ---------- 对战音效（AudioContext 时间轴，适配 iPhone） ---------- */
+function sfxBattleArm(){
+  try{ SOUND=!(S&&S.sound===false); unlockAudio(); playHtmlBeep(560); }catch(e){}
+}
+function sfxBattleStart(){
+  sfxBattleArm();
+  withAudio(function(ac){
+    if(!ac) return;
+    var t0=ac.currentTime+0.02;
+    toneAt(ac,392,t0,0.12,'square',0.34);
+    toneAt(ac,523,t0+0.12,0.12,'square',0.36);
+    toneAt(ac,659,t0+0.24,0.16,'triangle',0.38);
+    toneAt(ac,784,t0+0.4,0.22,'sine',0.34);
+  });
+}
+function sfxBattleMove(type){
+  /* 出手：轻量招式音，按属性变化 */
+  try{ SOUND=!(S&&S.sound===false); unlockAudio(); }catch(e){}
+  withAudio(function(ac){
+    if(!ac) return;
+    var t0=ac.currentTime+0.01;
+    type=type||'一般';
+    if(type==='火'){ toneAt(ac,220,t0,0.1,'sawtooth',0.36); toneAt(ac,380,t0+0.1,0.14,'sawtooth',0.34); }
+    else if(type==='水'){ toneAt(ac,480,t0,0.1,'sine',0.34); slideAt(ac,420,200,t0+0.1,0.18,'sine',0.3); }
+    else if(type==='电'){ toneAt(ac,980,t0,0.07,'square',0.36); toneAt(ac,1400,t0+0.08,0.08,'square',0.34); }
+    else if(type==='草'){ toneAt(ac,560,t0,0.1,'triangle',0.34); toneAt(ac,720,t0+0.1,0.14,'sine',0.32); }
+    else if(type==='岩石'||type==='地面'){ toneAt(ac,140,t0,0.12,'sawtooth',0.38); toneAt(ac,90,t0+0.1,0.14,'square',0.34); }
+    else if(type==='飞行'||type==='龙'){ toneAt(ac,440,t0,0.1,'sine',0.34); toneAt(ac,680,t0+0.1,0.14,'triangle',0.32); }
+    else if(type==='超能力'||type==='妖精'){ toneAt(ac,720,t0,0.1,'sine',0.34); toneAt(ac,980,t0+0.12,0.14,'triangle',0.32); }
+    else if(type==='冰'){ toneAt(ac,860,t0,0.08,'sine',0.32); toneAt(ac,1180,t0+0.1,0.12,'triangle',0.3); }
+    else if(type==='格斗'||type==='虫'){ toneAt(ac,260,t0,0.09,'square',0.36); toneAt(ac,180,t0+0.08,0.1,'sawtooth',0.32); }
+    else { toneAt(ac,360,t0,0.09,'square',0.34); toneAt(ac,540,t0+0.1,0.12,'triangle',0.32); }
+  });
+}
+function sfxBattleHit(crit){
+  try{ playHtmlBeep(crit?280:220); }catch(e){}
+  withAudio(function(ac){
+    if(!ac) return;
+    var t0=ac.currentTime;
+    if(crit){
+      toneAt(ac,180,t0,0.12,'sawtooth',0.44);
+      toneAt(ac,340,t0+0.08,0.12,'square',0.4);
+      toneAt(ac,560,t0+0.18,0.1,'triangle',0.32);
+    }else{
+      toneAt(ac,220,t0,0.1,'square',0.4);
+      toneAt(ac,140,t0+0.08,0.12,'sawtooth',0.34);
+    }
+  });
+}
+function sfxBattleHeal(){
+  withAudio(function(ac){
+    if(!ac) return;
+    var t0=ac.currentTime;
+    toneAt(ac,523,t0,0.1,'sine',0.3);
+    toneAt(ac,659,t0+0.08,0.12,'sine',0.32);
+    toneAt(ac,784,t0+0.18,0.14,'triangle',0.3);
+  });
+}
+function sfxBattleFaint(){
+  try{ playHtmlBeep(160); }catch(e){}
+  withAudio(function(ac){
+    if(!ac) return;
+    var t0=ac.currentTime;
+    slideAt(ac,420,110,t0,0.36,'sawtooth',0.38);
+    toneAt(ac,90,t0+0.28,0.2,'square',0.32);
+  });
+}
+function sfxBattleWin(){
+  try{ playHtmlBeep(880); }catch(e){}
+  withAudio(function(ac){
+    if(!ac) return;
+    var t0=ac.currentTime+0.02;
+    [523,659,784,1047,1319].forEach(function(f,i){ toneAt(ac,f,t0+i*0.1,0.16,'triangle',0.36); });
+  });
+}
 
 /* ---------- 宝可梦叫声 ---------- */
 /* 每种宝可梦的叫声放在 assets/cries/<图鉴编号>.mp3。
@@ -2247,6 +2322,7 @@ function playArena(A,B,sim,rewardOK,cfg){
     '<div id="arenaEnd"></div>'+
   '</div>';
   showModal(stageHTML);
+  try{ sfxBattleStart(); }catch(e0){}
   var i=0, ended=false;
   function setMsg(t){ var el=$('arenaMsg'); if(el) el.textContent=t; }
   function floatNum(side,txt,cls){
@@ -2273,21 +2349,21 @@ function playArena(A,B,sim,rewardOK,cfg){
     var atkEl=$(atkSide==='A'?'imgA':'imgB'), dfnEl=$(dfnSide==='A'?'imgA':'imgB');
     setMsg(atkMon.nick+' 使用了「'+t.move+'」！');
     if(atkEl){ atkEl.classList.add(atkSide==='A'?'lunge-r':'lunge-l'); }
-    beep(520,0.06,'triangle',0.08);
+    try{ sfxBattleMove(t.type||'一般'); }catch(e1){}
     setTimeout(function(){
       if(ended||!$('arenaStage')) return;
       if(atkEl){ atkEl.classList.remove('lunge-r','lunge-l'); }
       if(dfnEl){ dfnEl.classList.add('hit'); setTimeout(function(){ if(dfnEl) dfnEl.classList.remove('hit'); },320); }
       if(t.dmg>0){
         floatNum(dfnSide,'-'+t.dmg+(t.crit?' 会心!':''),t.crit?'crit':'');
-        beep(t.crit?180:240,0.11,'square',0.09);
+        try{ sfxBattleHit(!!t.crit); }catch(e2){}
       }
-      if(t.heal>0){ floatNum(atkSide,'+'+t.heal,'heal'); }
+      if(t.heal>0){ floatNum(atkSide,'+'+t.heal,'heal'); try{ sfxBattleHeal(); }catch(e3){} }
       hpUpdate(dfnSide,(dfnSide==='A'?t.hpA:t.hpB),(dfnSide==='A'?t.maxA:t.maxB));
       hpUpdate(atkSide,(atkSide==='A'?t.hpA:t.hpB),(atkSide==='A'?t.maxA:t.maxB));
       var extra=battleSideText(t.eff);
       var tail=extra?(' '+extra):'';
-      if(t.ko){ tail=' '+dfnMon.nick+' 倒下了！'; if(dfnEl){ dfnEl.classList.add('faint'); } sfxBad(); }
+      if(t.ko){ tail=' '+dfnMon.nick+' 倒下了！'; if(dfnEl){ dfnEl.classList.add('faint'); } try{ sfxBattleFaint(); }catch(e4){} }
       setMsg(atkMon.nick+' 使用「'+t.move+'」！'+tail);
       i++;
       setTimeout(step, t.ko?900:820);
@@ -2311,7 +2387,7 @@ function playArena(A,B,sim,rewardOK,cfg){
       var gain=won?(cfg.winXP||14):(cfg.loseXP||6);
       var evs=addXP(A,gain);
       save();
-      if(won){ sfxEvo(); confetti(); } else { sfxOk(); }
+      if(won){ try{ sfxBattleWin(); }catch(e){} confetti(); } else { try{ sfxBattleFaint(); }catch(e){} sfxOk(); }
       window.__fishFoe=B;
       var balls=S.items.vouchers||0, rares=S.items.rareVouchers||0;
       var fe=$('arenaEnd');
@@ -2341,12 +2417,12 @@ function playArena(A,B,sim,rewardOK,cfg){
     }else{
       evHTML='<p class="lead" style="margin:6px 0 2px">友谊赛结束，今天的第一场才有经验奖励哦～</p>';
     }
-    sfxEvo(); confetti();
+    try{ sfxBattleWin(); }catch(e){} confetti();
     var e=$('arenaEnd');
     if(e) e.innerHTML='<div class="big-emoji">🏆</div><h3>'+esc(winMon.nick)+' 获胜！</h3>'+
       '<p class="lead">'+esc(loseMon.nick)+' 也很努力，下次一定赢回来！</p>'+evHTML+
       '<div class="dlg-actions">'+
-      (S.arena.count<3?'<button class="btn btn-yellow btn-block" onclick="closeModal();startArena()">⚔️ 再来一场（今天还剩 '+(3-S.arena.count)+' 场）</button>':'')+
+      (S.arena.count<3?'<button class="btn btn-yellow btn-block" onclick="sfxBattleArm();closeModal();startArena()">⚔️ 再来一场（今天还剩 '+(3-S.arena.count)+' 场）</button>':'')+
       '<button class="btn btn-primary btn-block" onclick="closeModal();render()">结束对战</button></div>';
     render();
   }
@@ -4271,6 +4347,7 @@ function startBattle(gid){
   }
 }
 function openBattleModal(g,win){
+  try{ sfxBattleArm(); }catch(e){}
   var lines;
   if(win){
     lines=['🏟️ 来到'+g.name+'！','馆主 '+g.leader+' 派出强大的宝可梦！','你的伙伴们齐心协力！','💥 砰！一招命中！','🎉 战胜 '+g.leader+'！'];
@@ -4278,21 +4355,27 @@ function openBattleModal(g,win){
     lines=['🏟️ 来到'+g.name+'！','馆主 '+g.leader+' 的宝可梦好强…','伙伴们勇敢出击，但还差一点！','先回去打卡练级，再战一次吧！'];
   }
   var m=showModal('<div class="dialog"><h3>⚔️ '+g.name+'</h3><ul class="battle-log" id="battleLog"></ul><div id="battleEnd"></div></div>');
+  try{ sfxBattleStart(); }catch(e0){}
   var i=0;
   (function nextLine(){
     if(i>=lines.length){
       if(win){ winBattle(g); }
-      else{ sfxBad(); $('battleEnd').innerHTML='<div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="closeModal()">回去练级！</button></div>'; }
+      else{ try{ sfxBattleFaint(); }catch(e){} $('battleEnd').innerHTML='<div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="closeModal()">回去练级！</button></div>'; }
       return;
     }
-    sfxClick();
-    var li=document.createElement('li'); li.textContent=lines[i]; $('battleLog').appendChild(li);
+    var line=lines[i];
+    if(i===0){ try{ sfxBattleMove(g.type||'一般'); }catch(e1){} }
+    else if(line.indexOf('砰')>=0||line.indexOf('命中')>=0){ try{ sfxBattleHit(true); }catch(e2){} }
+    else if(line.indexOf('战胜')>=0){ try{ sfxBattleWin(); }catch(e3){} }
+    else if(line.indexOf('差一点')>=0||line.indexOf('练级')>=0){ try{ sfxBattleHit(false); }catch(e4){} }
+    else { try{ sfxBattleMove(g.type||'一般'); }catch(e5){} }
+    var li=document.createElement('li'); li.textContent=line; $('battleLog').appendChild(li);
     i++;
     setTimeout(nextLine, win?750:900);
   })();
 }
 function winBattle(g){
-  sfxEvo(); confetti();
+  try{ sfxBattleWin(); }catch(e){} confetti();
   var res=addBadge(g.id);
   var end='<div class="big-emoji">🏅</div><h3>获得 '+g.name+' 徽章！</h3><p class="lead" style="display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap">'+(g.giftIco==='poke'||g.giftIco==='master'?ballIco(g.giftIco,22):'')+' '+esc(g.gift)+' 到手啦！</p>';
   if(g.id==='rock'){
@@ -4359,6 +4442,7 @@ function pickArena(who,i){
   sfxClick(); render();
 }
 function startArena(){
+  try{ sfxBattleArm(); }catch(e){}
   var bw=battleWindow();
   if(!bw.open){ toast('对战只在每天 20:00-22:00 开放哦'); return; }
   if(S.team.length<2){ toast('至少要有两只宝可梦才能对战'); return; }
@@ -4642,7 +4726,7 @@ function fishRelease(){
   closeModal(); render();
 }
 function fishFight(){
-  sfxClick();
+  try{ sfxBattleArm(); }catch(e){}
   var foe=window.__fishFoe;
   if(!foe) return;
   var me=S.team[fishPick]||S.team[0];
