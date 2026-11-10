@@ -694,9 +694,14 @@ table.rec tr:last-child td{border-bottom:none;}
 .nav-inner.many .tab{font-size:10px;padding:8px 0 7px;}
 .nav-inner.many .tab .ti{font-size:19px;}
 .tr-svg{width:96px;height:auto;max-width:100%;max-height:100%;display:block;overflow:hidden;pointer-events:none;}
+img.tr-svg, .tr-svg.tr-img{
+  width:100%;height:100%;object-fit:contain;object-position:center bottom;
+  background:transparent;border:0;padding:0;
+}
 .trsp{animation:trTwinkle 2.6s ease-in-out infinite;}
 @keyframes trTwinkle{0%,100%{opacity:.25;transform:scale(.7)}50%{opacity:1;transform:scale(1.15)}}
-.tr-svg.mini{width:46px;}
+.tr-svg.mini{width:46px;height:auto;}
+img.tr-svg.mini{width:100%;height:100%;}
 .tr-banner{
   display:flex;align-items:center;gap:10px;
   background:linear-gradient(180deg,#EEF6FF,#DCEEFF);
@@ -2950,7 +2955,7 @@ function meetFinish(){
 /* ================= 训练家：时装 / 每周特别任务 / 每日过场 ================= */
 var TRAINER_BADGE='water';              /* 通过第二个道馆后开放 */
 var OUTFITS=[
-  {id:'rookie', nm:'新秀训练装', ic:'🎒', main:'#EE1515', sub:'#2A2420', acc:'#FFCB05', tip:'红帽子 + 夹克，经典新手训练家'},
+  {id:'rookie', nm:'新秀训练装', ic:'🎒', main:'#EE1515', sub:'#2A2420', acc:'#FFCB05', tip:'红白帽 + 黑背心白衫，官方训练家风'},
   {id:'forest', nm:'森林探险装', ic:'🌿', main:'#3D9B4A', sub:'#5D4037', acc:'#C8E9A0', tip:'探险帽与绿夹克，适合进森林'},
   {id:'beach',  nm:'夏日海滩装', ic:'🏖️', main:'#2B7DE9', sub:'#FF9F43', acc:'#FFF8E7', tip:'遮阳帽短裤，海边捕捉日'},
   {id:'sakura', nm:'樱花祭典装', ic:'🌸', main:'#EC407A', sub:'#7B1FA2', acc:'#FFE082', tip:'祭典彩带与樱粉外套'},
@@ -3104,59 +3109,51 @@ function trMix(c,to,f){
 function trShade(c,f){ return trMix(c,'#000000',f); }
 function trTint(c,f){ return trMix(c,'#ffffff',f); }
 /* 帽子：全部画在安全区内，避免出框 */
+/* 全新训练家模型 v3：Q版宝可梦过场风，彻底换骨骼/剪影/五官 */
 function trainerHatSVG(id,o,girl){
-  var main=o.main, sub=o.sub, acc=o.acc, md=trShade(main,0.22), ink='#2A2420';
+  var main=o.main, sub=o.sub, acc=o.acc, md=trShade(main,0.2), ink='#2C241E';
   if(id==='rookie'||id==='thunder'||id==='champion'){
-    if(girl){
-      return '<g stroke="'+ink+'" stroke-width="1.6" stroke-linejoin="round">'+
-        '<ellipse cx="60" cy="24" rx="22" ry="7.5" fill="'+main+'"/>'+
-        '<path d="M40 24 Q60 33 80 24 L80 27 Q60 36 40 27 Z" fill="'+md+'"/>'+
-        '<circle cx="60" cy="13" r="4.2" fill="'+acc+'"/>'+
-        '<circle cx="60" cy="11" r="1.6" fill="#fff" stroke="none"/>'+
-      '</g>';
-    }
-    /* 小智式鸭舌帽：白前片 + 红帽身 + 侧檐 */
-    return '<g stroke="'+ink+'" stroke-width="1.6" stroke-linejoin="round">'+
-      '<path d="M38 30 C40 15 48 11 60 11 C72 11 80 15 82 30 C72 24 48 24 38 30 Z" fill="'+main+'"/>'+
-      '<path d="M38 29 C48 35 72 35 82 29 L82 32 C72 38 48 38 38 32 Z" fill="'+md+'"/>'+
-      '<path d="M46 18 C50 14 56 13 60 13 C64 13 68 14 70 17 L68 28 C64 26 56 26 52 28 Z" fill="#FFF8E7"/>'+
-      '<ellipse cx="82" cy="30" rx="9" ry="3.2" transform="rotate(-14 82 30)" fill="'+md+'"/>'+
-      '<circle cx="60" cy="18" r="2.6" fill="'+acc+'" stroke="none"/>'+
+    return '<g stroke="'+ink+'" stroke-width="1.4" stroke-linejoin="round">'+
+      '<ellipse cx="60" cy="34" rx="26" ry="7" fill="'+md+'"/>'+
+      '<path d="M35 34 C37 16 47 10 60 10 C73 10 83 16 85 34 Z" fill="'+main+'"/>'+
+      '<path d="M42 20 C49 14 55 13 60 13 C65 13 71 14 76 19 L74 32 C68 28 52 28 46 32 Z" fill="#FFFDF7"/>'+
+      '<ellipse cx="84" cy="35" rx="11" ry="3.6" transform="rotate(-10 84 35)" fill="'+md+'"/>'+
+      '<circle cx="60" cy="18" r="2.4" fill="'+acc+'" stroke="none"/>'+
     '</g>';
   }
   if(id==='forest'){
-    return '<g stroke="'+ink+'" stroke-width="1.5" stroke-linejoin="round">'+
-      '<ellipse cx="60" cy="28" rx="24" ry="5.5" fill="'+sub+'"/>'+
-      '<path d="M44 28 C44 15 51 11 60 11 C69 11 76 15 76 28 Z" fill="'+trTint(sub,0.2)+'"/>'+
-      '<rect x="43" y="25" width="34" height="5" rx="2" fill="'+trShade(sub,0.2)+'"/>'+
-      '<path d="M72 16 q7 -3 8 3 q-5 2 -8 -3 Z" fill="'+main+'" stroke="none"/>'+
+    return '<g stroke="'+ink+'" stroke-width="1.3" stroke-linejoin="round">'+
+      '<ellipse cx="60" cy="34" rx="27" ry="6" fill="'+sub+'"/>'+
+      '<path d="M40 34 C40 16 49 11 60 11 C71 11 80 16 80 34 Z" fill="'+trTint(sub,0.2)+'"/>'+
+      '<rect x="39" y="30" width="42" height="6" rx="3" fill="'+trShade(sub,0.18)+'"/>'+
+      '<path d="M74 16 q8 -4 9 3.5 q-6 2.5 -9 -3.5 Z" fill="'+main+'" stroke="none"/>'+
     '</g>';
   }
   if(id==='beach'){
-    return '<g stroke="'+ink+'" stroke-width="1.5" stroke-linejoin="round">'+
-      '<ellipse cx="60" cy="28" rx="26" ry="5.5" fill="#E8C98A"/>'+
-      '<path d="M46 28 C46 16 52 12 60 12 C68 12 74 16 74 28 Z" fill="#FFF6E2"/>'+
-      '<ellipse cx="60" cy="26" rx="24" ry="2.8" fill="'+main+'" stroke="none"/>'+
+    return '<g stroke="'+ink+'" stroke-width="1.3" stroke-linejoin="round">'+
+      '<ellipse cx="60" cy="34" rx="28" ry="5.5" fill="#E8C98A"/>'+
+      '<path d="M42 34 C42 17 50 12 60 12 C70 12 78 17 78 34 Z" fill="#FFF8E7"/>'+
+      '<ellipse cx="60" cy="31" rx="26" ry="2.8" fill="'+main+'" stroke="none"/>'+
     '</g>';
   }
   if(id==='sakura'){
-    return '<g stroke="'+ink+'" stroke-width="1.4" stroke-linejoin="round">'+
-      '<path d="M42 30 C46 17 53 13 60 13 C67 13 74 17 78 30" stroke="'+main+'" stroke-width="5" fill="none" stroke-linecap="round"/>'+
-      '<circle cx="43" cy="31" r="3.2" fill="'+acc+'"/><circle cx="77" cy="31" r="3.2" fill="'+acc+'"/>'+
-      '<circle cx="60" cy="14" r="2.8" fill="'+main+'"/>'+
+    return '<g stroke="'+ink+'" stroke-width="1.2" stroke-linejoin="round">'+
+      '<path d="M38 36 C44 16 52 12 60 12 C68 12 76 16 82 36" stroke="'+main+'" stroke-width="6" fill="none" stroke-linecap="round"/>'+
+      '<circle cx="39" cy="37" r="3.6" fill="'+acc+'"/><circle cx="81" cy="37" r="3.6" fill="'+acc+'"/>'+
+      '<circle cx="60" cy="13" r="3.2" fill="'+main+'"/>'+
     '</g>';
   }
   if(id==='starry'){
-    return '<g stroke="'+ink+'" stroke-width="1.5" stroke-linejoin="round">'+
-      '<path d="M42 34 C41 17 49 12 60 12 C71 12 79 17 78 34 C73 25 67 22 60 22 C53 22 47 25 42 34 Z" fill="'+trShade(main,0.28)+'"/>'+
-      '<path d="M74 15 a4.8 4.8 0 1 0 3 7.4 a3.6 3.6 0 1 1 -3 -7.4 Z" fill="'+acc+'" stroke="none"/>'+
+    return '<g stroke="'+ink+'" stroke-width="1.3" stroke-linejoin="round">'+
+      '<path d="M38 40 C37 16 48 11 60 11 C72 11 83 16 82 40 C76 28 68 24 60 24 C52 24 44 28 38 40 Z" fill="'+trShade(main,0.28)+'"/>'+
+      '<path d="M76 15 a5.2 5.2 0 1 0 3.4 8 a4 4 0 1 1 -3.4 -8 Z" fill="'+acc+'" stroke="none"/>'+
     '</g>';
   }
   if(id==='snow'){
-    return '<g stroke="'+ink+'" stroke-width="1.5" stroke-linejoin="round">'+
-      '<path d="M42 30 C42 16 50 12 60 12 C70 12 78 16 78 30 Z" fill="'+main+'"/>'+
-      '<rect x="40" y="27" width="40" height="6" rx="3" fill="#fff"/>'+
-      '<circle cx="60" cy="12" r="3.6" fill="#fff"/>'+
+    return '<g stroke="'+ink+'" stroke-width="1.3" stroke-linejoin="round">'+
+      '<path d="M38 36 C38 16 48 11 60 11 C72 11 82 16 82 36 Z" fill="'+main+'"/>'+
+      '<rect x="36" y="32" width="48" height="7" rx="3.5" fill="#fff"/>'+
+      '<circle cx="60" cy="11" r="4" fill="#fff"/>'+
     '</g>';
   }
   return '';
@@ -3164,133 +3161,137 @@ function trainerHatSVG(id,o,girl){
 function trainerSVG(gender,outfitId,extra){
   var o=outfitById(outfitId); var girl=(gender==='girl');
   var u='tr'+(++__trSeq);
-  /* 宝可梦动画/游戏立绘：深发色、粗描边、大头短身 */
-  var hairL=girl?'#E8B878':'#5D4037';
-  var hairD=girl?'#C68642':'#3E2723';
-  var skin='#FFCCB3';
-  var eyeC=girl?'#7E57C2':'#1565C0';
+  var ink='#2C241E';
+  var skin='#FFD8C2';
+  var hairL=girl?'#C48A55':'#6B4A38';
+  var hairD=girl?'#8E5A35':'#3B281E';
+  var eyeC=girl?'#4F8FE8':'#3F7AD4';
   var main=o.main, sub=o.sub, acc=o.acc;
-  var mainD=trShade(main,0.2), mainL=trTint(main,0.28);
-  var pants=girl?trTint(main,0.1):'#1E3A5F';
-  var boot=girl?trShade(sub,0.12):'#1A1A1A';
-  var ink='#2A2420';
-  var shirt=girl?'#FFF8E7':(o.id==='rookie'||o.id==='thunder'||o.id==='champion'?'#FFCB05':trTint(sub,0.45));
-  /* 安全边距 viewBox，人物落在 24~96 / 10~148 */
+  var jacket=(o.id==='rookie'||o.id==='thunder')?(girl?'#2E2E2E':main):(o.id==='champion'?trShade(main,0.25):main);
+  var jacketD=trShade(jacket,0.18), jacketL=trTint(jacket,0.16);
+  var shirt='#FFFDF7';
+  var pants=girl?(o.id==='rookie'||o.id==='thunder'?'#7FCBD9':trTint(main,0.4)):(o.id==='rookie'||o.id==='thunder'?'#3E5F8A':trShade(main,0.12));
+  var shoe=main;
+  var bag=girl?'#D2B48C':'#B8956A';
+
   var s='<svg class="tr-svg '+(extra||'')+'" viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">';
   s+='<defs>'+
-    '<linearGradient id="'+u+'hair" x1="0.3" y1="0" x2="0.7" y2="1"><stop offset="0" stop-color="'+hairL+'"/><stop offset="1" stop-color="'+hairD+'"/></linearGradient>'+
-    '<linearGradient id="'+u+'cloth" x1="0.2" y1="0" x2="0.8" y2="1"><stop offset="0" stop-color="'+mainL+'"/><stop offset="0.5" stop-color="'+main+'"/><stop offset="1" stop-color="'+mainD+'"/></linearGradient>'+
-    '<linearGradient id="'+u+'skin" x1="0.35" y1="0" x2="0.7" y2="1"><stop offset="0" stop-color="'+trTint(skin,0.4)+'"/><stop offset="1" stop-color="'+skin+'"/></linearGradient>'+
+    '<linearGradient id="'+u+'sk" x1=".3" y1="0" x2=".7" y2="1"><stop offset="0" stop-color="'+trTint(skin,.42)+'"/><stop offset="1" stop-color="'+skin+'"/></linearGradient>'+
+    '<linearGradient id="'+u+'hr" x1=".2" y1="0" x2=".8" y2="1"><stop offset="0" stop-color="'+hairL+'"/><stop offset="1" stop-color="'+hairD+'"/></linearGradient>'+
+    '<linearGradient id="'+u+'jk" x1=".2" y1="0" x2=".8" y2="1"><stop offset="0" stop-color="'+jacketL+'"/><stop offset=".55" stop-color="'+jacket+'"/><stop offset="1" stop-color="'+jacketD+'"/></linearGradient>'+
+    '<linearGradient id="'+u+'sh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+trTint(shoe,.22)+'"/><stop offset="1" stop-color="'+trShade(shoe,.14)+'"/></linearGradient>'+
+    '<linearGradient id="'+u+'pt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+trTint(pants,.2)+'"/><stop offset="1" stop-color="'+pants+'"/></linearGradient>'+
   '</defs>';
-  s+='<ellipse cx="60" cy="152" rx="16" ry="2.8" fill="rgba(0,0,0,.16)"/>';
 
-  /* 披风（冠军/星空）收窄不越界 */
+  /* 地面阴影 */
+  s+='<ellipse cx="60" cy="152" rx="20" ry="3" fill="rgba(0,0,0,.13)"/>';
+
+  /* 披风（窄） */
   if(o.id==='starry'||o.id==='champion'){
-    s+='<path d="M46 74 C40 96 38 120 42 140 L52 128 C48 108 50 90 54 78 Z" fill="'+trShade(main,0.3)+'" stroke="'+ink+'" stroke-width="1.2"/>';
-    s+='<path d="M74 74 C80 96 82 120 78 140 L68 128 C72 108 70 90 66 78 Z" fill="'+trShade(main,0.3)+'" stroke="'+ink+'" stroke-width="1.2"/>';
+    s+='<path d="M48 78 C42 100 40 124 44 144 L54 132 C50 112 52 94 56 82 Z" fill="'+trShade(main,.3)+'" stroke="'+ink+'" stroke-width="1.1"/>';
+    s+='<path d="M72 78 C78 100 80 124 76 144 L66 132 C70 112 68 94 64 82 Z" fill="'+trShade(main,.3)+'" stroke="'+ink+'" stroke-width="1.1"/>';
   }
 
-  /* 后发 */
+  /* ===== 后发：全新造型 ===== */
   if(girl){
-    s+='<path d="M60 18 C46 18 38 28 38 42 C38 58 36 78 40 100 C44 104 50 100 52 94 C50 78 50 64 50 54 L70 54 C70 64 70 78 68 94 C70 100 76 104 80 100 C84 78 82 58 82 42 C82 28 74 18 60 18 Z" fill="url(#'+u+'hair)" stroke="'+ink+'" stroke-width="1.5" stroke-linejoin="round"/>';
+    /* 柔顺披肩发 + 高发髻小球（不鼓成包子头） */
+    s+='<path d="M60 20 C44 20 36 32 35 48 C34 66 32 84 40 98 C44 102 50 96 52 88 C50 72 50 58 52 48 L68 48 C70 58 70 72 68 88 C70 96 76 102 80 98 C88 84 86 66 85 48 C84 32 76 20 60 20 Z" fill="url(#'+u+'hr)" stroke="'+ink+'" stroke-width="1.25" stroke-linejoin="round"/>';
+    s+='<ellipse cx="78" cy="28" rx="5.5" ry="4.8" fill="url(#'+u+'hr)" stroke="'+ink+'" stroke-width="1.1"/>';
   }else{
-    s+='<path d="M60 18 C48 18 40 27 40 40 C40 50 42 58 46 64 L74 64 C78 58 80 50 80 40 C80 27 72 18 60 18 Z" fill="url(#'+u+'hair)" stroke="'+ink+'" stroke-width="1.5" stroke-linejoin="round"/>';
+    s+='<path d="M60 18 C46 18 38 28 37 44 C36 56 40 66 46 70 L74 70 C80 66 84 56 83 44 C82 28 74 18 60 18 Z" fill="url(#'+u+'hr)" stroke="'+ink+'" stroke-width="1.3" stroke-linejoin="round"/>';
   }
 
-  /* 腿 */
+  /* 斜挎小包 */
+  s+='<path d="M72 86 L88 98 L84 116 L68 106 Z" fill="'+bag+'" stroke="'+ink+'" stroke-width="1.2" stroke-linejoin="round"/>';
+  s+='<ellipse cx="78" cy="104" rx="4.5" ry="5.5" fill="#EAD7B5" stroke="'+ink+'" stroke-width="1"/>';
+  s+='<path d="M56 74 Q70 86 78 98" stroke="'+trShade(bag,.18)+'" stroke-width="2" fill="none" stroke-linecap="round"/>';
+
+  /* ===== 腿：胶囊形，不再是细棍 ===== */
+  s+='<path d="M48 112 C48 108 52 106 55 106 C58 106 60 108 60 114 L59 132 C59 136 56 138 53 138 C50 138 48 136 48 132 Z" fill="url(#'+u+'sk)" stroke="'+ink+'" stroke-width="1.2"/>';
+  s+='<path d="M60 114 C60 108 62 106 65 106 C68 106 72 108 72 112 L72 132 C72 136 70 138 67 138 C64 138 61 136 61 132 Z" fill="url(#'+u+'sk)" stroke="'+ink+'" stroke-width="1.2"/>';
+  /* 白袜 */
+  s+='<path d="M48 128 h12 v8 C60 139 56 141 53 141 C50 141 48 139 48 136 Z" fill="#FFFDF7" stroke="'+ink+'" stroke-width="1"/>';
+  s+='<path d="M60 128 h12 v8 C72 139 69 141 67 141 C64 141 61 139 61 136 Z" fill="#FFFDF7" stroke="'+ink+'" stroke-width="1"/>';
+
+  /* ===== 球鞋：圆润厚底 ===== */
+  s+='<path d="M46 136 C46 134 48 133 52 133 L60 133 C61 133 62 134 62 136 L62 146 C62 149 58 151 53 151 C48 151 46 149 46 146 Z" fill="url(#'+u+'sh)" stroke="'+ink+'" stroke-width="1.2" stroke-linejoin="round"/>';
+  s+='<path d="M58 136 C58 134 60 133 64 133 L74 133 C76 133 78 134 78 136 L78 146 C78 149 74 151 69 151 C64 151 58 149 58 146 Z" fill="url(#'+u+'sh)" stroke="'+ink+'" stroke-width="1.2" stroke-linejoin="round"/>';
+  s+='<path d="M46 136 h16 v4.5 h-16 z" fill="#FFFDF7" stroke="'+ink+'" stroke-width="1"/>';
+  s+='<path d="M58 136 h20 v4.5 h-20 z" fill="#FFFDF7" stroke="'+ink+'" stroke-width="1"/>';
+  s+='<path d="M50 142 h8 M64 142 h8" stroke="'+acc+'" stroke-width="1.5" stroke-linecap="round"/>';
+
+  /* ===== 下装：圆角短裤/裙 ===== */
   if(girl){
-    s+='<rect x="52" y="114" width="7" height="18" rx="3.5" fill="url(#'+u+'skin)" stroke="'+ink+'" stroke-width="1.2"/>';
-    s+='<rect x="61" y="114" width="7" height="18" rx="3.5" fill="url(#'+u+'skin)" stroke="'+ink+'" stroke-width="1.2"/>';
+    s+='<path d="M44 100 C48 96 72 96 76 100 L80 118 C70 126 50 126 40 118 Z" fill="url(#'+u+'pt)" stroke="'+ink+'" stroke-width="1.35" stroke-linejoin="round"/>';
+    s+='<path d="M48 102 C52 100 68 100 72 102 L74 112 C66 116 54 116 46 112 Z" fill="#fff" opacity=".2"/>';
+    s+='<path d="M58 100 L60 106 L62 100 Z" fill="'+main+'" stroke="'+ink+'" stroke-width="1"/>';
   }else{
-    s+='<rect x="49" y="106" width="10" height="26" rx="4" fill="'+pants+'" stroke="'+ink+'" stroke-width="1.3"/>';
-    s+='<rect x="61" y="106" width="10" height="26" rx="4" fill="'+pants+'" stroke="'+ink+'" stroke-width="1.3"/>';
-    s+='<path d="M51 118 h6 M63 118 h6" stroke="'+trTint(pants,0.35)+'" stroke-width="1.2"/>';
-  }
-  /* 鞋：高帮球鞋风 */
-  [48,62].forEach(function(x){
-    s+='<path d="M'+x+' 128 h12 v16 a5 5 0 0 1 -5 4 h-2 a5 5 0 0 1 -5 -4 Z" fill="'+boot+'" stroke="'+ink+'" stroke-width="1.3" stroke-linejoin="round"/>';
-    s+='<rect x="'+x+'" y="126" width="12" height="4" rx="2" fill="'+acc+'" stroke="'+ink+'" stroke-width="1"/>';
-    s+='<ellipse cx="'+(x+6)+'" cy="147" rx="5.5" ry="2" fill="'+trShade(boot,0.15)+'"/>';
-  });
-
-  /* 下装 */
-  if(girl){
-    s+='<path d="M46 96 L74 96 L80 118 Q60 124 40 118 Z" fill="url(#'+u+'cloth)" stroke="'+ink+'" stroke-width="1.5" stroke-linejoin="round"/>';
-    s+='<path d="M50 99 L70 99 L74 110 Q60 114 46 110 Z" fill="#fff" opacity=".2"/>';
-    s+='<path d="M46 96 h28 v4.5 h-28 z" fill="'+acc+'" stroke="'+ink+'" stroke-width="1"/>';
-  }else{
-    s+='<path d="M46 96 L74 96 L76 112 Q60 116 44 112 Z" fill="'+pants+'" stroke="'+ink+'" stroke-width="1.4" stroke-linejoin="round"/>';
-    s+='<path d="M46 96 h28 v5 h-28 z" fill="'+mainD+'" stroke="'+ink+'" stroke-width="1"/>';
-    s+='<rect x="54" y="108" width="12" height="4" rx="2" fill="'+acc+'" stroke="'+ink+'" stroke-width="1"/>';
+    s+='<path d="M46 100 C50 96 70 96 74 100 L76 122 C68 128 52 128 44 122 Z" fill="url(#'+u+'pt)" stroke="'+ink+'" stroke-width="1.3" stroke-linejoin="round"/>';
+    s+='<path d="M46 100 h28 v5 h-28 z" fill="'+jacketD+'" stroke="'+ink+'" stroke-width="1"/>';
   }
 
-  /* 黄/浅色内衬短袖（小智标志） */
-  s+='<path d="M46 70 Q60 64 74 70 L78 98 Q60 104 42 98 Z" fill="'+shirt+'" stroke="'+ink+'" stroke-width="1.5" stroke-linejoin="round"/>';
-  /* 上身背心 / 外套 */
-  if(girl){
-    s+='<path d="M46 68 Q60 62 74 68 L76 92 Q60 98 44 92 Z" fill="url(#'+u+'cloth)" stroke="'+ink+'" stroke-width="1.6" stroke-linejoin="round"/>';
-    s+='<path d="M52 66 Q60 78 68 66 Q64 84 60 86 Q56 84 52 66 Z" fill="url(#'+u+'skin)" stroke="'+ink+'" stroke-width="1.2"/>';
-    s+='<circle cx="60" cy="84" r="3.4" fill="'+acc+'" stroke="'+ink+'" stroke-width="1.2"/>';
-    s+='<circle cx="60" cy="84" r="1.3" fill="#fff" stroke="none"/>';
-  }else{
-    /* 无袖背心 + 白条纹 */
-    s+='<path d="M44 68 L50 66 L54 92 L46 96 Z" fill="url(#'+u+'cloth)" stroke="'+ink+'" stroke-width="1.5" stroke-linejoin="round"/>';
-    s+='<path d="M76 68 L70 66 L66 92 L74 96 Z" fill="url(#'+u+'cloth)" stroke="'+ink+'" stroke-width="1.5" stroke-linejoin="round"/>';
-    s+='<path d="M50 66 Q60 62 70 66 L72 94 Q60 100 48 94 Z" fill="url(#'+u+'cloth)" stroke="'+ink+'" stroke-width="1.6" stroke-linejoin="round"/>';
-    s+='<path d="M54 70 L54 90 M66 70 L66 90" stroke="#FFF8E7" stroke-width="2.2" stroke-linecap="round" opacity=".9"/>';
-    s+='<path d="M52 66 Q60 76 68 66 Q64 84 60 86 Q56 84 52 66 Z" fill="url(#'+u+'skin)" stroke="'+ink+'" stroke-width="1.2"/>';
-    s+='<circle cx="60" cy="82" r="3.2" fill="'+acc+'" stroke="'+ink+'" stroke-width="1.2"/>';
-    s+='<circle cx="60" cy="82" r="1.2" fill="#fff" stroke="none"/>';
+  /* ===== 躯干：圆润夹克一体成型 ===== */
+  s+='<path d="M42 78 C46 68 74 68 78 78 L82 104 C70 112 50 112 38 104 Z" fill="'+shirt+'" stroke="'+ink+'" stroke-width="1.3" stroke-linejoin="round"/>';
+  /* 夹克罩衫 */
+  s+='<path d="M40 76 C46 66 74 66 80 76 L84 102 C72 112 48 112 36 102 Z" fill="url(#'+u+'jk)" stroke="'+ink+'" stroke-width="1.4" stroke-linejoin="round"/>';
+  /* 领口露出皮肤 */
+  s+='<path d="M52 72 C56 80 64 80 68 72 C64 86 56 86 52 72 Z" fill="url(#'+u+'sk)" stroke="'+ink+'" stroke-width="1.1"/>';
+  /* 白滚边领 */
+  s+='<path d="M50 72 C56 78 64 78 70 72" stroke="#FFFDF7" stroke-width="2.2" fill="none" stroke-linecap="round"/>';
+  /* 门襟 */
+  if(!girl){
+    s+='<path d="M56 78 L56 100 M64 78 L64 100" stroke="#FFFDF7" stroke-width="1.8" stroke-linecap="round" opacity=".85"/>';
   }
+  s+='<circle cx="60" cy="88" r="2.6" fill="'+acc+'" stroke="'+ink+'" stroke-width="1"/>';
 
-  /* 手臂（贴身，不出框） */
-  s+='<path d="M44 72 Q38 86 38 96" stroke="url(#'+u+'skin)" stroke-width="6.5" fill="none" stroke-linecap="round"/>';
-  s+='<path d="M76 72 Q82 86 82 96" stroke="url(#'+u+'skin)" stroke-width="6.5" fill="none" stroke-linecap="round"/>';
-  /* 半指手套 */
-  s+='<rect x="33" y="88" width="9" height="5.5" rx="2.5" fill="'+(girl?'#FFF0F5':trShade(sub,0.15))+'" stroke="'+ink+'" stroke-width="1.1"/>';
-  s+='<rect x="78" y="88" width="9" height="5.5" rx="2.5" fill="'+(girl?'#FFF0F5':trShade(sub,0.15))+'" stroke="'+ink+'" stroke-width="1.1"/>';
-  s+='<circle cx="38" cy="98" r="4.2" fill="'+(girl?'#FFF8E7':'#37474F')+'" stroke="'+ink+'" stroke-width="1.2"/>';
-  s+='<circle cx="82" cy="98" r="4.2" fill="'+(girl?'#FFF8E7':'#37474F')+'" stroke="'+ink+'" stroke-width="1.2"/>';
-
-  /* 腰间精灵球 */
-  var bx=girl?76:44;
-  s+='<circle cx="'+bx+'" cy="100" r="5.5" fill="#EE1515" stroke="'+ink+'" stroke-width="1.4"/>'+
-    '<path d="M'+(bx-5.5)+' 100 h11" stroke="'+ink+'" stroke-width="1.8"/>'+
-    '<path d="M'+(bx-5.5)+' 100 a5.5 5.5 0 0 0 11 0" fill="#FFF8E7" stroke="'+ink+'" stroke-width="1.2"/>'+
-    '<circle cx="'+bx+'" cy="100" r="1.8" fill="#FFF8E7" stroke="'+ink+'" stroke-width="1.1"/>';
+  /* ===== 手臂：真正的胶囊肢体 + 手套感小手 ===== */
+  /* 左臂微抬 */
+  s+='<path d="M42 80 C34 88 32 100 34 108" stroke="url(#'+u+'sk)" stroke-width="8" fill="none" stroke-linecap="round"/>';
+  s+='<ellipse cx="34" cy="110" rx="5" ry="4.6" fill="url(#'+u+'sk)" stroke="'+ink+'" stroke-width="1.15"/>';
+  /* 右臂抱精灵球 */
+  s+='<path d="M78 80 C86 88 88 98 86 106" stroke="url(#'+u+'sk)" stroke-width="8" fill="none" stroke-linecap="round"/>';
+  s+='<ellipse cx="86" cy="108" rx="5" ry="4.6" fill="url(#'+u+'sk)" stroke="'+ink+'" stroke-width="1.15"/>';
+  /* 手里的精灵球 */
+  s+='<circle cx="78" cy="112" r="7" fill="#EE1515" stroke="'+ink+'" stroke-width="1.35"/>';
+  s+='<path d="M71 112 a7 7 0 0 0 14 0" fill="#FFFDF7" stroke="'+ink+'" stroke-width="1.15"/>';
+  s+='<path d="M71 112 h14" stroke="'+ink+'" stroke-width="1.7"/>';
+  s+='<circle cx="78" cy="112" r="2.2" fill="#FFFDF7" stroke="'+ink+'" stroke-width="1.1"/>';
 
   if(o.id==='snow'){
-    s+='<path d="M50 70 q10 8 20 0 l0 6 q-10 6 -20 0 Z" fill="#fff" stroke="'+ink+'" stroke-width="1.2"/>';
+    s+='<path d="M48 74 q12 9 24 0 v6 q-12 7 -24 0 Z" fill="#fff" stroke="'+ink+'" stroke-width="1.1"/>';
   }
 
-  /* 脖子 + 头（大头 Q 版） */
-  s+='<rect x="55" y="58" width="10" height="9" rx="3.5" fill="'+trShade(skin,0.05)+'" stroke="'+ink+'" stroke-width="1.1"/>';
-  s+='<circle cx="42" cy="48" r="3.4" fill="'+skin+'" stroke="'+ink+'" stroke-width="1.2"/>';
-  s+='<circle cx="78" cy="48" r="3.4" fill="'+skin+'" stroke="'+ink+'" stroke-width="1.2"/>';
-  s+='<ellipse cx="60" cy="44" rx="20" ry="21" fill="url(#'+u+'skin)" stroke="'+ink+'" stroke-width="1.7"/>';
+  /* ===== 头：更圆的 Q 版脸 ===== */
+  s+='<ellipse cx="60" cy="62" rx="6" ry="5" fill="url(#'+u+'sk)"/>';
+  s+='<circle cx="60" cy="46" r="22" fill="url(#'+u+'sk)" stroke="'+ink+'" stroke-width="1.55"/>';
+  /* 耳朵藏在发里，轻点一下 */
+  s+='<ellipse cx="39" cy="48" rx="3" ry="3.4" fill="url(#'+u+'sk)" stroke="'+ink+'" stroke-width="1"/>';
+  s+='<ellipse cx="81" cy="48" rx="3" ry="3.4" fill="url(#'+u+'sk)" stroke="'+ink+'" stroke-width="1"/>';
 
-  /* 动漫大眼睛 */
-  [51,69].forEach(function(cx){
-    s+='<ellipse cx="'+cx+'" cy="45" rx="5.6" ry="6.8" fill="#fff" stroke="'+ink+'" stroke-width="1.2"/>';
-    s+='<ellipse cx="'+cx+'" cy="46" rx="4.2" ry="5.2" fill="'+eyeC+'"/>';
-    s+='<ellipse cx="'+cx+'" cy="47.5" rx="2.1" ry="3" fill="#0D1B4C"/>';
-    s+='<ellipse cx="'+(cx-1.6)+'" cy="43.2" rx="1.7" ry="2" fill="#fff"/>';
-    s+='<circle cx="'+(cx+1.8)+'" cy="48.5" r=".9" fill="#fff" opacity=".95"/>';
-    s+='<path d="M'+(cx-5)+' 40 Q'+cx+' 36.5 '+(cx+5)+' 40" stroke="'+hairD+'" stroke-width="1.8" fill="none" stroke-linecap="round"/>';
+  /* ===== 五官：扁杏仁小眼睛 ===== */
+  [51.5,68.5].forEach(function(cx){
+    s+='<ellipse cx="'+cx+'" cy="48.2" rx="3.2" ry="2.35" fill="#fff" stroke="'+ink+'" stroke-width=".95"/>';
+    s+='<ellipse cx="'+cx+'" cy="48.4" rx="2.05" ry="1.65" fill="'+eyeC+'"/>';
+    s+='<ellipse cx="'+cx+'" cy="48.6" rx="1.05" ry=".9" fill="#1E2A5A"/>';
+    s+='<circle cx="'+(cx-0.85)+'" cy="47.5" r=".7" fill="#fff"/>';
+    s+='<path d="M'+(cx+2.7)+' 47.4 Q'+(cx+3.8)+' 46.6 '+(cx+4.1)+' 47.8" stroke="'+ink+'" stroke-width=".9" fill="none" stroke-linecap="round"/>';
   });
-  s+='<ellipse cx="45" cy="52" rx="3.2" ry="1.8" fill="#FF8A9B" opacity=".45"/>';
-  s+='<ellipse cx="75" cy="52" rx="3.2" ry="1.8" fill="#FF8A9B" opacity=".45"/>';
-  s+='<path d="M56 55 Q60 58 64 55" stroke="#C62828" stroke-width="1.5" fill="none" stroke-linecap="round"/>';
+  s+='<path d="M47 44 Q51.5 42.6 55 43.8" stroke="'+hairD+'" stroke-width="1.1" fill="none" stroke-linecap="round"/>';
+  s+='<path d="M65 43.8 Q68.5 42.6 73 44" stroke="'+hairD+'" stroke-width="1.1" fill="none" stroke-linecap="round"/>';
+  s+='<ellipse cx="44.5" cy="53" rx="2.8" ry="1.5" fill="#FF8FAB" opacity=".42"/>';
+  s+='<ellipse cx="75.5" cy="53" rx="2.8" ry="1.5" fill="#FF8FAB" opacity=".42"/>';
+  s+='<ellipse cx="60" cy="52.2" rx=".85" ry=".5" fill="'+trShade(skin,.12)+'"/>';
+  s+='<path d="M56.5 56.2 Q60 58.6 63.5 56.2" stroke="#E53935" stroke-width="1.3" fill="none" stroke-linecap="round"/>';
 
-  /* 前发（尖刺刘海，游戏主角感） */
+  /* ===== 前发：全新刘海分片 ===== */
   if(girl){
-    s+='<path d="M40 42 C40 24 50 18 60 18 C70 18 80 24 80 42 C76 32 72 30 68 32 C65 24 61 22 58 30 C52 26 44 32 40 42 Z" fill="url(#'+u+'hair)" stroke="'+ink+'" stroke-width="1.4" stroke-linejoin="round"/>';
-    s+='<path d="M42 40 Q38 54 42 68" stroke="url(#'+u+'hair)" stroke-width="5.5" fill="none" stroke-linecap="round"/>';
-    s+='<path d="M78 40 Q82 54 78 68" stroke="url(#'+u+'hair)" stroke-width="5.5" fill="none" stroke-linecap="round"/>';
+    s+='<path d="M40 46 C40 26 48 18 60 18 C72 18 80 26 80 46 C76 36 72 32 68 34 C65 26 61 24 58 32 C54 28 46 34 40 46 Z" fill="url(#'+u+'hr)" stroke="'+ink+'" stroke-width="1.2" stroke-linejoin="round"/>';
+    s+='<path d="M42 44 C40 54 41 64 44 72" stroke="url(#'+u+'hr)" stroke-width="4.5" fill="none" stroke-linecap="round"/>';
+    s+='<path d="M78 44 C80 54 79 64 76 72" stroke="url(#'+u+'hr)" stroke-width="4.5" fill="none" stroke-linecap="round"/>';
   }else{
-    s+='<path d="M40 42 C40 24 50 18 60 18 C70 18 80 24 80 42 C77 34 74 30 70 32 L68 22 L64 32 L60 20 L56 31 C52 26 44 32 40 42 Z" fill="url(#'+u+'hair)" stroke="'+ink+'" stroke-width="1.4" stroke-linejoin="round"/>';
+    s+='<path d="M39 46 C39 26 48 18 60 18 C72 18 81 26 81 46 C78 36 74 30 70 32 L68 22 L64 33 L60 20 L56 33 L52 24 C48 30 43 36 39 46 Z" fill="url(#'+u+'hr)" stroke="'+ink+'" stroke-width="1.2" stroke-linejoin="round"/>';
   }
-  s+='<path d="M48 28 C54 22 66 22 72 28" stroke="#fff" stroke-opacity=".28" stroke-width="2" fill="none"/>';
+  s+='<path d="M48 28 C54 23 66 23 72 28" stroke="#fff" stroke-opacity=".25" stroke-width="1.8" fill="none"/>';
 
   s+=trainerHatSVG(o.id,o,girl);
   s+='</svg>';
