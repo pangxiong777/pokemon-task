@@ -943,24 +943,36 @@ function pickWeighted(list){var total=list.reduce(function(a,x){return a+x.w;},0
 function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
 
 /* ================= 声音 ================= */
-var AC=null, SOUND=true;
+var AC=null, SOUND=true, AUDIO_UNLOCKED=false;
 function audio(){if(!SOUND)return null;if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){AC=null;}}return AC;}
-/* iOS/Safari 常把 AudioContext 挂起；每次发声前都尝试 resume */
-function ensureAudio(){
+/* iOS/Safari：必须在用户手势里同步解锁（静音 buffer + resume） */
+function unlockAudio(){
   if(!SOUND) return null;
-  var ac=audio();
-  if(ac&&ac.state==='suspended'&&ac.resume){
+  var ac=audio(); if(!ac) return null;
+  try{ if(ac.state==='suspended'&&ac.resume) ac.resume(); }catch(e){}
+  if(!AUDIO_UNLOCKED){
     try{
-      var p=ac.resume();
-      if(p&&typeof p.then==='function') window.__acResume=p;
-    }catch(e){}
+      var buf=ac.createBuffer(1,1,ac.sampleRate||22050);
+      var src=ac.createBufferSource();
+      src.buffer=buf; src.connect(ac.destination); src.start(0);
+      AUDIO_UNLOCKED=true;
+    }catch(e2){}
+    try{
+      var o=ac.createOscillator(), g=ac.createGain();
+      g.gain.value=0.0001; o.connect(g); g.connect(ac.destination);
+      o.start(0); o.stop(ac.currentTime+0.02);
+    }catch(e3){}
   }
   return ac;
+}
+function ensureAudio(){
+  if(!SOUND) return null;
+  return unlockAudio();
 }
 /* 等 AudioContext 真正跑起来再发声（解决 iOS 上 resume 异步导致首段静音） */
 function withAudio(fn){
   if(!SOUND||!fn) return;
-  var ac=ensureAudio();
+  var ac=unlockAudio();
   if(!ac){ try{fn();}catch(e){} return; }
   if(ac.state==='running'){ try{fn();}catch(e){} return; }
   var go=function(){ try{fn();}catch(e){} };
@@ -971,24 +983,42 @@ function withAudio(fn){
   go();
 }
 function beep(f,d,type,vol){
-  var ac=ensureAudio(); if(!ac) return;
+  if(!SOUND) return;
+  var ac=unlockAudio(); if(!ac) return;
+  var play=function(){
+    try{
+      var o=ac.createOscillator(), g=ac.createGain(), t=ac.currentTime, v=Math.max(0.001, vol||0.15);
+      o.type=type||'sine'; o.frequency.setValueAtTime(Math.max(40,f||440), t);
+      g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.001, t+(d||0.1));
+      o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+(d||0.1)+0.02);
+    }catch(e){}
+  };
+  if(ac.state==='running'){ play(); return; }
   try{
-    var o=ac.createOscillator(), g=ac.createGain(), t=ac.currentTime, v=Math.max(0.001, vol||0.15);
-    o.type=type||'sine'; o.frequency.setValueAtTime(Math.max(40,f||440), t);
-    g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.001, t+(d||0.1));
-    o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+(d||0.1)+0.02);
+    var p=ac.resume&&ac.resume();
+    if(p&&typeof p.then==='function'){ p.then(play).catch(play); return; }
   }catch(e){}
+  play();
 }
 function beepSlide(f0,f1,d,type,vol){
-  var ac=ensureAudio(); if(!ac) return;
+  if(!SOUND) return;
+  var ac=unlockAudio(); if(!ac) return;
+  var play=function(){
+    try{
+      var o=ac.createOscillator(), g=ac.createGain(), t=ac.currentTime, v=Math.max(0.001, vol||0.12);
+      o.type=type||'sine';
+      o.frequency.setValueAtTime(Math.max(40,f0||200), t);
+      o.frequency.exponentialRampToValueAtTime(Math.max(40,f1||200), t+(d||0.2));
+      g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.001, t+(d||0.2));
+      o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+(d||0.2)+0.02);
+    }catch(e){}
+  };
+  if(ac.state==='running'){ play(); return; }
   try{
-    var o=ac.createOscillator(), g=ac.createGain(), t=ac.currentTime, v=Math.max(0.001, vol||0.12);
-    o.type=type||'sine';
-    o.frequency.setValueAtTime(Math.max(40,f0||200), t);
-    o.frequency.exponentialRampToValueAtTime(Math.max(40,f1||200), t+(d||0.2));
-    g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(0.001, t+(d||0.2));
-    o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+(d||0.2)+0.02);
+    var p=ac.resume&&ac.resume();
+    if(p&&typeof p.then==='function'){ p.then(play).catch(play); return; }
   }catch(e){}
+  play();
 }
 function sfxClick(){beep(660,0.07,'triangle',0.1);}
 function sfxOk(){beep(660,0.1,'triangle',0.14);setTimeout(function(){beep(880,0.14,'triangle',0.14);},90);}
@@ -2732,7 +2762,7 @@ try{
   }
 }catch(e){}
 function primeVoice(){
-  try{ ensureAudio(); }catch(e){}
+  try{ unlockAudio(); }catch(e){}
   if(voicePrimed) return;
   voicePrimed=true;
   try{
@@ -2747,7 +2777,7 @@ function primeVoice(){
   }catch(e){}
 }
 ['pointerdown','touchstart','click'].forEach(function(ev){
-  document.addEventListener(ev,function(){ try{ primeVoice(); }catch(e){} },{capture:true,passive:true});
+  document.addEventListener(ev,function(){ try{ unlockAudio(); primeVoice(); }catch(e){} },{capture:true,passive:true});
 });
 function speakFallback(text, sync){
   if(!text||!soundEnabled()) return;
@@ -3599,43 +3629,46 @@ function stopCry(){
 function sfxSkill(type){
   stopCry();
   type=type||'一般';
+  /* 先在当前手势里同步解锁并打出第一下，避免手机只播动画不出声 */
+  try{ unlockAudio(); }catch(e0){}
+  beep(220,0.08,'square',0.32);
   withAudio(function(){
-    /* 音量加大，确保手机外放可听 */
+    /* 手机外放音量再抬高一档 */
     if(type==='火'){
-      beep(190,0.12,'sawtooth',0.22); setTimeout(function(){beep(360,0.18,'sawtooth',0.24);},70);
-      setTimeout(function(){beep(520,0.24,'triangle',0.2);},180);
-      setTimeout(function(){beep(720,0.16,'sawtooth',0.16);},320);
+      beep(190,0.14,'sawtooth',0.36); setTimeout(function(){beep(360,0.2,'sawtooth',0.38);},70);
+      setTimeout(function(){beep(520,0.26,'triangle',0.32);},180);
+      setTimeout(function(){beep(720,0.18,'sawtooth',0.26);},320);
     }else if(type==='水'){
-      beep(480,0.1,'sine',0.2); setTimeout(function(){beep(360,0.14,'sine',0.22);},90);
-      setTimeout(function(){beep(260,0.22,'triangle',0.2);},200);
-      setTimeout(function(){beepSlide(400,180,0.2,'sine',0.16);},340);
+      beep(480,0.12,'sine',0.34); setTimeout(function(){beep(360,0.16,'sine',0.36);},90);
+      setTimeout(function(){beep(260,0.24,'triangle',0.32);},200);
+      setTimeout(function(){beepSlide(400,180,0.22,'sine',0.28);},340);
     }else if(type==='电'){
-      beep(980,0.06,'square',0.2); setTimeout(function(){beep(1400,0.06,'square',0.22);},60);
-      setTimeout(function(){beep(760,0.16,'sawtooth',0.22);},130); setTimeout(function(){beep(1600,0.1,'square',0.18);},240);
+      beep(980,0.08,'square',0.34); setTimeout(function(){beep(1400,0.08,'square',0.36);},60);
+      setTimeout(function(){beep(760,0.18,'sawtooth',0.36);},130); setTimeout(function(){beep(1600,0.12,'square',0.3);},240);
     }else if(type==='草'){
-      beep(520,0.1,'triangle',0.2); setTimeout(function(){beep(660,0.14,'sine',0.22);},100);
-      setTimeout(function(){beep(784,0.2,'triangle',0.2);},220);
+      beep(520,0.12,'triangle',0.34); setTimeout(function(){beep(660,0.16,'sine',0.36);},100);
+      setTimeout(function(){beep(784,0.22,'triangle',0.32);},220);
     }else if(type==='岩石'||type==='地面'){
-      beep(120,0.16,'sawtooth',0.24); setTimeout(function(){beep(90,0.2,'square',0.22);},110);
-      setTimeout(function(){beep(160,0.14,'triangle',0.18);},240);
+      beep(120,0.18,'sawtooth',0.38); setTimeout(function(){beep(90,0.22,'square',0.36);},110);
+      setTimeout(function(){beep(160,0.16,'triangle',0.3);},240);
     }else if(type==='飞行'||type==='龙'){
-      beep(420,0.1,'sine',0.2); setTimeout(function(){beep(640,0.12,'triangle',0.22);},80);
-      setTimeout(function(){beep(880,0.18,'sine',0.2);},180);
+      beep(420,0.12,'sine',0.34); setTimeout(function(){beep(640,0.14,'triangle',0.36);},80);
+      setTimeout(function(){beep(880,0.2,'sine',0.32);},180);
     }else if(type==='超能力'||type==='妖精'){
-      beep(700,0.12,'sine',0.2); setTimeout(function(){beep(940,0.14,'triangle',0.22);},120);
-      setTimeout(function(){beep(1180,0.22,'sine',0.2);},240);
+      beep(700,0.14,'sine',0.34); setTimeout(function(){beep(940,0.16,'triangle',0.36);},120);
+      setTimeout(function(){beep(1180,0.24,'sine',0.32);},240);
     }else if(type==='毒'||type==='恶'){
-      beep(240,0.14,'sawtooth',0.2); setTimeout(function(){beep(180,0.18,'square',0.22);},120);
-      setTimeout(function(){beep(300,0.16,'triangle',0.18);},250);
+      beep(240,0.16,'sawtooth',0.34); setTimeout(function(){beep(180,0.2,'square',0.36);},120);
+      setTimeout(function(){beep(300,0.18,'triangle',0.3);},250);
     }else if(type==='冰'){
-      beep(860,0.09,'sine',0.18); setTimeout(function(){beep(1100,0.12,'triangle',0.2);},90);
-      setTimeout(function(){beep(1320,0.18,'sine',0.2);},200);
+      beep(860,0.1,'sine',0.32); setTimeout(function(){beep(1100,0.14,'triangle',0.34);},90);
+      setTimeout(function(){beep(1320,0.2,'sine',0.32);},200);
     }else if(type==='格斗'||type==='虫'){
-      beep(280,0.1,'square',0.22); setTimeout(function(){beep(180,0.12,'sawtooth',0.2);},80);
-      setTimeout(function(){beep(420,0.16,'triangle',0.18);},200);
+      beep(280,0.12,'square',0.36); setTimeout(function(){beep(180,0.14,'sawtooth',0.34);},80);
+      setTimeout(function(){beep(420,0.18,'triangle',0.3);},200);
     }else{
-      beep(340,0.1,'square',0.2); setTimeout(function(){beep(520,0.12,'triangle',0.22);},90);
-      setTimeout(function(){beep(700,0.18,'sine',0.2);},200);
+      beep(340,0.12,'square',0.34); setTimeout(function(){beep(520,0.14,'triangle',0.36);},90);
+      setTimeout(function(){beep(700,0.2,'sine',0.32);},200);
     }
   });
 }
@@ -3668,15 +3701,8 @@ function playSkill(mid,moveName){
     var mon=findMonById(mid);
     if(!mon){ toast('找不到这只伙伴'); return; }
     window.__skReturnMid=String(mon.id);
-    /* 必须在用户点击手势内立刻解锁音频，不能延后 */
-    try{ primeVoice(); ensureAudio(); }catch(e0){}
-    stopCry();
-    closeSkill();
-    /* 只关掉「选招式」上层弹窗，保留宝可梦详情，关掉演示后还能回来 */
-    try{
-      var mr=$('modalRoot');
-      if(mr&&mr.childNodes.length>1) closeTopModal();
-    }catch(eClose){}
+    /* 声音开关与当前存档同步；必须在点击手势内立刻解锁并发出第一声 */
+    try{ SOUND=!(S&&S.sound===false); unlockAudio(); primeVoice(); }catch(e0){}
     var sp=spec(mon.sid)||{type:'一般',name:mon.nick};
     var mvList=movesOf(mon);
     var known={}; mvList.forEach(function(x){ known[x.m]=true; });
@@ -3687,6 +3713,15 @@ function playSkill(mid,moveName){
     }
     var info=(typeof MOVE_INFO!=='undefined'&&MOVE_INFO[mv])?MOVE_INFO[mv]:{t:sp.type||'一般',p:30};
     var mtype=info.t||sp.type||'一般';
+    /* 先发招式音效，再改 DOM，避免手机端手势失效导致无声 */
+    try{ sfxSkill(mtype); }catch(e1){}
+    stopCry();
+    closeSkill();
+    /* 只关掉「选招式」上层弹窗，保留宝可梦详情，关掉演示后还能回来 */
+    try{
+      var mr=$('modalRoot');
+      if(mr&&mr.childNodes.length>1) closeTopModal();
+    }catch(eClose){}
     var col=tc(mtype);
     var fx=(typeof SKILL_FX!=='undefined'&&SKILL_FX[mtype])?SKILL_FX[mtype]:(SKILL_FX&&SKILL_FX['一般'])||{e:['⭐','✨','💫'],anim:'sk-burst',proj:'go-burst',pose:'hit'};
     var pose=skillPose(info,fx);
@@ -3711,7 +3746,6 @@ function playSkill(mid,moveName){
     root.addEventListener('click',function(){ closeSkill(); });
     document.body.appendChild(root);
     window.__skRoot=root;
-    try{ sfxSkill(mtype); }catch(e1){}
     setTimeout(function(){ var p=root.querySelector('#skProj'); if(p) p.classList.add(fx.proj||'go-burst'); },420);
     setTimeout(function(){ var f=root.querySelector('.sk-flash'); if(f) f.classList.add('go'); },680);
     setTimeout(function(){ var w=root.querySelector('.sk-mon-wrap'); if(w) w.classList.add(pose); },720);
@@ -3739,13 +3773,15 @@ function closeSkill(){
   var root=document.getElementById('modalRoot');
   if(!root||root.__skillDemoBound) return;
   root.__skillDemoBound=true;
-  root.addEventListener('pointerdown',function(ev){
-    var t=ev.target;
+  function armSkillAudio(ev){
+    var t=ev&&ev.target;
     if(!t||!t.closest) return;
     if(t.closest('[data-skill-demo],[data-skill-pick]')){
-      try{ ensureAudio(); }catch(e){}
+      try{ SOUND=!(S&&S.sound===false); unlockAudio(); }catch(e){}
     }
-  },{passive:true});
+  }
+  root.addEventListener('touchstart',armSkillAudio,{passive:true,capture:true});
+  root.addEventListener('pointerdown',armSkillAudio,{passive:true,capture:true});
   root.addEventListener('click',function(ev){
     var t=ev.target;
     if(!t||!t.closest) return;
@@ -3754,15 +3790,15 @@ function closeSkill(){
     var pick=t.closest('[data-skill-pick]');
     if(pick){
       ev.preventDefault();
-      try{ ensureAudio(); }catch(e){}
+      try{ SOUND=!(S&&S.sound===false); unlockAudio(); }catch(e){}
       pickSkillDemo(pick.getAttribute('data-mid'));
       return;
     }
     var demo=t.closest('[data-skill-demo]');
     if(demo){
       ev.preventDefault();
-      try{ ensureAudio(); }catch(e){}
-      /* 同步调用，保留 iOS 用户手势，音频才能响起 */
+      try{ SOUND=!(S&&S.sound===false); unlockAudio(); }catch(e){}
+      /* 同步调用，保留手机用户手势，音频才能响起 */
       playSkill(demo.getAttribute('data-mid'), demo.getAttribute('data-move'));
     }
   });
