@@ -8,47 +8,67 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%23fff' stroke='%233b2f2f' stroke-width='6'/%3E%3Cpath d='M50 4a46 46 0 0 1 0 92z' fill='%23e3350d'/%3E%3Cpath d='M4 50h92' stroke='%233b2f2f' stroke-width='7'/%3E%3Ccircle cx='50' cy='50' r='16' fill='%23fff' stroke='%233b2f2f' stroke-width='6'/%3E%3Ccircle cx='50' cy='50' r='7' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="icon" href="icon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Noto+Sans+SC:wght@500;700;900&display=swap" rel="stylesheet">
 <style>
-/* ===== 基础 ===== */
+/* ===== 基础 · 宝可梦游戏菜单风 ===== */
 :root{
-  --pk-red:#e3350d; --pk-red-d:#c62828; --pk-yellow:#ffcb05; --pk-yellow-d:#f9a825;
-  --pk-ink:#3b2f2f; --pk-paper:#ffffff; --pk-bg1:#e3f4ff; --pk-bg2:#fff6e3;
-  --pk-green:#43a047; --pk-blue:#1e88e5; --pk-gray:#9e9e9e; --pk-soft:#f7f7f5;
-  --pk-line:#eee6da;
-  --r-lg:22px; --r-md:16px; --r-sm:12px;
-  --shadow:0 4px 14px rgba(59,47,47,.09);
+  --pk-red:#EE1515; --pk-red-d:#C62828; --pk-red-h:#FF4D3A;
+  --pk-yellow:#FFCB05; --pk-yellow-d:#F5B700; --pk-yellow-s:#FFE27A;
+  --pk-ink:#2A2420; --pk-ink-soft:#5C4E44;
+  --pk-paper:#FFF8E7; --pk-paper-2:#FFFCF3;
+  --pk-bg1:#9AD4FF; --pk-bg2:#C8E9A0; --pk-bg3:#F6F0C8;
+  --pk-green:#3D9B4A; --pk-blue:#2B7DE9; --pk-gray:#9E9E9E;
+  --pk-soft:#F3EAD8; --pk-line:#D9CDB8; --pk-edge:#2A2420;
+  --pk-sky:#7EC8FF; --pk-grass:#A8D86A;
+  --r-lg:20px; --r-md:16px; --r-sm:12px;
+  --shadow:0 6px 0 rgba(42,36,32,.12), 0 10px 24px rgba(42,36,32,.10);
+  --shadow-soft:0 3px 0 rgba(42,36,32,.08), 0 8px 18px rgba(42,36,32,.08);
+  --font-display:"Fredoka","Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --font-body:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --nav-h:78px;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{margin:0;padding:0;}
 body{
-  font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,-apple-system,"Segoe UI",sans-serif;
-  background:linear-gradient(180deg,var(--pk-bg1) 0%,var(--pk-bg2) 60%,#fff8ea 100%);
-  background-attachment:fixed;
+  font-family:var(--font-body);
   color:var(--pk-ink); min-height:100dvh;
+  background-color:var(--pk-bg3);
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(255,255,255,.55) 0 2px, transparent 3px),
+    radial-gradient(circle at 78% 32%, rgba(255,255,255,.4) 0 1.5px, transparent 3px),
+    radial-gradient(circle at 40% 72%, rgba(238,21,21,.08) 0 10px, transparent 11px),
+    radial-gradient(circle at 85% 80%, rgba(255,203,5,.12) 0 14px, transparent 15px),
+    linear-gradient(180deg, var(--pk-sky) 0%, #B8E4FF 28%, #E8F6C8 62%, var(--pk-grass) 100%);
+  background-attachment:fixed;
 }
 button{font-family:inherit;border:none;cursor:pointer;}
 input,textarea,select{font-family:inherit;font-size:16px;color:var(--pk-ink);}
 img{max-width:100%;}
 
-.app{max-width:520px;margin:0 auto;min-height:100dvh;padding-bottom:96px;position:relative;}
+.app{max-width:520px;margin:0 auto;min-height:100dvh;padding-bottom:calc(var(--nav-h) + 12px);position:relative;}
 
 /* ===== 头部 ===== */
 header{
   position:sticky;top:0;z-index:60;
   display:flex;align-items:center;gap:8px;
-  padding:10px 14px 10px 12px;
-  background:rgba(255,252,244,.92);backdrop-filter:blur(8px);
-  border-bottom:1px solid var(--pk-line);
+  padding:11px 14px 12px 12px;
+  background:rgba(255,248,231,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:3px solid var(--pk-edge);
+  box-shadow:inset 0 -3px 0 var(--pk-yellow), 0 6px 16px rgba(42,36,32,.08);
 }
-.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15.5px;letter-spacing:.3px;flex:1;min-width:0;white-space:nowrap;}
+.logo{display:flex;align-items:center;gap:9px;font-family:var(--font-display);font-weight:700;font-size:16.5px;letter-spacing:.4px;flex:1;min-width:0;white-space:nowrap;color:var(--pk-ink);}
+.logo img{flex:none;width:32px;height:32px;object-fit:contain;display:block;background:transparent;filter:drop-shadow(0 2px 0 rgba(42,36,32,.18));}
 .logo svg{flex:none;width:26px;height:26px;}
 .hd-right{display:flex;align-items:center;gap:5px;flex:none;}
 /* 孩子切换 */
 .kid-switch{
   display:inline-flex;align-items:center;gap:4px;max-width:104px;
-  background:linear-gradient(135deg,#fff9e8,#ffeecb);border:1.5px solid #f5c542;border-radius:99px;
-  padding:4px 8px 4px 5px;font-size:12.5px;font-weight:900;color:#8a5a00;
+  background:linear-gradient(180deg,#FFF9E0,#FFE9A0);border:2px solid var(--pk-edge);border-radius:99px;
+  padding:4px 8px 4px 5px;font-size:12.5px;font-weight:900;color:#7A4E00;
+  box-shadow:0 2px 0 rgba(42,36,32,.12);
 }
 .kid-switch .ks-av{font-size:16px;line-height:1;}
 .kid-switch .ks-nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:52px;}
@@ -59,11 +79,11 @@ header{
 .kid-list{display:flex;flex-direction:column;gap:8px;margin-top:10px;}
 .kid-card{
   display:flex;align-items:center;gap:10px;width:100%;text-align:left;
-  background:#fff;border:2px solid var(--pk-line);border-radius:16px;padding:10px 12px;
-  transition:transform .12s ease;
+  background:var(--pk-paper);border:2.5px solid var(--pk-edge);border-radius:16px;padding:10px 12px;
+  transition:transform .12s ease;box-shadow:0 2px 0 rgba(42,36,32,.08);
 }
 .kid-card:active{transform:scale(.98);}
-.kid-card.on{border-color:var(--pk-yellow);background:linear-gradient(135deg,#fffdf1,#fff6d9);box-shadow:0 3px 10px rgba(255,203,5,.3);}
+.kid-card.on{border-color:var(--pk-edge);background:linear-gradient(180deg,#FFFDF1,#FFE9A8);box-shadow:0 3px 0 rgba(42,36,32,.12),0 0 0 3px var(--pk-yellow);}
 .kid-card .kc-av{font-size:28px;line-height:1;flex:none;width:36px;text-align:center;}
 .kid-card .kc-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
 .kid-card .kc-tx b{font-size:15.5px;font-weight:900;color:var(--pk-ink);}
@@ -73,8 +93,8 @@ header{
 .av-wrap{display:flex;flex-wrap:wrap;gap:6px;}
 .av-pick{width:42px;height:42px;font-size:22px;background:#fff;border:2px solid var(--pk-line);border-radius:13px;display:grid;place-items:center;}
 .av-pick.on{border-color:var(--pk-yellow);background:linear-gradient(135deg,#fffdf1,#fff6d9);transform:scale(1.06);}
-.kid-row{display:flex;align-items:center;gap:9px;padding:9px 10px;border:1.5px solid var(--pk-line);border-radius:14px;margin-bottom:7px;background:#fff;}
-.kid-row.on{border-color:var(--pk-yellow);background:linear-gradient(135deg,#fffdf1,#fff6d9);}
+.kid-row{display:flex;align-items:center;gap:9px;padding:9px 10px;border:2.5px solid var(--pk-edge);border-radius:14px;margin-bottom:7px;background:var(--pk-paper);box-shadow:0 2px 0 rgba(42,36,32,.08);}
+.kid-row.on{border-color:var(--pk-edge);background:linear-gradient(180deg,#FFFDF1,#FFE9A8);box-shadow:0 2px 0 rgba(42,36,32,.1),0 0 0 2px rgba(255,203,5,.35);}
 .kid-row .kr-av{font-size:24px;line-height:1;}
 .kid-row .kr-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;}
 .kid-row .kr-tx b{font-size:14px;font-weight:900;}
@@ -84,17 +104,18 @@ header{
 .kid-row .kr-del{background:none;color:#c9b8a8;font-size:14px;font-weight:900;padding:2px 4px;}
 .chip{
   display:inline-flex;align-items:center;gap:3px;
-  background:#fff;border:1.5px solid var(--pk-line);border-radius:99px;
-  padding:5px 8px;font-size:11.5px;font-weight:700;color:var(--pk-ink);white-space:nowrap;
+  background:var(--pk-paper);border:2px solid var(--pk-edge);border-radius:99px;
+  padding:5px 9px;font-size:11.5px;font-weight:800;color:var(--pk-ink);white-space:nowrap;
+  box-shadow:0 2px 0 rgba(42,36,32,.1);
 }
-.chip.hot{background:linear-gradient(135deg,#fff7d6,#ffe9a8);border-color:#f5c542;color:#8a5a00;}
+.chip.hot{background:linear-gradient(180deg,#FFF7D6,#FFE08A);border-color:var(--pk-edge);color:#7A4E00;}
 .mode-btn{
   display:inline-flex;align-items:center;gap:3px;
-  background:linear-gradient(135deg,var(--pk-red),var(--pk-red-d));
-  color:#fff;border-radius:99px;padding:6px 9px;font-size:12px;font-weight:700;
-  box-shadow:0 3px 8px rgba(227,53,13,.35);white-space:nowrap;
+  background:linear-gradient(180deg,var(--pk-red-h),var(--pk-red));
+  color:#fff;border-radius:99px;padding:6px 10px;font-size:12px;font-weight:800;
+  border:2px solid var(--pk-edge);box-shadow:0 3px 0 rgba(42,36,32,.22);white-space:nowrap;
 }
-.mode-btn:active{transform:scale(.96);}
+.mode-btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(42,36,32,.22);}
 
 /* ===== 主视图 ===== */
 main{padding:14px 14px 8px;}
@@ -102,97 +123,124 @@ main{padding:14px 14px 8px;}
 @keyframes viewIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 
 .page-title{display:flex;align-items:baseline;gap:8px;margin:2px 2px 12px;}
-.page-title h2{margin:0;font-size:22px;font-weight:900;letter-spacing:.5px;}
-.page-title .sub{font-size:13px;color:#8a7a6a;font-weight:500;}
+.page-title h2{margin:0;font-family:var(--font-display);font-size:23px;font-weight:700;letter-spacing:.6px;color:var(--pk-ink);text-shadow:0 1px 0 rgba(255,255,255,.7);}
+.page-title .sub{font-size:13px;color:var(--pk-ink-soft);font-weight:700;}
 
 /* ===== 卡片 ===== */
 .card{
-  background:var(--pk-paper);border-radius:var(--r-lg);
-  box-shadow:var(--shadow);padding:16px;margin-bottom:14px;
-  border:1px solid rgba(255,255,255,.6);
+  background:linear-gradient(180deg,var(--pk-paper-2),var(--pk-paper));
+  border-radius:var(--r-lg);padding:16px;margin-bottom:14px;
+  border:3px solid var(--pk-edge);
+  box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.85);
+  position:relative;
 }
-.card h3{margin:0 0 10px;font-size:16px;font-weight:800;}
-.section-label{font-size:13px;font-weight:700;color:#8a7a6a;margin:2px 0 10px;display:flex;align-items:center;gap:6px;}
+.card h3{
+  margin:0 0 10px;font-family:var(--font-display);font-size:16.5px;font-weight:700;
+  color:var(--pk-ink);letter-spacing:.3px;
+  padding-bottom:8px;border-bottom:2px dashed var(--pk-line);
+}
+.section-label{
+  font-size:13px;font-weight:800;color:var(--pk-ink-soft);margin:2px 0 10px;
+  display:flex;align-items:center;gap:6px;font-family:var(--font-display);letter-spacing:.3px;
+}
 
 /* ===== 按钮 ===== */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:7px;
-  border-radius:99px;padding:13px 20px;font-size:16px;font-weight:800;
-  min-height:46px;transition:transform .12s ease,box-shadow .12s ease;
-  box-shadow:0 4px 10px rgba(59,47,47,.14);
+  border-radius:99px;padding:12px 20px;font-size:15.5px;font-weight:800;
+  min-height:46px;transition:transform .1s ease,box-shadow .1s ease;
+  border:2.5px solid var(--pk-edge);
+  box-shadow:0 4px 0 rgba(42,36,32,.2);
 }
-.btn:active{transform:scale(.96);}
-.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;}
-.btn-primary{background:linear-gradient(135deg,#ff6d3d,var(--pk-red));color:#fff;}
-.btn-red{background:linear-gradient(135deg,var(--pk-red),var(--pk-red-d));color:#fff;}
-.btn-yellow{background:linear-gradient(135deg,#ffe27a,var(--pk-yellow));color:#5d4300;}
-.btn-green{background:linear-gradient(135deg,#66bb6a,var(--pk-green));color:#fff;}
-.btn-blue{background:linear-gradient(135deg,#64b5f6,var(--pk-blue));color:#fff;}
-.btn-gray{background:#ececec;color:#6a5a4a;}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(42,36,32,.2);}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:0 2px 0 rgba(42,36,32,.12);}
+.btn-primary{background:linear-gradient(180deg,var(--pk-red-h),var(--pk-red));color:#fff;}
+.btn-red{background:linear-gradient(180deg,#FF5A45,var(--pk-red-d));color:#fff;}
+.btn-yellow{background:linear-gradient(180deg,var(--pk-yellow-s),var(--pk-yellow));color:#5D4300;}
+.btn-green{background:linear-gradient(180deg,#6BCF74,var(--pk-green));color:#fff;}
+.btn-blue{background:linear-gradient(180deg,#6BB0FF,var(--pk-blue));color:#fff;}
+.btn-gray{background:linear-gradient(180deg,#F4EFE6,#E4DCCE);color:#5C4E44;}
 .btn-block{display:flex;width:100%;}
-.btn-sm{padding:9px 14px;font-size:14px;min-height:42px;border-radius:14px;}
+.btn-sm{padding:8px 14px;font-size:13.5px;min-height:40px;border-radius:14px;border-width:2px;}
 .btn-lg{padding:15px 22px;font-size:17px;}
 
 /* ===== 输入 ===== */
 .field{margin-bottom:12px;}
-.field label{display:block;font-size:13px;font-weight:700;color:#8a7a6a;margin-bottom:6px;}
+.field label{display:block;font-size:13px;font-weight:800;color:var(--pk-ink-soft);margin-bottom:6px;}
 .field input,.field textarea,.field select{
-  width:100%;border:2px solid var(--pk-line);border-radius:14px;
-  padding:11px 13px;background:#fff;outline:none;
+  width:100%;border:2.5px solid var(--pk-edge);border-radius:14px;
+  padding:11px 13px;background:var(--pk-paper-2);outline:none;
+  box-shadow:inset 0 2px 0 rgba(42,36,32,.04);
 }
-.field input:focus,.field textarea:focus,.field select:focus{border-color:#f5b83d;}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--pk-yellow-d);box-shadow:0 0 0 3px rgba(255,203,5,.35);}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
 .chip-opt{
-  padding:9px 15px;border-radius:99px;background:#fff;border:2px solid var(--pk-line);
-  font-size:15px;font-weight:700;color:var(--pk-ink);min-height:40px;
+  padding:9px 15px;border-radius:99px;background:var(--pk-paper);border:2.5px solid var(--pk-edge);
+  font-size:14.5px;font-weight:800;color:var(--pk-ink);min-height:40px;
+  box-shadow:0 2px 0 rgba(42,36,32,.12);
 }
-.chip-opt.on{background:linear-gradient(135deg,#ffe27a,var(--pk-yellow));border-color:#f0b429;color:#5d4300;}
+.chip-opt.on{background:linear-gradient(180deg,var(--pk-yellow-s),var(--pk-yellow));border-color:var(--pk-edge);color:#5D4300;}
 
 /* ===== 宝可梦卡 ===== */
 .mon-card{
-  background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);
-  overflow:hidden;margin-bottom:14px;border:1px solid rgba(255,255,255,.6);
+  background:linear-gradient(180deg,var(--pk-paper-2),var(--pk-paper));
+  border-radius:var(--r-lg);margin-bottom:14px;
+  border:3px solid var(--pk-edge);box-shadow:var(--shadow);
+  overflow:hidden;
 }
 .mon-head{display:flex;align-items:center;gap:14px;padding:16px;position:relative;overflow:hidden;}
 .mon-ava{
-  width:76px;height:76px;border-radius:50%;flex:none;
+  width:78px;height:78px;border-radius:50%;flex:none;
   display:flex;align-items:center;justify-content:center;
-  background:#fff;box-shadow:inset 0 -4px 10px rgba(0,0,0,.06),0 2px 6px rgba(0,0,0,.08);
-  border:3px solid rgba(255,255,255,.85);overflow:hidden;
+  background:radial-gradient(circle at 35% 30%,#fff,#F3EAD8);
+  box-shadow:inset 0 -4px 10px rgba(0,0,0,.08),0 3px 0 rgba(42,36,32,.15);
+  border:3px solid var(--pk-edge);overflow:hidden;
 }
 .mon-ava img{width:100%;height:100%;object-fit:contain;padding:5px;}
 .mon-ava.small{width:56px;height:56px;font-size:30px;}
 .mon-info{flex:1;min-width:0;}
 .mon-name{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.mon-name b{font-size:19px;font-weight:900;}
-.type-tag{font-size:11px;font-weight:800;color:#fff;border-radius:8px;padding:2px 8px;letter-spacing:1px;}
+.mon-name b{font-family:var(--font-display);font-size:19px;font-weight:700;}
+.type-tag{font-size:11px;font-weight:900;color:#fff;border-radius:8px;padding:2px 8px;letter-spacing:1px;border:1.5px solid rgba(0,0,0,.18);text-shadow:0 1px 0 rgba(0,0,0,.2);}
 .lv-tag{
-  margin-left:auto;background:#3b2f2f;color:#ffe27a;font-weight:900;font-size:13px;
-  border-radius:99px;padding:3px 11px;
+  margin-left:auto;background:var(--pk-ink);color:var(--pk-yellow);font-weight:900;font-size:12.5px;
+  border-radius:99px;padding:3px 11px;border:1.5px solid #000;font-family:var(--font-display);
 }
-.mon-sub{font-size:12.5px;color:#8a7a6a;margin-top:4px;font-weight:500;}
+.mon-sub{font-size:12.5px;color:var(--pk-ink-soft);margin-top:4px;font-weight:700;}
 .xp-wrap{margin-top:10px;}
-.xp-top{display:flex;justify-content:space-between;font-size:11.5px;color:#8a7a6a;font-weight:700;margin-bottom:4px;}
-.xpbar{height:10px;background:rgba(255,255,255,.55);border-radius:99px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.12);}
-.xpfill{height:100%;background:linear-gradient(90deg,#ffe27a,#f5b83d,#43a047);border-radius:99px;transition:width .6s ease;}
-.mon-moves{display:flex;flex-wrap:wrap;gap:6px;padding:10px 16px 14px;background:var(--pk-soft);}
-.move{
-  font-size:12.5px;font-weight:700;background:#fff;border:1px solid var(--pk-line);
-  border-radius:10px;padding:5px 10px;display:inline-flex;align-items:center;gap:5px;
+.xp-top{display:flex;justify-content:space-between;font-size:11.5px;color:var(--pk-ink-soft);font-weight:800;margin-bottom:4px;}
+.xpbar{
+  height:12px;background:#3B322C;border-radius:99px;overflow:hidden;
+  border:2px solid var(--pk-edge);box-shadow:inset 0 2px 4px rgba(0,0,0,.35);
 }
-.move .new{background:linear-gradient(135deg,#ffe27a,var(--pk-yellow));color:#5d4300;border-radius:6px;padding:0 5px;font-size:10px;font-weight:900;}
+.xpfill{height:100%;background:linear-gradient(90deg,#FFE27A,#FFCB05 45%,#4CAF50);border-radius:99px;transition:width .6s ease;box-shadow:inset 0 1px 0 rgba(255,255,255,.45);}
+.mon-moves{display:flex;flex-wrap:wrap;gap:6px;padding:10px 16px 14px;background:var(--pk-soft);border-top:2px solid var(--pk-line);}
+.move{
+  font-size:12.5px;font-weight:800;background:var(--pk-paper);border:2px solid var(--pk-edge);
+  border-radius:10px;padding:5px 10px;display:inline-flex;align-items:center;gap:5px;
+  box-shadow:0 2px 0 rgba(42,36,32,.08);
+}
+.move .new{background:linear-gradient(180deg,var(--pk-yellow-s),var(--pk-yellow));color:#5D4300;border-radius:6px;padding:0 5px;font-size:10px;font-weight:900;border:1px solid var(--pk-edge);}
 
 /* ===== 首页/目标卡 ===== */
 .hero-card{
-  background:linear-gradient(135deg,#ff8a5c,#e3350d 70%,#c62828);
+  background:
+    linear-gradient(125deg, rgba(255,255,255,.22) 0 18%, transparent 19% 100%),
+    linear-gradient(160deg, #FF6A45 0%, var(--pk-red) 48%, #B71C1C 100%);
   color:#fff;border-radius:var(--r-lg);padding:18px;margin-bottom:14px;position:relative;overflow:hidden;
-  box-shadow:0 6px 18px rgba(227,53,13,.35);
+  border:3px solid var(--pk-edge);
+  box-shadow:0 6px 0 rgba(42,36,32,.2), 0 12px 28px rgba(238,21,21,.28);
 }
-.hero-card h2{margin:0 0 4px;font-size:21px;font-weight:900;}
-.hero-card .hi{font-size:13.5px;opacity:.95;font-weight:500;}
-.hero-card .stats{display:flex;gap:14px;margin-top:12px;flex-wrap:wrap;}
-.hero-stat{background:rgba(255,255,255,.18);border-radius:14px;padding:8px 13px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;}
-.hero-card .deco{position:absolute;right:-18px;bottom:-26px;font-size:96px;opacity:.18;transform:rotate(-12deg);pointer-events:none;}
+.hero-card::after{
+  content:"";position:absolute;right:-10px;bottom:-18px;width:120px;height:120px;
+  background:url(icon.png) center/contain no-repeat;opacity:.22;pointer-events:none;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.2));
+}
+.hero-card h2{margin:0 0 4px;font-family:var(--font-display);font-size:22px;font-weight:700;position:relative;z-index:1;text-shadow:0 2px 0 rgba(0,0,0,.18);}
+.hero-card .hi{font-size:13.5px;opacity:.95;font-weight:700;position:relative;z-index:1;}
+.hero-card .stats{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;position:relative;z-index:1;}
+.hero-stat{background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.35);border-radius:14px;padding:8px 12px;font-size:12.5px;font-weight:800;display:flex;align-items:center;gap:6px;backdrop-filter:blur(4px);}
+.hero-card .deco{display:none;}
 
 /* ===== 作业条目 ===== */
 .work-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px dashed var(--pk-line);}
@@ -210,13 +258,13 @@ main{padding:14px 14px 8px;}
 .fast-tag{font-size:10.5px;font-weight:900;background:linear-gradient(135deg,#ffe27a,var(--pk-yellow));color:#5d4300;border-radius:7px;padding:2px 7px;}
 
 /* ===== 道馆 ===== */
-.gym-row{display:flex;align-items:center;gap:12px;padding:12px;border-radius:18px;background:var(--pk-soft);margin-bottom:10px;border:1px solid var(--pk-line);}
-.gym-ico{width:52px;height:52px;border-radius:16px;flex:none;display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;box-shadow:inset 0 -3px 6px rgba(0,0,0,.18);}
+.gym-row{display:flex;align-items:center;gap:12px;padding:12px;border-radius:18px;background:linear-gradient(180deg,var(--pk-paper-2),var(--pk-soft));margin-bottom:10px;border:2.5px solid var(--pk-edge);box-shadow:0 3px 0 rgba(42,36,32,.1);}
+.gym-ico{width:52px;height:52px;border-radius:16px;flex:none;display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;box-shadow:inset 0 -3px 6px rgba(0,0,0,.18);border:2px solid var(--pk-edge);}
 .gym-info{flex:1;min-width:0;}
-.gym-info b{font-size:15.5px;font-weight:900;display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.gym-info b{font-size:15.5px;font-weight:900;display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-family:var(--font-display);}
 .gym-info .need{font-size:12px;color:#8a7a6a;font-weight:600;margin-top:2px;}
-.badge-tag{font-size:11px;font-weight:900;background:linear-gradient(135deg,#ffe27a,var(--pk-yellow));color:#5d4300;border-radius:8px;padding:2px 8px;}
-.badge-tag.got{background:#e2f5e3;color:#2e7d32;}
+.badge-tag{font-size:11px;font-weight:900;background:linear-gradient(180deg,var(--pk-yellow-s),var(--pk-yellow));color:#5D4300;border-radius:8px;padding:2px 8px;border:1.5px solid var(--pk-edge);}
+.badge-tag.got{background:linear-gradient(180deg,#E8F8E9,#C8E6C9);color:#1B5E20;border-color:#2E7D32;}
 
 /* ===== 捕捉 ===== */
 .aim-box{margin:16px 0;}
@@ -254,48 +302,66 @@ main{padding:14px 14px 8px;}
 
 /* ===== 徽章墙 ===== */
 .badge-wall{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-.badge-cell{text-align:center;padding:10px 4px;border-radius:16px;background:var(--pk-soft);border:1px solid var(--pk-line);}
+.badge-cell{text-align:center;padding:10px 4px;border-radius:16px;background:var(--pk-paper);border:2.5px solid var(--pk-edge);box-shadow:0 2px 0 rgba(42,36,32,.08);}
 .badge-cell .ic{font-size:30px;}
 .badge-cell .nm{font-size:11px;font-weight:800;margin-top:4px;color:#8a7a6a;}
-.badge-cell.got{background:linear-gradient(135deg,#fff3d0,#ffe9a8);border-color:#f0c24b;}
-.badge-cell.got .nm{color:#7a5200;}
+.badge-cell.got{background:linear-gradient(180deg,#FFF8E1,#FFE9A8);border-color:var(--pk-edge);box-shadow:0 2px 0 rgba(42,36,32,.1),0 0 0 2px rgba(255,203,5,.35);}
+.badge-cell.got .nm{color:#7A5200;}
 
 /* ===== 成就/统计 ===== */
 .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
-.stat-cell{background:var(--pk-soft);border-radius:16px;padding:12px;text-align:center;border:1px solid var(--pk-line);}
-.stat-cell b{display:block;font-size:24px;font-weight:900;line-height:1.2;}
-.stat-cell span{font-size:12px;color:#8a7a6a;font-weight:600;}
+.stat-cell{background:linear-gradient(180deg,var(--pk-paper-2),var(--pk-paper));border-radius:16px;padding:12px;text-align:center;border:2.5px solid var(--pk-edge);box-shadow:0 3px 0 rgba(42,36,32,.1);}
+.stat-cell b{display:block;font-size:24px;font-weight:900;line-height:1.2;font-family:var(--font-display);color:var(--pk-ink);}
+.stat-cell span{font-size:12px;color:#8a7a6a;font-weight:700;}
 
 /* ===== 底部导航 ===== */
 nav{
   position:fixed;bottom:0;left:0;right:0;z-index:60;
-  background:rgba(255,255,255,.96);backdrop-filter:blur(8px);
-  border-top:1px solid var(--pk-line);
+  padding:0 12px calc(10px + env(safe-area-inset-bottom,0px));
+  background:transparent;border:none;pointer-events:none;
 }
-.nav-inner{max-width:520px;margin:0 auto;display:flex;}
+.nav-inner{
+  max-width:496px;margin:0 auto;display:flex;
+  pointer-events:auto;
+  background:rgba(255,248,231,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:3px solid var(--pk-edge);border-radius:24px;
+  box-shadow:0 6px 0 rgba(42,36,32,.16), 0 -2px 0 var(--pk-yellow) inset, 0 12px 28px rgba(42,36,32,.14);
+  overflow:hidden;
+}
 .tab{
   flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
-  padding:9px 0 8px;font-size:11px;font-weight:700;color:#a09080;background:none;
+  padding:10px 0 9px;font-size:11px;font-weight:800;color:#8A7A6A;background:none;
+  position:relative;
 }
 .tab .ti{font-size:21px;line-height:1.15;}
-.tab.on{color:var(--pk-red);}
+.tab.on{
+  color:var(--pk-red);
+  background:linear-gradient(180deg,rgba(255,203,5,.42),rgba(255,203,5,.12));
+}
+.tab.on::after{
+  content:"";position:absolute;top:5px;width:6px;height:6px;border-radius:50%;
+  background:var(--pk-red);border:1.5px solid var(--pk-edge);box-shadow:0 0 0 2px var(--pk-yellow);
+}
 .tab .dot{width:5px;height:5px;border-radius:50%;background:var(--pk-red);}
 
 /* ===== 弹窗 ===== */
 .mask{
-  position:fixed;inset:0;z-index:100;background:rgba(30,20,20,.5);
+  position:fixed;inset:0;z-index:100;background:rgba(20,14,10,.55);
   display:flex;align-items:center;justify-content:center;padding:22px;
   animation:fadeIn .2s ease;
 }
 @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
 .dialog{
-  background:#fff;border-radius:24px;width:100%;max-width:420px;
-  padding:22px 20px;box-shadow:0 18px 50px rgba(0,0,0,.3);
+  background:linear-gradient(180deg,var(--pk-paper-2),var(--pk-paper));
+  border-radius:24px;width:100%;max-width:420px;
+  padding:22px 20px;
+  border:3.5px solid var(--pk-edge);
+  box-shadow:0 10px 0 rgba(42,36,32,.2), 0 22px 50px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.9);
   animation:dialogIn .28s cubic-bezier(.34,1.4,.64,1);max-height:88dvh;overflow:auto;
 }
 @keyframes dialogIn{from{opacity:0;transform:scale(.85) translateY(20px);}to{opacity:1;transform:none;}}
-.dialog h3{margin:0 0 8px;font-size:19px;font-weight:900;text-align:center;}
-.dialog .lead{text-align:center;font-size:13.5px;color:#8a7a6a;line-height:1.6;}
+.dialog h3{margin:0 0 8px;font-family:var(--font-display);font-size:20px;font-weight:700;text-align:center;letter-spacing:.4px;}
+.dialog .lead{text-align:center;font-size:13.5px;color:var(--pk-ink-soft);line-height:1.6;font-weight:600;}
 .dialog .big-emoji{text-align:center;font-size:64px;margin:8px 0;animation:bounceIn .5s ease;}
 @keyframes bounceIn{0%{transform:scale(0);}60%{transform:scale(1.2);}100%{transform:scale(1);}}
 .dlg-actions{display:flex;flex-direction:column;gap:10px;margin-top:16px;}
@@ -305,8 +371,9 @@ nav{
 /* ===== Toast ===== */
 #toast{position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:max-content;max-width:92vw;}
 .toast{
-  background:#3b2f2f;color:#fff;border-radius:99px;padding:9px 18px;
-  font-size:13.5px;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,.3);
+  background:var(--pk-ink);color:#fff;border-radius:99px;padding:9px 18px;
+  font-size:13.5px;font-weight:800;border:2px solid #000;
+  box-shadow:0 4px 0 rgba(0,0,0,.25), 0 0 0 3px var(--pk-yellow);
   animation:toastIn .25s ease;
 }
 @keyframes toastIn{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:none;}}
@@ -318,19 +385,20 @@ nav{
 
 /* ===== 初始选择页 ===== */
 .starter-wrap{padding-top:18px;text-align:center;}
-.starter-wrap h1{font-size:26px;font-weight:900;margin:6px 0 4px;}
-.starter-wrap .hi{font-size:14px;color:#8a7a6a;margin-bottom:14px;line-height:1.6;}
+.starter-wrap h1{font-family:var(--font-display);font-size:28px;font-weight:700;margin:6px 0 4px;letter-spacing:.5px;}
+.starter-wrap .hi{font-size:14px;color:var(--pk-ink-soft);margin-bottom:14px;line-height:1.6;font-weight:600;}
 .starter-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px;}
 .starter-card{
-  background:#fff;border-radius:20px;padding:18px 10px 14px;box-shadow:var(--shadow);
-  display:flex;flex-direction:column;align-items:center;gap:6px;border:3px solid transparent;
+  background:linear-gradient(180deg,var(--pk-paper-2),var(--pk-paper));
+  border-radius:20px;padding:18px 10px 14px;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;align-items:center;gap:6px;border:3px solid var(--pk-edge);
   transition:transform .12s ease;cursor:pointer;min-height:150px;
 }
 .starter-card:active{transform:scale(.95);}
-.starter-card .av{font-size:56px;line-height:1;width:74px;height:74px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#fff;border:3px solid var(--pk-line);overflow:hidden;}
+.starter-card .av{font-size:56px;line-height:1;width:74px;height:74px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#fff;border:3px solid var(--pk-edge);overflow:hidden;box-shadow:0 3px 0 rgba(42,36,32,.12);}
 .starter-card .av img{width:100%;height:100%;object-fit:contain;padding:4px;}
-.starter-card b{font-size:15px;font-weight:900;}
-.starter-card .ty{font-size:11px;font-weight:800;color:#fff;border-radius:8px;padding:2px 9px;}
+.starter-card b{font-family:var(--font-display);font-size:15px;font-weight:700;}
+.starter-card .ty{font-size:11px;font-weight:800;color:#fff;border-radius:8px;padding:2px 9px;border:1.5px solid rgba(0,0,0,.15);}
 .name-row{display:flex;gap:8px;align-items:center;margin-top:6px;}
 .name-row input{flex:1;text-align:center;font-size:17px;font-weight:800;}
 
@@ -343,17 +411,18 @@ table.rec tr:last-child td{border-bottom:none;}
 /* ===== 封印卡 ===== */
 .seal-card{
   border-radius:var(--r-lg);padding:16px;margin-bottom:14px;text-align:center;
-  background:linear-gradient(135deg,#5a4a8a,#3f3568);color:#fff;position:relative;overflow:hidden;
+  background:linear-gradient(160deg,#3A2F28 0%,#2A2420 55%,#1A1512 100%);color:#fff;position:relative;overflow:hidden;
+  border:3px solid var(--pk-edge);box-shadow:0 6px 0 rgba(42,36,32,.22), inset 0 0 0 3px rgba(255,203,5,.28);
 }
 .seal-card .ic{font-size:52px;animation:sealFloat 2.4s ease-in-out infinite;display:inline-block;}
 .seal-card .ic img{width:64px;height:64px;object-fit:contain;}
 @keyframes sealFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-7px);}}
-.seal-card b{font-size:16px;font-weight:900;display:block;margin:6px 0 2px;}
-.seal-card .d{font-size:12.5px;opacity:.85;line-height:1.5;}
+.seal-card b{font-size:16px;font-weight:900;display:block;margin:6px 0 2px;font-family:var(--font-display);color:var(--pk-yellow);}
+.seal-card .d{font-size:12.5px;opacity:.9;line-height:1.5;color:#F3EAD8;}
 .seal-ring{display:inline-block;margin:10px auto 0;width:86px;height:86px;border-radius:50%;
   background:conic-gradient(#ffe27a 0deg, #ffcb05 var(--deg,0deg), rgba(255,255,255,.18) var(--deg,0deg) 360deg);
-  display:flex;align-items:center;justify-content:center;}
-.seal-ring .inner{width:66px;height:66px;border-radius:50%;background:#3f3568;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;}
+  display:flex;align-items:center;justify-content:center;border:2px solid var(--pk-edge);}
+.seal-ring .inner{width:66px;height:66px;border-radius:50%;background:#1A1512;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:var(--pk-yellow);border:2px solid rgba(255,203,5,.35);}
 
 /* ===== 战斗 ===== */
 .battle-log{list-style:none;margin:0 0 14px;padding:0;text-align:center;}
@@ -361,13 +430,14 @@ table.rec tr:last-child td{border-bottom:none;}
 @keyframes logIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
 
 /* ===== 时间/空态 ===== */
-.empty{text-align:center;padding:26px 10px;color:#b0a090;}
+.empty{text-align:center;padding:26px 10px;color:#9A8874;}
 .empty .ic{font-size:46px;margin-bottom:8px;}
-.empty .t{font-size:14.5px;font-weight:700;margin-bottom:3px;}
-.empty .s{font-size:12.5px;}
+.empty .t{font-size:14.5px;font-weight:800;margin-bottom:3px;font-family:var(--font-display);color:var(--pk-ink-soft);}
+.empty .s{font-size:12.5px;font-weight:600;}
 .lock-note{
-  background:#fff3d6;border:1.5px dashed #f0b429;color:#8a5a00;border-radius:16px;
-  padding:14px;font-size:13.5px;font-weight:700;text-align:center;margin-bottom:14px;line-height:1.6;
+  background:linear-gradient(180deg,#FFF8E1,#FFE9A8);border:2.5px dashed var(--pk-edge);color:#7A4E00;border-radius:16px;
+  padding:14px;font-size:13.5px;font-weight:800;text-align:center;margin-bottom:14px;line-height:1.6;
+  box-shadow:0 3px 0 rgba(42,36,32,.08);
 }
 
 /* ===== 场景背景层（照顾 / 训练家过场共用，纯图片/CSS，无视频） ===== */
@@ -471,7 +541,7 @@ table.rec tr:last-child td{border-bottom:none;}
 
 /* 照顾页选项 */
 .care-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.care-item{display:flex;flex-direction:column;align-items:center;gap:2px;background:#fff;border:1.5px solid var(--pk-line);border-radius:16px;padding:9px 4px 7px;transition:transform .12s ease,box-shadow .12s ease;}
+.care-item{display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--pk-paper);border:2.5px solid var(--pk-edge);border-radius:16px;padding:9px 4px 7px;transition:transform .12s ease,box-shadow .12s ease;box-shadow:0 2px 0 rgba(42,36,32,.1);}
 .care-item:active{transform:scale(.94);}
 .care-item .ci{font-size:26px;line-height:1.15;}
 .care-item .cn{font-size:11.5px;font-weight:800;color:#6b5a4a;}
@@ -504,28 +574,34 @@ table.rec tr:last-child td{border-bottom:none;}
 .dmg-float.crit{color:#ff6d00;font-size:23px;}
 .dmg-float.heal{color:#2e7d32;}
 @keyframes dmgUp{0%{opacity:0;transform:translate(-50%,10px) scale(.7);}25%{opacity:1;}100%{opacity:0;transform:translate(-50%,-48px) scale(1.15);}}
-.vs-badge{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#e3350d,#ffcb05);color:#fff;font-weight:900;font-size:15px;padding:4px 16px;border-radius:99px;z-index:5;letter-spacing:1px;box-shadow:0 3px 10px rgba(0,0,0,.22);}
-.arena-msg{position:absolute;left:10px;right:10px;bottom:8px;background:rgba(255,255,255,.94);border-radius:12px;padding:7px 10px;font-size:12px;font-weight:800;color:#4a3f36;text-align:center;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,.1);min-height:32px;display:flex;align-items:center;justify-content:center;}
+.vs-badge{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:linear-gradient(180deg,var(--pk-red-h),var(--pk-red));color:#fff;font-weight:900;font-size:15px;padding:4px 16px;border-radius:99px;z-index:5;letter-spacing:1px;border:2px solid var(--pk-edge);box-shadow:0 3px 0 rgba(42,36,32,.25);}
+.arena-msg{position:absolute;left:10px;right:10px;bottom:8px;background:var(--pk-paper);border:2px solid var(--pk-edge);border-radius:12px;padding:7px 10px;font-size:12px;font-weight:800;color:var(--pk-ink);text-align:center;z-index:5;box-shadow:0 2px 0 rgba(42,36,32,.12);min-height:32px;display:flex;align-items:center;justify-content:center;}
 
 /* ===== 每日遇见 · 大木博士 ===== */
-.meet-banner{width:100%;display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#e8f1ff,#f4f9ff);border:1.5px solid #c5d8f5;border-radius:18px;padding:10px 12px;margin:10px 0 2px;box-shadow:var(--shadow);text-align:left;}
+.meet-banner{
+  width:100%;display:flex;align-items:center;gap:10px;
+  background:linear-gradient(180deg,#F3F9FF,#E7F2FF);
+  border:3px solid var(--pk-edge);border-radius:18px;padding:10px 12px;margin:10px 0 2px;
+  text-align:left;
+  box-shadow:0 4px 0 rgba(42,36,32,.12), inset 0 0 0 3px rgba(255,203,5,.35);
+}
 .meet-banner:active{transform:scale(.99);}
 .mb-ic{font-size:27px;line-height:1;}
 .mb-text{flex:1;display:flex;flex-direction:column;gap:1px;}
-.mb-text b{font-size:14px;font-weight:900;color:#2b3f6b;}
-.mb-text i{font-style:normal;font-size:11.5px;color:#6b7a95;font-weight:600;}
-.mb-go{font-size:12px;font-weight:900;color:#1e88e5;background:#fff;border-radius:99px;padding:5px 11px;box-shadow:0 2px 6px rgba(30,136,229,.15);white-space:nowrap;}
+.mb-text b{font-size:14px;font-weight:900;color:#1E3A6E;font-family:var(--font-display);}
+.mb-text i{font-style:normal;font-size:11.5px;color:#5A6F90;font-weight:700;}
+.mb-go{font-size:12px;font-weight:900;color:#5D4300;background:linear-gradient(180deg,var(--pk-yellow-s),var(--pk-yellow));border:2px solid var(--pk-edge);border-radius:99px;padding:5px 11px;box-shadow:0 2px 0 rgba(42,36,32,.15);white-space:nowrap;}
 .meet-dialog{padding:14px 14px 16px;max-height:90dvh;overflow-y:auto;}
-.meet-top{display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:900;color:#2b3f6b;margin-bottom:8px;}
-.meet-top span{font-size:11.5px;color:#8a97ad;font-weight:800;}
-.meet-topic{display:inline-block;font-size:11px;font-weight:900;color:#7a4f00;background:linear-gradient(135deg,#fff3d0,#ffe9a8);border:1.5px solid #f3d488;border-radius:99px;padding:3px 12px;margin:-2px 0 8px;}
+.meet-top{display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:900;color:var(--pk-ink);margin-bottom:8px;font-family:var(--font-display);}
+.meet-top span{font-size:11.5px;color:var(--pk-ink-soft);font-weight:800;}
+.meet-topic{display:inline-block;font-size:11px;font-weight:900;color:#7A4F00;background:linear-gradient(180deg,#FFF8E1,#FFE9A8);border:2px solid var(--pk-edge);border-radius:99px;padding:3px 12px;margin:-2px 0 8px;}
 .lab{position:relative;height:220px;border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#dfe9f7 0%,#eef4fc 52%,#d5e1f0 100%);}
 .lab:after{content:'';position:absolute;left:0;right:0;bottom:0;height:50px;background:linear-gradient(180deg,#cfdcee,#c1d1e7);}
 .lab-sign{position:absolute;top:8px;left:10px;font-size:9.5px;font-weight:900;letter-spacing:.5px;color:#6b7a95;background:rgba(255,255,255,.8);padding:3px 8px;border-radius:8px;z-index:6;}
 .lab-ball{position:absolute;top:14px;width:12px;height:12px;border-radius:50%;background:linear-gradient(180deg,#e3350d 0 48%,#fff 48% 100%);border:1.5px solid #3b2f2f;z-index:6;}
-.speech{position:absolute;left:12px;right:12px;top:36px;background:#fff;border-radius:14px;padding:9px 12px;box-shadow:0 8px 20px rgba(40,60,90,.14);z-index:5;min-height:64px;display:flex;flex-direction:column;justify-content:center;}
-.speech .en{font-size:16.5px;font-weight:900;color:#1f2b3d;line-height:1.35;}
-.speech .zh{font-size:12px;color:#7b8698;font-weight:700;margin-top:3px;}
+.speech{position:absolute;left:12px;right:12px;top:36px;background:var(--pk-paper);border:2.5px solid var(--pk-edge);border-radius:14px;padding:9px 12px;box-shadow:0 4px 0 rgba(42,36,32,.12);z-index:5;min-height:64px;display:flex;flex-direction:column;justify-content:center;}
+.speech .en{font-size:16.5px;font-weight:900;color:var(--pk-ink);line-height:1.35;font-family:var(--font-display);}
+.speech .zh{font-size:12px;color:var(--pk-ink-soft);font-weight:700;margin-top:3px;}
 .meet-char{position:absolute;bottom:30px;width:88px;height:88px;border-radius:50%;z-index:3;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 30%,#ffffff,#eaf1fb);box-shadow:0 6px 14px rgba(40,60,90,.16);border:2px solid #fff;transition:transform .22s ease,opacity .22s ease,box-shadow .22s ease;}
 .meet-char.oak{left:10px;}
 .meet-char.kid{right:10px;font-size:46px;}
@@ -537,29 +613,30 @@ table.rec tr:last-child td{border-bottom:none;}
 .mdot.on{background:#1e88e5;transform:scale(1.25);}
 .mdot.done{background:#90caf9;}
 .meet-finish{width:100%;text-align:center;padding:2px 0 4px;}
-.meet-finish b{font-size:14.5px;color:#2b3f6b;font-weight:900;}
-.finish-sub{font-size:11.5px;color:#8a97ad;font-weight:700;margin-top:2px;}
+.meet-finish b{font-size:14.5px;color:var(--pk-ink);font-weight:900;font-family:var(--font-display);}
+.finish-sub{font-size:11.5px;color:var(--pk-ink-soft);font-weight:700;margin-top:2px;}
 .mw-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;margin-top:6px;}
-.mw{display:flex;align-items:center;gap:6px;background:#f7faff;border:1.5px solid #dbe7f7;border-radius:12px;padding:7px 9px;text-align:left;}
+.mw{display:flex;align-items:center;gap:6px;background:var(--pk-paper);border:2px solid var(--pk-edge);border-radius:12px;padding:7px 9px;text-align:left;box-shadow:0 2px 0 rgba(42,36,32,.08);}
 .mw:active{transform:scale(.97);}
 .mw span:first-child{display:flex;flex-direction:column;}
-.mw b{font-size:12px;font-weight:900;color:#2b3f6b;}
-.mw i{font-style:normal;font-size:10.5px;color:#8a97ad;font-weight:600;}
+.mw b{font-size:12px;font-weight:900;color:var(--pk-ink);}
+.mw i{font-style:normal;font-size:10.5px;color:var(--pk-ink-soft);font-weight:600;}
 .mw .sp{margin-left:auto;font-size:13px;}
 
 /* ===== 训练家 ===== */
 .mon-tap{cursor:pointer;transition:transform .12s ease;}
 .mon-tap:active{transform:scale(.985);}
-.skill-tag{font-size:10px;font-weight:900;color:#fff;background:linear-gradient(135deg,#5c6bc0,#3949ab);border-radius:99px;padding:2px 8px;margin-left:auto;}
+.skill-tag{font-size:10px;font-weight:900;color:#5D4300;background:linear-gradient(180deg,var(--pk-yellow-s),var(--pk-yellow));border:1.5px solid var(--pk-edge);border-radius:99px;padding:2px 8px;margin-left:auto;}
 .mon-detail .md-sec{margin-top:12px;text-align:left;}
 .mon-detail .md-sec h4{margin:0 0 6px;font-size:12.5px;font-weight:900;color:#8a7a6a;letter-spacing:.4px;}
 .mon-detail .md-moves{display:flex;flex-wrap:wrap;gap:6px;}
 .mon-detail .md-move{
-  font-size:12.5px;font-weight:700;background:var(--pk-soft);border:1px solid var(--pk-line);
+  font-size:12.5px;font-weight:700;background:var(--pk-paper);border:2px solid var(--pk-edge);
   border-radius:10px;padding:5px 10px;display:inline-flex;align-items:center;gap:5px;
+  box-shadow:0 2px 0 rgba(42,36,32,.08);
 }
-.mon-detail .md-move .lv{font-size:10px;font-weight:900;color:#8a97ad;}
-.mon-detail .md-move.locked{opacity:.55;background:#fff;}
+.mon-detail .md-move .lv{font-size:10px;font-weight:900;color:var(--pk-ink-soft);}
+.mon-detail .md-move.locked{opacity:.55;background:var(--pk-soft);}
 .mon-detail .md-note{font-size:12.5px;color:#6b5a4a;font-weight:600;line-height:1.55;margin:0;}
 .nav-inner.many .tab{font-size:10px;padding:8px 0 7px;}
 .nav-inner.many .tab .ti{font-size:19px;}
@@ -567,51 +644,56 @@ table.rec tr:last-child td{border-bottom:none;}
 .trsp{animation:trTwinkle 2.6s ease-in-out infinite;}
 @keyframes trTwinkle{0%,100%{opacity:.25;transform:scale(.7)}50%{opacity:1;transform:scale(1.15)}}
 .tr-svg.mini{width:50px;}
-.tr-banner{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#e8f0ff,#f3e8ff);border:1.5px solid #c5cae9;border-radius:18px;padding:10px 12px;margin:0 0 12px;cursor:pointer;box-shadow:var(--shadow);}
-.tb-ava{width:54px;height:66px;border-radius:14px;background:#fff;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;flex:none;}
+.tr-banner{
+  display:flex;align-items:center;gap:10px;
+  background:linear-gradient(180deg,#EEF6FF,#DCEEFF);
+  border:3px solid var(--pk-edge);border-radius:18px;padding:10px 12px;margin:0 0 12px;cursor:pointer;
+  box-shadow:0 4px 0 rgba(42,36,32,.12), inset 0 0 0 3px rgba(43,125,233,.18);
+}
+.tb-ava{width:54px;height:66px;border-radius:14px;background:var(--pk-paper);border:2px solid var(--pk-edge);display:flex;align-items:flex-end;justify-content:center;overflow:hidden;flex:none;}
 .tb-info{flex:1;min-width:0;}
-.tb-info b{font-size:13.5px;font-weight:900;color:#3949ab;}
-.tb-sub{font-size:11px;color:#7e8ad0;font-weight:700;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.tb-go{font-size:11.5px;font-weight:900;color:#fff;background:linear-gradient(135deg,#5c6bc0,#3949ab);padding:6px 10px;border-radius:99px;flex:none;}
-.tr-hero{position:relative;border-radius:22px;overflow:hidden;margin-bottom:14px;background:linear-gradient(135deg,#1e2a78,#3f51b5 58%,#7e57c2);box-shadow:var(--shadow);}
-.tr-hero-bg{position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(255,255,255,.32),transparent 46%),radial-gradient(circle at 12% 92%,rgba(255,203,5,.34),transparent 52%);}
+.tb-info b{font-size:13.5px;font-weight:900;color:#1E4F9A;font-family:var(--font-display);}
+.tb-sub{font-size:11px;color:#4A6FA5;font-weight:700;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tb-go{font-size:11.5px;font-weight:900;color:#fff;background:linear-gradient(180deg,#6BB0FF,var(--pk-blue));border:2px solid var(--pk-edge);padding:6px 10px;border-radius:99px;flex:none;box-shadow:0 2px 0 rgba(42,36,32,.18);}
+.tr-hero{position:relative;border-radius:22px;overflow:hidden;margin-bottom:14px;background:linear-gradient(145deg,#1A4F9C,#2B7DE9 55%,#FFCB05);box-shadow:var(--shadow);border:3px solid var(--pk-edge);}
+.tr-hero-bg{position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(255,255,255,.32),transparent 46%),radial-gradient(circle at 12% 92%,rgba(255,203,5,.4),transparent 52%);}
 .tr-hero-in{position:relative;display:flex;align-items:center;gap:12px;padding:14px;}
-.tr-hero-ava{width:112px;height:132px;border-radius:18px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.35);display:flex;align-items:flex-end;justify-content:center;overflow:hidden;flex:none;}
+.tr-hero-ava{width:112px;height:132px;border-radius:18px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.45);display:flex;align-items:flex-end;justify-content:center;overflow:hidden;flex:none;}
 .tr-hero-ava .tr-svg{width:102px;}
-.tr-name{color:#fff;font-size:17px;font-weight:900;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.tr-title{font-size:10.5px;background:#ffcb05;color:#5d4300;border-radius:8px;padding:2px 8px;font-weight:900;}
-.tr-meta{color:#e8eaf6;font-size:11.5px;font-weight:700;margin-top:5px;line-height:1.5;}
+.tr-name{color:#fff;font-size:17px;font-weight:900;display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-family:var(--font-display);text-shadow:0 2px 0 rgba(0,0,0,.2);}
+.tr-title{font-size:10.5px;background:var(--pk-yellow);color:#5D4300;border-radius:8px;padding:2px 8px;font-weight:900;border:1.5px solid var(--pk-edge);}
+.tr-meta{color:#EAF3FF;font-size:11.5px;font-weight:700;margin-top:5px;line-height:1.5;}
 .tr-gender{display:flex;gap:6px;margin-top:8px;}
-.gbtn{font-size:11px;font-weight:800;color:#e8eaf6;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.42);border-radius:99px;padding:4px 10px;}
-.gbtn.on{background:#fff;color:#3949ab;border-color:#fff;}
-.tr-task{font-size:14px;font-weight:800;color:#5d4300;background:#fff8e1;border:1.5px dashed #f0c24b;border-radius:14px;padding:10px 12px;margin:6px 0 10px;line-height:1.45;}
+.gbtn{font-size:11px;font-weight:800;color:#EAF3FF;background:rgba(255,255,255,.16);border:1.5px solid rgba(255,255,255,.5);border-radius:99px;padding:4px 10px;}
+.gbtn.on{background:var(--pk-yellow);color:#5D4300;border-color:var(--pk-edge);}
+.tr-task{font-size:14px;font-weight:800;color:#5D4300;background:linear-gradient(180deg,#FFF8E1,#FFE9A8);border:2.5px dashed var(--pk-edge);border-radius:14px;padding:10px 12px;margin:6px 0 10px;line-height:1.45;}
 .tr-dots{display:flex;gap:6px;}
-.tr-dot{flex:1;height:34px;border-radius:10px;background:#f5f0e8;color:#b0a090;font-size:12.5px;font-weight:900;display:flex;align-items:center;justify-content:center;border:1.5px dashed #e6dbcb;}
-.tr-dot.on{background:linear-gradient(135deg,#66bb6a,#43a047);color:#fff;border:1.5px solid #2e7d32;}
+.tr-dot{flex:1;height:34px;border-radius:10px;background:var(--pk-soft);color:#b0a090;font-size:12.5px;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px dashed var(--pk-line);}
+.tr-dot.on{background:linear-gradient(180deg,#6BCF74,var(--pk-green));color:#fff;border:2px solid var(--pk-edge);}
 .tr-prog{text-align:center;font-size:12.5px;font-weight:800;color:#8a6d3b;margin:9px 0 10px;}
 .tr-note{font-size:11.5px;color:#8a6d3b;font-weight:700;margin:9px 0 0;text-align:center;line-height:1.5;}
 .of-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
-.of-card{background:#fff;border-radius:16px;padding:9px 8px 10px;border:2px solid var(--pk-line);text-align:center;box-shadow:var(--shadow);}
-.of-pp{height:88px;display:flex;align-items:flex-end;justify-content:center;background:linear-gradient(180deg,#f7f9ff,#eef2ff);border-radius:12px;margin-bottom:6px;overflow:hidden;}
+.of-card{background:linear-gradient(180deg,var(--pk-paper-2),var(--pk-paper));border-radius:16px;padding:9px 8px 10px;border:2.5px solid var(--pk-edge);text-align:center;box-shadow:0 3px 0 rgba(42,36,32,.1);}
+.of-pp{height:88px;display:flex;align-items:flex-end;justify-content:center;background:linear-gradient(180deg,#EEF6FF,#DCEEFF);border-radius:12px;margin-bottom:6px;overflow:hidden;border:2px solid var(--pk-line);}
 .of-pp .tr-svg{width:64px;}
 .of-card b{display:block;font-size:11.5px;font-weight:900;color:#5a4a3a;line-height:1.35;}
 .of-card span{font-size:10.5px;font-weight:800;color:#a09080;}
-.of-card.on{border-color:#5c6bc0;box-shadow:0 6px 16px rgba(57,73,171,.22);}
-.of-card.on span{color:#3949ab;}
+.of-card.on{border-color:var(--pk-edge);box-shadow:0 4px 0 rgba(42,36,32,.14),0 0 0 3px rgba(43,125,233,.35);}
+.of-card.on span{color:var(--pk-blue);}
 .of-card.lock{opacity:.55;}
 .of-card.lock .of-pp{filter:grayscale(1);}
-.tr-setnow{font-size:12.5px;font-weight:800;color:#5d4300;background:#fff8e1;border-radius:12px;padding:8px 10px;margin-bottom:8px;line-height:1.5;}
+.tr-setnow{font-size:12.5px;font-weight:800;color:#5D4300;background:linear-gradient(180deg,#FFF8E1,#FFE9A8);border:2px solid var(--pk-edge);border-radius:12px;padding:8px 10px;margin-bottom:8px;line-height:1.5;}
 .tr-picker{display:flex;gap:12px;margin:10px 0 6px;}
-.tr-pick{flex:1;background:#f7f9ff;border:2px solid #dde3f5;border-radius:16px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;}
-.tr-pick.on{border-color:#5c6bc0;background:#eef2ff;}
+.tr-pick{flex:1;background:var(--pk-paper);border:2.5px solid var(--pk-edge);border-radius:16px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:0 3px 0 rgba(42,36,32,.1);}
+.tr-pick.on{border-color:var(--pk-edge);background:linear-gradient(180deg,#EEF6FF,#DCEEFF);box-shadow:0 3px 0 rgba(42,36,32,.12),0 0 0 3px rgba(43,125,233,.3);}
 .tr-pick .pp{height:120px;display:flex;align-items:flex-end;}
 .tr-pick .tr-svg{width:94px;}
-.tr-pick b{font-size:13px;font-weight:900;color:#3949ab;}
+.tr-pick b{font-size:13px;font-weight:900;color:#1E4F9A;font-family:var(--font-display);}
 .tr-pick span{font-size:17px;}
-.tr-unlock-card{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#fff8e1,#ffe9a8);border:1.5px solid #f0c24b;border-radius:16px;padding:10px 12px;margin:10px 0;}
+.tr-unlock-card{display:flex;align-items:center;gap:12px;background:linear-gradient(180deg,#FFF8E1,#FFE9A8);border:2.5px solid var(--pk-edge);border-radius:16px;padding:10px 12px;margin:10px 0;box-shadow:0 3px 0 rgba(42,36,32,.1);}
 .tr-unlock-card .tr-svg{width:68px;}
-.tr-unlock-card b{display:block;font-size:14px;font-weight:900;color:#5d4300;}
-.tr-unlock-card .uu{font-size:11.5px;font-weight:800;color:#8a6d3b;margin-top:3px;}
+.tr-unlock-card b{display:block;font-size:14px;font-weight:900;color:#5D4300;font-family:var(--font-display);}
+.tr-unlock-card .uu{font-size:11.5px;font-weight:800;color:#8A6D3B;margin-top:3px;}
 /* 过场舞台 */
 .tr-stage{position:relative;height:252px;border-radius:18px;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;}
 .tr-tag,.tr-wear{position:absolute;top:10px;font-size:11.5px;font-weight:900;padding:4px 10px;border-radius:99px;z-index:6;}
@@ -704,25 +786,27 @@ table.rec tr:last-child td{border-bottom:none;}
 
 /* ===== 图鉴 ===== */
 .dex-grid{display:flex;flex-wrap:wrap;gap:7px;}
-.dex-slot{flex:0 0 calc((100% - 14px)/3);min-width:0;box-sizing:border-box;background:#f7f8fa;border:1.5px solid #e3e6ec;border-radius:12px;padding:7px 4px;text-align:center;cursor:pointer;}
-.dex-slot.on{background:linear-gradient(135deg,#fff8e1,#ffecb3);border-color:#ffcb05;}
+.dex-slot{flex:0 0 calc((100% - 14px)/3);min-width:0;box-sizing:border-box;background:var(--pk-paper);border:2.5px solid var(--pk-edge);border-radius:12px;padding:7px 4px;text-align:center;cursor:pointer;box-shadow:0 2px 0 rgba(42,36,32,.1);}
+.dex-slot.on{background:linear-gradient(180deg,#FFF8E1,#FFE9A8);border-color:var(--pk-edge);box-shadow:0 2px 0 rgba(42,36,32,.12),0 0 0 2px rgba(255,203,5,.4);}
 .dex-slot .ds-ic{height:44px;display:flex;align-items:center;justify-content:center;}
-.dex-slot .ds-nm{font-size:10.5px;font-weight:900;color:#2b3f6b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.dex-slot .ds-lv{font-size:9px;color:#8a97ad;font-weight:800;}
+.dex-slot .ds-nm{font-size:10.5px;font-weight:900;color:var(--pk-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--font-display);}
+.dex-slot .ds-lv{font-size:9px;color:var(--pk-ink-soft);font-weight:800;}
 .dex-all{display:grid;grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:5px;}
-.dex-cell{min-width:0;box-sizing:border-box;background:#f2f4f8;border:1.5px solid #e3e6ec;border-radius:9px;padding:4px 1px;text-align:center;}
-.dex-cell.got{background:#fff;border-color:#c5e1a5;cursor:pointer;}
-.dex-cell .dc-no{font-size:7px;font-weight:900;color:#9aa6ba;line-height:1.2;}
-.dex-cell.got .dc-no{color:#689f38;}
+.dex-cell{min-width:0;box-sizing:border-box;background:var(--pk-soft);border:2px solid var(--pk-edge);border-radius:9px;padding:4px 1px;text-align:center;}
+.dex-cell.got{background:var(--pk-paper);border-color:var(--pk-edge);cursor:pointer;box-shadow:0 2px 0 rgba(42,36,32,.08);}
+.dex-cell .dc-no{font-size:7px;font-weight:900;color:#9A8874;line-height:1.2;}
+.dex-cell.got .dc-no{color:var(--pk-green);}
 .dex-cell .dc-ic{height:36px;display:flex;align-items:center;justify-content:center;}
 .dex-cell .dc-ic img{width:34px!important;height:34px!important;object-fit:contain;}
-.dex-cell .dc-nm{font-size:8px;font-weight:900;color:#5a6b85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dex-cell .dc-nm{font-size:8px;font-weight:900;color:var(--pk-ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 /* ===== 桌面适配 ===== */
 @media (min-width:768px){
-  .app{padding-bottom:110px;}
+  .app{padding-bottom:120px;}
   body{font-size:16px;}
+  main{padding:18px 18px 10px;}
   .tab{font-size:12.5px;padding:12px 0 10px;}
   .tab .ti{font-size:24px;}
+  nav{left:max(10px, calc(50% - 250px));right:max(10px, calc(50% - 250px));}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}
@@ -733,13 +817,7 @@ table.rec tr:last-child td{border-bottom:none;}
 <div class="app">
   <header>
     <div class="logo">
-      <svg width="30" height="30" viewBox="0 0 100 100" aria-hidden="true">
-        <circle cx="50" cy="50" r="46" fill="#fff" stroke="#3b2f2f" stroke-width="6"/>
-        <path d="M50 4a46 46 0 0 1 0 92z" fill="#e3350d"/>
-        <path d="M4 50h92" stroke="#3b2f2f" stroke-width="7"/>
-        <circle cx="50" cy="50" r="16" fill="#fff" stroke="#3b2f2f" stroke-width="6"/>
-        <circle cx="50" cy="50" r="6" fill="#fff"/>
-      </svg>
+      <img src="icon.png" width="28" height="28" alt="" aria-hidden="true">
       <span>宝可梦激励</span>
     </div>
     <div class="hd-right">
@@ -870,9 +948,26 @@ var STARTERS=['pikachu','charmander','squirtle','bulbasaur'];
 var POKE_IMG={bulbasaur:1,ivysaur:2,venusaur:3,charmander:4,charmeleon:5,charizard:6,squirtle:7,wartortle:8,blastoise:9,caterpie:10,metapod:11,butterfree:12,pidgey:16,pidgeotto:17,pidgeot:18,rattata:19,raticate:20,pikachu:25,raichu:26,jigglypuff:35,wigglytuff:36,growlithe:58,arcanine:59,magikarp:129,gyarados:130,eevee:133,espeon:196,snorlax:143,dratini:147,dragonair:148,dragonite:149,
 /* 钓鱼用到的水系伙伴（图鉴图已齐全，补上编号才能正确出图） */
 psyduck:54,golduck:55,poliwag:60,poliwhirl:61,poliwrath:62,slowpoke:79,slowbro:80,seel:86,dewgong:87,shellder:90,cloyster:91,krabby:98,kingler:99,horsea:116,seadra:117,goldeen:118,seaking:119,staryu:120,starmie:121,lapras:131,vaporeon:134};
-function pokeImg(sid){ var n=('000'+(POKE_IMG[sid]||1)).slice(-3); return (typeof ASSET_IMG!=='undefined'&&ASSET_IMG[n])||('assets/pokedex/'+n+'.png'); }
+function pokeDexNo(sid){ return ('000'+((POKE_IMG&&POKE_IMG[sid])||1)).slice(-3); }
+function pokeImgCdn(n){ return 'https://assets.pokemon.com/assets/cms2/img/pokedex/detail/'+n+'.png'; }
+/* 优先内嵌 ASSET_IMG → 本地 assets/pokedex → 官方 CDN（由 onerror 兜底） */
+function pokeImg(sid){
+  var n=pokeDexNo(sid);
+  if(typeof ASSET_IMG!=='undefined'&&ASSET_IMG[n]) return ASSET_IMG[n];
+  return 'assets/pokedex/'+n+'.png';
+}
+function pokeImgAttrs(sid,extra){
+  var n=pokeDexNo(sid), src=pokeImg(sid);
+  var alt='';
+  try{ alt=esc((spec(sid)&&spec(sid).name)||''); }catch(e){}
+  var more=(extra||'');
+  if(src.indexOf('data:')!==0){
+    more+=' onerror="this.onerror=null;this.src=\''+pokeImgCdn(n)+'\'"';
+  }
+  return 'src="'+src+'" alt="'+alt+'" '+more;
+}
 function pokeImgHTML(sid,extra){
-  return '<img src="'+pokeImg(sid)+'" alt="'+esc(spec(sid).name)+'" '+(extra||'')+'>';
+  return '<img '+pokeImgAttrs(sid,extra)+'>';
 }
 var GYMS=[
   {id:'rock',name:'岩石道馆',leader:'小刚',emoji:'🪨',type:'岩石',need:6,gift:'卡比兽封印球',giftIco:'🐻'},
@@ -897,6 +992,8 @@ function defaultState(){
   return {
     v:1, childName:'吨吨', pin:'', deadline:'21:30', baseXP:20, fastMult:1.2,
     streakTarget:7, subjects:NEW_SUBJECTS.slice(),
+    /* 家长可调：每日挑战目标、奖励张数、周末免费捕捉次数 */
+    dailyTarget:7, dailyReward:1, weekendFree:3,
     sound:true, firstRun:true, team:[],
     homework:[], streak:{count:0,lastDate:null,lastPrize:0,record:0},
     badges:[], snorlax:{state:'none',sealedAt:0},
@@ -936,6 +1033,10 @@ function load(){
   }catch(e){}
   if(!Array.isArray(s.box)) s.box=[];
   if(!s.dex||typeof s.dex!=='object'||Array.isArray(s.dex)) s.dex={};
+  if(typeof s.dailyTarget!=='number'||!(s.dailyTarget>=1)) s.dailyTarget=7;
+  if(typeof s.dailyReward!=='number'||!(s.dailyReward>=1)) s.dailyReward=1;
+  if(typeof s.weekendFree!=='number'||!(s.weekendFree>=0)) s.weekendFree=3;
+  if(typeof s.fastMult!=='number'||!(s.fastMult>=1)) s.fastMult=1.2;
   /* 兼容：把老存档里未知物种（若数据更新前残留）也标记到图鉴 */
   return s;
 }
@@ -1028,8 +1129,15 @@ function normalizeState(s){
   if(!Array.isArray(s.homework)) s.homework=[];
   if(!Array.isArray(s.badges)) s.badges=[];
   if(!s.care||typeof s.care!=='object') s.care=defaultState().care;
+  if(typeof s.dailyTarget!=='number'||!(s.dailyTarget>=1)) s.dailyTarget=7;
+  if(typeof s.dailyReward!=='number'||!(s.dailyReward>=1)) s.dailyReward=1;
+  if(typeof s.weekendFree!=='number'||!(s.weekendFree>=0)) s.weekendFree=3;
+  if(typeof s.fastMult!=='number'||!(s.fastMult>=1)) s.fastMult=1.2;
   return s;
 }
+function dailyTarget(){ return Math.max(1,Math.min(20,S.dailyTarget|0||7)); }
+function dailyReward(){ return Math.max(1,Math.min(5,S.dailyReward|0||1)); }
+function weekendFreeMax(){ return Math.max(0,Math.min(7,S.weekendFree!=null?S.weekendFree|0:3)); }
 function switchKid(key){
   if(!KIDS||key===KIDS.active) return;
   var target=KIDS.list.filter(function(x){return x.key===key;})[0];
@@ -1225,13 +1333,27 @@ function boxSwap(bi,ti){
 function sendToBox(ti){
   if(S.team.length<=1){ toast('至少要带一位伙伴哦'); return; }
   var t=S.team[ti]; if(!t) return;
+  if(!Array.isArray(S.box)) S.box=[];
   sfxOk();
   S.team.splice(ti,1); S.box.push(t); save(); closeModal(); render();
   toast(esc(t.nick)+' 回到图鉴休息啦');
 }
+/* 被换下的伙伴必须进盒子，不能直接消失（初始宝可梦常因此丢失） */
 function replaceMon(idx,sid,source,level){
+  var old=S.team[idx];
+  if(old){
+    if(!Array.isArray(S.box)) S.box=[];
+    S.box.push(old);
+  }
   S.team[idx]=newMon(sid,level||5,source);
+  markDex(sid);
   save();
+  return old||null;
+}
+function findBoxedSid(sid){
+  if(!Array.isArray(S.box)) return -1;
+  for(var i=S.box.length-1;i>=0;i--){ if(S.box[i].sid===sid) return i; }
+  return -1;
 }
 /* 捕捉 */
 function encounter(rare){
@@ -1252,7 +1374,7 @@ function encounter(rare){
   if(rare){zone=22;catchRate=0.55;}
   return {sid:sid,zone:zone,catchRate:catchRate};
 }
-function freeLeft(){ return Math.max(0,3-S.captures.used); }
+function freeLeft(){ return Math.max(0,weekendFreeMax()-S.captures.used); }
 function captureAllowed(){
   if(S.captures.week!==weekKey()){
     S.captures.week=weekKey(); S.captures.used=0; save();
@@ -1293,14 +1415,44 @@ function sealDaysLeft(){
   var left=7-Math.floor((Date.now()-sn.sealedAt)/86400000);
   return Math.max(0,left);
 }
+function findSnorlax(){
+  var i;
+  for(i=0;i<S.team.length;i++){ if(S.team[i].sid==='snorlax') return {where:'team',i:i,m:S.team[i]}; }
+  for(i=0;i<(S.box||[]).length;i++){ if(S.box[i].sid==='snorlax') return {where:'box',i:i,m:S.box[i]}; }
+  return null;
+}
+/* 道馆封印球只会送一只：若误操作生成了多只 gym 卡比兽，只保留等级/经验最高的那只 */
+function cleanupGymSnorlaxDupes(){
+  var list=[], i;
+  for(i=0;i<S.team.length;i++){
+    if(S.team[i].sid==='snorlax'&&S.team[i].source==='gym') list.push({where:'team',i:i,m:S.team[i]});
+  }
+  for(i=0;i<(S.box||[]).length;i++){
+    if(S.box[i].sid==='snorlax'&&S.box[i].source==='gym') list.push({where:'box',i:i,m:S.box[i]});
+  }
+  if(list.length<=1) return false;
+  list.sort(function(a,b){ return (b.m.level-a.m.level)||(b.m.xp-a.m.xp); });
+  var drop=list.slice(1).sort(function(a,b){
+    if(a.where!==b.where) return a.where==='team'?-1:1;
+    return b.i-a.i;
+  });
+  for(i=0;i<drop.length;i++){
+    if(drop[i].where==='team') S.team.splice(drop[i].i,1);
+    else S.box.splice(drop[i].i,1);
+  }
+  save();
+  return true;
+}
 function checkSeal(){
   var sn=S.snorlax;
   if(sn.state==='sealed' && sealDaysLeft()<=0){
     sn.state='active';
+    /* 已经有卡比兽（队伍或盒子）就不要再造一只 */
+    if(findSnorlax()){ save(); return 'joined'; }
     var r=tryAddMon('snorlax','gym',5);
     save();
-    if(r.ok) return 'joined';
-    return 'full';
+    if(r.boxed) return 'boxed';
+    return 'joined';
   }
   return null;
 }
@@ -1326,14 +1478,15 @@ function stats(){
 }
 function resetAll(){ var k=activeKid(); if(k) localStorage.removeItem(kidStorageKey(k.key)); S=defaultState(); if(k) S.childName=k.name; save(); }
 
-/* ================= 每日 7 任务奖励捕捉券 ================= */
+/* ================= 每日挑战奖励捕捉券（目标张数由家长设置） ================= */
 function refreshDailyVoucher(){
   var t=todayStr();
   if(S.daily.date!==t){ S.daily={date:t,count:0,granted:false}; }
   var c=S.homework.filter(function(h){return h.date===t&&(h.status==='approved'||h.status==='deducted');}).length;
   S.daily.count=c;
-  if(c>=7&&!S.daily.granted){
-    S.daily.granted=true; S.items.vouchers++;
+  var need=dailyTarget(), give=dailyReward();
+  if(c>=need&&!S.daily.granted){
+    S.daily.granted=true; S.items.vouchers+=give;
     save(); return true;
   }
   save(); return false;
@@ -1436,7 +1589,7 @@ function openCare(action,replay,kind){
         ? '<div class="care-ground"></div><div class="care-bowl">🍚</div>'
         : '<div class="care-tub" style="background:'+bath.tub+'"></div>')+
       '<div class="care-mon-wrap'+(isFeed?'':' in-tub')+'"><div class="care-shadow"></div>'+
-        '<img class="care-mon'+(isFeed?'':' care-mon-bath')+'" src="'+pokeImg(mon.sid)+'" alt="">'+
+        '<img class="care-mon'+(isFeed?'':' care-mon-bath')+'" '+pokeImgAttrs(mon.sid)+'>'+
       '</div>'+
       '<div id="careFx"></div>'+
       '<div class="care-sheen"></div>'+
@@ -1749,10 +1902,10 @@ function playArena(A,B,sim,rewardOK,cfg){
     '<h3 style="margin:0 0 8px">'+(cfg.title||'⚔️ 队内对战')+'</h3>'+
     '<div class="arena" id="arenaStage">'+
       '<div class="vs-badge">VS</div>'+
-      '<div class="arena-side left"><img id="imgA" class="fighter" src="'+pokeImg(A.sid)+'" alt="">'+
+      '<div class="arena-side left"><img id="imgA" class="fighter" '+pokeImgAttrs(A.sid)+'>'+
         '<div class="hp-wrap"><div class="hp-name">'+esc(A.nick)+' <span>Lv.'+A.level+'</span></div>'+
         '<div class="hpbar hpbar2"><div class="hpfill" id="hpA" style="width:100%"></div></div></div></div>'+
-      '<div class="arena-side right"><img id="imgB" class="fighter" src="'+pokeImg(B.sid)+'" alt="">'+
+      '<div class="arena-side right"><img id="imgB" class="fighter" '+pokeImgAttrs(B.sid)+'>'+
         '<div class="hp-wrap"><div class="hp-name">'+esc(B.nick)+' <span>Lv.'+B.level+'</span></div>'+
         '<div class="hpbar hpbar2"><div class="hpfill" id="hpB" style="width:100%"></div></div></div></div>'+
       '<div id="arenaNumA" class="dmg-layer"></div><div id="arenaNumB" class="dmg-layer"></div>'+
@@ -1863,71 +2016,383 @@ function playArena(A,B,sim,rewardOK,cfg){
 }
 
 /* ================= 每日遇见 · 大木博士英语对话 ================= */
-/* 每日话题：每天换一个基础问答主题，8 天轮换 */
+/* 每日话题：按一年中的第几天轮换；适合幼儿园/小学低年级 */
 var MEET_TOPICS=[
   {id:'name',ic:'🙋',nm:'你的名字',
     q:{en:"What's your name?",zh:'你叫什么名字？',audio:'m_t_name'},
     a:function(){var n=S.childName||'Xiaoyou';return {en:'My name is '+n+'!',zh:'我叫'+n+'！',audio:'k_dyn_name'};},
+    q2:{en:'Nice to meet you!',zh:'很高兴认识你！',audio:'m_t_name2'},
+    a2:function(){var n=S.childName||'Xiaoyou';return {en:'Nice to meet you, too! I am '+n+'.',zh:'我也很高兴认识你！我是'+n+'。',audio:'k_t_name2'};},
+    tip:{en:'What a lovely name!',zh:'多好听的名字呀！',audio:'m_tip_name'},
     cards:[
       {en:'name',zh:'名字',audio:'w_name'},
       {en:"What's your name?",zh:'你叫什么名字？',audio:'m_t_name'},
-      {en:'My name is…',zh:'我叫……',audio:'w_myname'}
+      {en:'My name is…',zh:'我叫……',audio:'w_myname'},
+      {en:'Nice to meet you!',zh:'很高兴认识你！',audio:'m_t_name2'}
     ]},
   {id:'age',ic:'🎂',nm:'你的年龄',
     q:{en:'How old are you?',zh:'你几岁了？',audio:'m_t_age'},
     a:{en:"I'm six years old!",zh:'我六岁了！',audio:'k_t_age'},
+    q2:{en:'Are you a big kid now?',zh:'你现在是大孩子了吗？',audio:'m_t_age2'},
+    a2:{en:'Yes! I am a big kid!',zh:'是的！我是大孩子了！',audio:'k_t_age2'},
+    tip:{en:'Six is a wonderful age!',zh:'六岁真是精彩的年纪！',audio:'m_tip_age'},
     cards:[
+      {en:'old',zh:'年龄（多大）',audio:'w_old'},
       {en:'six',zh:'数字 6',audio:'w_six'},
       {en:'How old are you?',zh:'你几岁了？',audio:'m_t_age'},
-      {en:"I'm six years old.",zh:'我六岁了。',audio:'k_t_age'}
+      {en:"I'm six years old.",zh:'我六岁了。',audio:'k_t_age'},
+      {en:'big kid',zh:'大孩子',audio:'w_bigkid'}
     ]},
   {id:'food',ic:'🍎',nm:'喜欢的食物',
     q:{en:'What food do you like?',zh:'你喜欢吃什么？',audio:'m_t_food'},
     a:{en:'I like apples and ice cream!',zh:'我喜欢吃苹果和冰淇淋！',audio:'k_t_food'},
+    q2:{en:'Is it yummy?',zh:'好吃吗？',audio:'m_t_food2'},
+    a2:{en:'Yes! It is so yummy!',zh:'好吃！超级好吃！',audio:'k_t_food2'},
+    tip:{en:'Yummy food makes me happy!',zh:'好吃的东西让人开心！',audio:'m_tip_food'},
     cards:[
+      {en:'food',zh:'食物',audio:'w_food'},
       {en:'apple',zh:'苹果',audio:'w_apple'},
       {en:'ice cream',zh:'冰淇淋',audio:'w_icecream'},
-      {en:'yummy',zh:'好吃',audio:'w_yummy'}
+      {en:'yummy',zh:'好吃',audio:'w_yummy'},
+      {en:'I like…',zh:'我喜欢……',audio:'w_ilike'}
     ]},
   {id:'drink',ic:'🥛',nm:'喜欢的饮料',
     q:{en:'What do you like to drink?',zh:'你喜欢喝什么？',audio:'m_t_drink'},
     a:{en:"I like milk! It's yummy!",zh:'我喜欢喝牛奶！好好喝！',audio:'k_t_drink'},
+    q2:{en:'Do you drink water every day?',zh:'你每天都喝水吗？',audio:'m_t_drink2'},
+    a2:{en:'Yes, I drink water every day!',zh:'是的，我每天都喝水！',audio:'k_t_drink2'},
+    tip:{en:'Milk and water keep you strong!',zh:'牛奶和水让你更强壮！',audio:'m_tip_drink'},
     cards:[
+      {en:'drink',zh:'喝',audio:'w_drink'},
       {en:'milk',zh:'牛奶',audio:'w_milk'},
       {en:'water',zh:'水',audio:'w_water'},
-      {en:'juice',zh:'果汁',audio:'w_juice'}
+      {en:'juice',zh:'果汁',audio:'w_juice'},
+      {en:'every day',zh:'每天',audio:'w_everyday'}
     ]},
   {id:'color',ic:'🎨',nm:'喜欢的颜色',
     q:{en:"What's your favorite color?",zh:'你喜欢什么颜色？',audio:'m_t_color'},
     a:{en:'I like pink and blue!',zh:'我喜欢粉色和蓝色！',audio:'k_t_color'},
+    q2:{en:'Can you see a rainbow?',zh:'你能看到彩虹吗？',audio:'m_t_color2'},
+    a2:{en:'Yes! Rainbows have many colors!',zh:'能！彩虹有好多颜色！',audio:'k_t_color2'},
+    tip:{en:'Colors make the world beautiful!',zh:'颜色让世界更美丽！',audio:'m_tip_color'},
     cards:[
+      {en:'color',zh:'颜色',audio:'w_color'},
       {en:'pink',zh:'粉色',audio:'w_pink'},
       {en:'blue',zh:'蓝色',audio:'w_blue'},
+      {en:'yellow',zh:'黄色',audio:'w_yellow'},
       {en:'rainbow',zh:'彩虹',audio:'w_rainbow'}
     ]},
   {id:'weather',ic:'☀️',nm:'今天的天气',
     q:{en:"How's the weather today?",zh:'今天天气怎么样？',audio:'m_t_weather'},
     a:{en:"It's sunny and warm today!",zh:'今天是晴天，很暖和！',audio:'k_t_weather'},
+    q2:{en:'Do you like sunny days?',zh:'你喜欢晴天吗？',audio:'m_t_weather2'},
+    a2:{en:'Yes! I can play outside!',zh:'喜欢！我可以去外面玩！',audio:'k_t_weather2'},
+    tip:{en:'Have a bright sunny day!',zh:'祝你有个明媚的晴天！',audio:'m_tip_weather'},
     cards:[
+      {en:'weather',zh:'天气',audio:'w_weather'},
       {en:'sunny',zh:'晴天',audio:'w_sunny'},
       {en:'rainy',zh:'下雨',audio:'w_rainy'},
-      {en:'cloudy',zh:'多云',audio:'w_cloudy'}
+      {en:'cloudy',zh:'多云',audio:'w_cloudy'},
+      {en:'warm',zh:'暖和',audio:'w_warm'}
     ]},
   {id:'from',ic:'🏠',nm:'来自哪里',
     q:{en:'Where are you from?',zh:'你来自哪里？',audio:'m_t_from'},
     a:{en:"I'm from China! I love China!",zh:'我来自中国！我爱中国！',audio:'k_t_from'},
+    q2:{en:'Do you love your home?',zh:'你爱你的家吗？',audio:'m_t_from2'},
+    a2:{en:'Yes! Home is sweet!',zh:'爱！家是温暖的地方！',audio:'k_t_from2'},
+    tip:{en:'China is a great country!',zh:'中国真棒！',audio:'m_tip_from'},
     cards:[
       {en:'China',zh:'中国',audio:'w_china'},
+      {en:'home',zh:'家',audio:'w_home'},
       {en:'Where are you from?',zh:'你来自哪里？',audio:'m_t_from'},
-      {en:"I'm from China.",zh:'我来自中国。',audio:'k_t_from'}
+      {en:"I'm from China.",zh:'我来自中国。',audio:'k_t_from'},
+      {en:'I love China!',zh:'我爱中国！',audio:'w_lovechina'}
     ]},
   {id:'pokemon',ic:'⚡',nm:'喜欢的宝可梦',
     q:{en:'Do you like Pokemon?',zh:'你喜欢宝可梦吗？',audio:'m_06_like'},
     a:{en:'Yes, I do! I love Pikachu!',zh:'是的！我最喜欢皮卡丘！',audio:'k_07'},
+    q2:{en:'Is Pikachu cute?',zh:'皮卡丘可爱吗？',audio:'m_t_poke2'},
+    a2:{en:'Yes! Pikachu is so cute!',zh:'可爱！皮卡丘超级可爱！',audio:'k_t_poke2'},
+    tip:{en:'Pokemon and friends forever!',zh:'宝可梦和朋友永远在一起！',audio:'m_tip_poke'},
     cards:[
       {en:'Pokemon',zh:'宝可梦',audio:'w_pokemon'},
       {en:'Pikachu',zh:'皮卡丘',audio:'w_pikachu'},
-      {en:'I love Pikachu!',zh:'我爱皮卡丘！',audio:'k_07'}
+      {en:'cute',zh:'可爱',audio:'w_cute'},
+      {en:'I love Pikachu!',zh:'我爱皮卡丘！',audio:'k_07'},
+      {en:'Yes, I do!',zh:'是的，我喜欢！',audio:'w_yesido'}
+    ]},
+  {id:'family',ic:'👨‍👩‍👧',nm:'我的家人',
+    q:{en:'Who is in your family?',zh:'你家里有谁？',audio:'m_t_family'},
+    a:{en:'I have mom, dad and me!',zh:'有妈妈、爸爸和我！',audio:'k_t_family'},
+    q2:{en:'Do you love your family?',zh:'你爱你的家人吗？',audio:'m_t_family2'},
+    a2:{en:'Yes! I love my family!',zh:'爱！我爱我的家人！',audio:'k_t_family2'},
+    tip:{en:'Family is the best!',zh:'家人是最棒的！',audio:'m_tip_family'},
+    cards:[
+      {en:'family',zh:'家人',audio:'w_family'},
+      {en:'mom',zh:'妈妈',audio:'w_mom'},
+      {en:'dad',zh:'爸爸',audio:'w_dad'},
+      {en:'I love my family!',zh:'我爱我的家人！',audio:'k_t_family2'},
+      {en:'brother / sister',zh:'哥哥弟弟 / 姐姐妹妹',audio:'w_sibling'}
+    ]},
+  {id:'friend',ic:'🤝',nm:'好朋友',
+    q:{en:'Do you have a good friend?',zh:'你有好朋友吗？',audio:'m_t_friend'},
+    a:{en:'Yes! I have good friends!',zh:'有！我有好朋友！',audio:'k_t_friend'},
+    q2:{en:'What do friends do?',zh:'好朋友会一起做什么？',audio:'m_t_friend2'},
+    a2:{en:'We play and share!',zh:'我们一起玩，一起分享！',audio:'k_t_friend2'},
+    tip:{en:'A friend is a treasure!',zh:'朋友是宝藏！',audio:'m_tip_friend'},
+    cards:[
+      {en:'friend',zh:'朋友',audio:'w_friend'},
+      {en:'play',zh:'玩',audio:'w_play'},
+      {en:'share',zh:'分享',audio:'w_share'},
+      {en:'good friend',zh:'好朋友',audio:'w_goodfriend'},
+      {en:'We play together.',zh:'我们一起玩。',audio:'w_playtogether'}
+    ]},
+  {id:'school',ic:'🏫',nm:'幼儿园 / 学校',
+    q:{en:'Do you go to school?',zh:'你去上学吗？',audio:'m_t_school'},
+    a:{en:'Yes! I go to kindergarten!',zh:'去！我上幼儿园！',audio:'k_t_school'},
+    q2:{en:'What do you do at school?',zh:'你在学校做什么？',audio:'m_t_school2'},
+    a2:{en:'I sing, draw and play!',zh:'我唱歌、画画、还玩耍！',audio:'k_t_school2'},
+    tip:{en:'School is fun!',zh:'学校真有趣！',audio:'m_tip_school'},
+    cards:[
+      {en:'school',zh:'学校',audio:'w_school'},
+      {en:'kindergarten',zh:'幼儿园',audio:'w_kinder'},
+      {en:'sing',zh:'唱歌',audio:'w_sing'},
+      {en:'draw',zh:'画画',audio:'w_draw'},
+      {en:'teacher',zh:'老师',audio:'w_teacher'}
+    ]},
+  {id:'feelings',ic:'😊',nm:'今天的心情',
+    q:{en:'How are you today?',zh:'你今天怎么样？',audio:'m_t_feel'},
+    a:{en:"I'm happy today!",zh:'我今天很开心！',audio:'k_t_feel'},
+    q2:{en:'Why are you happy?',zh:'你为什么开心？',audio:'m_t_feel2'},
+    a2:{en:'Because I can play Pokemon!',zh:'因为我可以玩宝可梦！',audio:'k_t_feel2'},
+    tip:{en:'Smile every day!',zh:'每天都要笑一笑！',audio:'m_tip_feel'},
+    cards:[
+      {en:'happy',zh:'开心',audio:'w_happy'},
+      {en:'sad',zh:'难过',audio:'w_sad'},
+      {en:'How are you?',zh:'你好吗？',audio:'m_t_feel'},
+      {en:"I'm happy!",zh:'我很开心！',audio:'k_t_feel'},
+      {en:'because',zh:'因为',audio:'w_because'}
+    ]},
+  {id:'animals',ic:'🐶',nm:'可爱的动物',
+    q:{en:'What animal do you like?',zh:'你喜欢什么动物？',audio:'m_t_animal'},
+    a:{en:'I like cats and dogs!',zh:'我喜欢猫和狗！',audio:'k_t_animal'},
+    q2:{en:'Can you say meow?',zh:'你会说喵吗？',audio:'m_t_animal2'},
+    a2:{en:'Meow! Woof woof!',zh:'喵！汪汪！',audio:'k_t_animal2'},
+    tip:{en:'Animals are our friends!',zh:'动物是我们的朋友！',audio:'m_tip_animal'},
+    cards:[
+      {en:'animal',zh:'动物',audio:'w_animal'},
+      {en:'cat',zh:'猫',audio:'w_cat'},
+      {en:'dog',zh:'狗',audio:'w_dog'},
+      {en:'bird',zh:'鸟',audio:'w_bird'},
+      {en:'Meow!',zh:'喵！',audio:'w_meow'}
+    ]},
+  {id:'toys',ic:'🧸',nm:'喜欢的玩具',
+    q:{en:'What toy do you like?',zh:'你喜欢什么玩具？',audio:'m_t_toy'},
+    a:{en:'I like my teddy bear!',zh:'我喜欢我的小熊玩具！',audio:'k_t_toy'},
+    q2:{en:'Do you share your toys?',zh:'你会分享玩具吗？',audio:'m_t_toy2'},
+    a2:{en:'Yes! Sharing is caring!',zh:'会！分享就是关爱！',audio:'k_t_toy2'},
+    tip:{en:'Toys are more fun with friends!',zh:'和好朋友一起玩玩具更开心！',audio:'m_tip_toy'},
+    cards:[
+      {en:'toy',zh:'玩具',audio:'w_toy'},
+      {en:'teddy bear',zh:'玩具熊',audio:'w_teddy'},
+      {en:'ball',zh:'球',audio:'w_ball'},
+      {en:'share',zh:'分享',audio:'w_share2'},
+      {en:'Sharing is caring!',zh:'分享就是关爱！',audio:'k_t_toy2'}
+    ]},
+  {id:'numbers',ic:'🔢',nm:'一起数数',
+    q:{en:'Can you count to five?',zh:'你能数到五吗？',audio:'m_t_num'},
+    a:{en:'One, two, three, four, five!',zh:'一、二、三、四、五！',audio:'k_t_num'},
+    q2:{en:'How many fingers is this?',zh:'这是几根手指？',audio:'m_t_num2'},
+    a2:{en:'Five fingers!',zh:'五根手指！',audio:'k_t_num2'},
+    tip:{en:'Counting is cool!',zh:'数数真酷！',audio:'m_tip_num'},
+    cards:[
+      {en:'one',zh:'1',audio:'w_one'},
+      {en:'two',zh:'2',audio:'w_two'},
+      {en:'three',zh:'3',audio:'w_three'},
+      {en:'four',zh:'4',audio:'w_four'},
+      {en:'five',zh:'5',audio:'w_five'}
+    ]},
+  {id:'body',ic:'👀',nm:'身体部位',
+    q:{en:'What do you see with?',zh:'你用什么看东西？',audio:'m_t_body'},
+    a:{en:'I see with my eyes!',zh:'我用眼睛看！',audio:'k_t_body'},
+    q2:{en:'What do you hear with?',zh:'你用什么听声音？',audio:'m_t_body2'},
+    a2:{en:'I hear with my ears!',zh:'我用耳朵听！',audio:'k_t_body2'},
+    tip:{en:'Our body is amazing!',zh:'我们的身体真神奇！',audio:'m_tip_body'},
+    cards:[
+      {en:'eyes',zh:'眼睛',audio:'w_eyes'},
+      {en:'ears',zh:'耳朵',audio:'w_ears'},
+      {en:'nose',zh:'鼻子',audio:'w_nose'},
+      {en:'mouth',zh:'嘴巴',audio:'w_mouth'},
+      {en:'hands',zh:'手',audio:'w_hands'}
+    ]},
+  {id:'polite',ic:'🙏',nm:'礼貌用语',
+    q:{en:'What do you say to say thank you?',zh:'想说谢谢时怎么讲？',audio:'m_t_polite'},
+    a:{en:'Thank you!',zh:'谢谢你！',audio:'k_t_polite'},
+    q2:{en:'And what about please?',zh:'那“请”怎么说？',audio:'m_t_polite2'},
+    a2:{en:'Please! You are welcome!',zh:'请！不客气！',audio:'k_t_polite2'},
+    tip:{en:'Polite kids are awesome!',zh:'有礼貌的孩子真棒！',audio:'m_tip_polite'},
+    cards:[
+      {en:'please',zh:'请',audio:'w_please'},
+      {en:'thank you',zh:'谢谢',audio:'w_thankyou'},
+      {en:"you're welcome",zh:'不客气',audio:'w_welcome'},
+      {en:'sorry',zh:'对不起',audio:'w_sorry'},
+      {en:'Excuse me.',zh:'打扰一下。',audio:'w_excuseme'}
+    ]},
+  {id:'morning',ic:'🌅',nm:'早上做什么',
+    q:{en:'What do you do in the morning?',zh:'你早上做什么？',audio:'m_t_morning'},
+    a:{en:'I wash my face and brush my teeth!',zh:'我洗脸、刷牙！',audio:'k_t_morning'},
+    q2:{en:'Do you eat breakfast?',zh:'你吃早餐吗？',audio:'m_t_morning2'},
+    a2:{en:'Yes! Breakfast makes me strong!',zh:'吃！早餐让我有力气！',audio:'k_t_morning2'},
+    tip:{en:'A good morning starts the day!',zh:'美好的早晨开启一天！',audio:'m_tip_morning'},
+    cards:[
+      {en:'morning',zh:'早上',audio:'w_morning'},
+      {en:'wash my face',zh:'洗脸',audio:'w_washface'},
+      {en:'brush my teeth',zh:'刷牙',audio:'w_brush'},
+      {en:'breakfast',zh:'早餐',audio:'w_breakfast'},
+      {en:'Good morning!',zh:'早上好！',audio:'m_greet_morning'}
+    ]},
+  {id:'sport',ic:'⚽',nm:'运动游戏',
+    q:{en:'Do you like sports?',zh:'你喜欢运动吗？',audio:'m_t_sport'},
+    a:{en:'Yes! I like running and jumping!',zh:'喜欢！我喜欢跑和跳！',audio:'k_t_sport'},
+    q2:{en:'Can you catch a ball?',zh:'你会接球吗？',audio:'m_t_sport2'},
+    a2:{en:'Yes! Catch! Throw!',zh:'会！接住！扔出去！',audio:'k_t_sport2'},
+    tip:{en:'Move your body every day!',zh:'每天都要动一动！',audio:'m_tip_sport'},
+    cards:[
+      {en:'run',zh:'跑',audio:'w_run'},
+      {en:'jump',zh:'跳',audio:'w_jump'},
+      {en:'ball',zh:'球',audio:'w_ball2'},
+      {en:'catch',zh:'接住',audio:'w_catch'},
+      {en:'sports',zh:'运动',audio:'w_sports'}
+    ]},
+  {id:'fruit',ic:'🍓',nm:'水果乐园',
+    q:{en:'What fruit do you like?',zh:'你喜欢什么水果？',audio:'m_t_fruit'},
+    a:{en:'I like bananas and strawberries!',zh:'我喜欢香蕉和草莓！',audio:'k_t_fruit'},
+    q2:{en:'Are fruits healthy?',zh:'水果健康吗？',audio:'m_t_fruit2'},
+    a2:{en:'Yes! Fruits are healthy!',zh:'健康！水果很健康！',audio:'k_t_fruit2'},
+    tip:{en:'Eat fruits every day!',zh:'每天都要吃水果！',audio:'m_tip_fruit'},
+    cards:[
+      {en:'fruit',zh:'水果',audio:'w_fruit'},
+      {en:'banana',zh:'香蕉',audio:'w_banana'},
+      {en:'strawberry',zh:'草莓',audio:'w_strawberry'},
+      {en:'orange',zh:'橙子',audio:'w_orange'},
+      {en:'healthy',zh:'健康',audio:'w_healthy'}
+    ]},
+  {id:'season',ic:'🌸',nm:'一年四季',
+    q:{en:'What season is it now?',zh:'现在是什么季节？',audio:'m_t_season'},
+    a:{en:'I love spring and summer!',zh:'我喜欢春天和夏天！',audio:'k_t_season'},
+    q2:{en:'What do you do in summer?',zh:'夏天你做什么？',audio:'m_t_season2'},
+    a2:{en:'I swim and eat ice cream!',zh:'我游泳，还吃冰淇淋！',audio:'k_t_season2'},
+    tip:{en:'Every season is special!',zh:'每个季节都特别！',audio:'m_tip_season'},
+    cards:[
+      {en:'spring',zh:'春天',audio:'w_spring'},
+      {en:'summer',zh:'夏天',audio:'w_summer'},
+      {en:'autumn',zh:'秋天',audio:'w_autumn'},
+      {en:'winter',zh:'冬天',audio:'w_winter'},
+      {en:'season',zh:'季节',audio:'w_season'}
+    ]},
+  {id:'birthday',ic:'🎉',nm:'生日快乐',
+    q:{en:'When is your birthday?',zh:'你的生日是哪天？',audio:'m_t_bday'},
+    a:{en:'Happy birthday to me!',zh:'生日快乐给我自己！',audio:'k_t_bday'},
+    q2:{en:'Do you like birthday cake?',zh:'你喜欢生日蛋糕吗？',audio:'m_t_bday2'},
+    a2:{en:'Yes! Cake and candles!',zh:'喜欢！蛋糕和蜡烛！',audio:'k_t_bday2'},
+    tip:{en:'Make a wish!',zh:'许个愿吧！',audio:'m_tip_bday'},
+    cards:[
+      {en:'birthday',zh:'生日',audio:'w_birthday'},
+      {en:'cake',zh:'蛋糕',audio:'w_cake'},
+      {en:'candle',zh:'蜡烛',audio:'w_candle'},
+      {en:'Happy birthday!',zh:'生日快乐！',audio:'w_happybday'},
+      {en:'wish',zh:'愿望',audio:'w_wish'}
+    ]},
+  {id:'bedtime',ic:'🌙',nm:'睡觉时间',
+    q:{en:'What do you say at bedtime?',zh:'睡觉前说什么？',audio:'m_t_bed'},
+    a:{en:'Good night! Sweet dreams!',zh:'晚安！做个好梦！',audio:'k_t_bed'},
+    q2:{en:'Do you hug your teddy?',zh:'你会抱抱小熊吗？',audio:'m_t_bed2'},
+    a2:{en:'Yes! Then I sleep well!',zh:'会！然后我就睡得香！',audio:'k_t_bed2'},
+    tip:{en:'Sleep well, little trainer!',zh:'小训练家，好好睡一觉！',audio:'m_tip_bed'},
+    cards:[
+      {en:'Good night!',zh:'晚安！',audio:'w_goodnight'},
+      {en:'sleep',zh:'睡觉',audio:'w_sleep'},
+      {en:'dream',zh:'梦',audio:'w_dream'},
+      {en:'bed',zh:'床',audio:'w_bed'},
+      {en:'Sweet dreams!',zh:'做个好梦！',audio:'w_sweetdreams'}
+    ]},
+  {id:'books',ic:'📚',nm:'喜欢读书',
+    q:{en:'Do you like reading books?',zh:'你喜欢读书吗？',audio:'m_t_book'},
+    a:{en:'Yes! Books are fun!',zh:'喜欢！书本很有趣！',audio:'k_t_book'},
+    q2:{en:'Who reads with you?',zh:'谁和你一起读？',audio:'m_t_book2'},
+    a2:{en:'Mom and dad read with me!',zh:'爸爸妈妈和我一起读！',audio:'k_t_book2'},
+    tip:{en:'Reading makes you smart!',zh:'阅读让你更聪明！',audio:'m_tip_book'},
+    cards:[
+      {en:'book',zh:'书',audio:'w_book'},
+      {en:'read',zh:'读',audio:'w_read'},
+      {en:'story',zh:'故事',audio:'w_story'},
+      {en:'page',zh:'页',audio:'w_page'},
+      {en:'Books are fun!',zh:'书本很有趣！',audio:'k_t_book'}
+    ]},
+  {id:'help',ic:'🧹',nm:'帮忙做家务',
+    q:{en:'Do you help at home?',zh:'你在家帮忙吗？',audio:'m_t_help'},
+    a:{en:'Yes! I tidy my toys!',zh:'帮忙！我会收拾玩具！',audio:'k_t_help'},
+    q2:{en:'That is very kind!',zh:'你真懂事！',audio:'m_t_help2'},
+    a2:{en:'I am a helpful kid!',zh:'我是爱帮忙的孩子！',audio:'k_t_help2'},
+    tip:{en:'Helping hands are happy hands!',zh:'爱帮忙的小手最快乐！',audio:'m_tip_help'},
+    cards:[
+      {en:'help',zh:'帮忙',audio:'w_help'},
+      {en:'tidy up',zh:'收拾',audio:'w_tidy'},
+      {en:'toys',zh:'玩具',audio:'w_toys'},
+      {en:'kind',zh:'善良 / 懂事',audio:'w_kind'},
+      {en:'I can help!',zh:'我能帮忙！',audio:'w_icanhelp'}
+    ]},
+  {id:'transport',ic:'🚗',nm:'出行交通',
+    q:{en:'How do you go to school?',zh:'你怎么去学校？',audio:'m_t_trans'},
+    a:{en:'I go by car with my mom!',zh:'我和妈妈坐车去！',audio:'k_t_trans'},
+    q2:{en:'What else can we ride?',zh:'我们还能坐什么？',audio:'m_t_trans2'},
+    a2:{en:'Bus, train and bike!',zh:'公交车、火车和自行车！',audio:'k_t_trans2'},
+    tip:{en:'Be safe on the road!',zh:'出门要注意安全！',audio:'m_tip_trans'},
+    cards:[
+      {en:'car',zh:'汽车',audio:'w_car'},
+      {en:'bus',zh:'公交车',audio:'w_bus'},
+      {en:'train',zh:'火车',audio:'w_train'},
+      {en:'bike',zh:'自行车',audio:'w_bike'},
+      {en:'Go!',zh:'出发！',audio:'w_go'}
+    ]},
+  {id:'nature',ic:'🌳',nm:'大自然',
+    q:{en:'What do you see outside?',zh:'你在外面看到什么？',audio:'m_t_nature'},
+    a:{en:'I see trees, flowers and sky!',zh:'我看到树、花和天空！',audio:'k_t_nature'},
+    q2:{en:'Do you love nature?',zh:'你爱大自然吗？',audio:'m_t_nature2'},
+    a2:{en:'Yes! Nature is beautiful!',zh:'爱！大自然很美！',audio:'k_t_nature2'},
+    tip:{en:'Take care of our Earth!',zh:'要爱护我们的地球！',audio:'m_tip_nature'},
+    cards:[
+      {en:'tree',zh:'树',audio:'w_tree'},
+      {en:'flower',zh:'花',audio:'w_flower'},
+      {en:'sky',zh:'天空',audio:'w_sky'},
+      {en:'nature',zh:'大自然',audio:'w_nature'},
+      {en:'beautiful',zh:'美丽',audio:'w_beautiful'}
+    ]},
+  {id:'music',ic:'🎵',nm:'唱歌跳舞',
+    q:{en:'Do you like music?',zh:'你喜欢音乐吗？',audio:'m_t_music'},
+    a:{en:'Yes! I like to sing and dance!',zh:'喜欢！我喜欢唱歌跳舞！',audio:'k_t_music'},
+    q2:{en:'Can you clap your hands?',zh:'你会拍手吗？',audio:'m_t_music2'},
+    a2:{en:'Yes! Clap, clap, clap!',zh:'会！拍拍手，拍拍手！',audio:'k_t_music2'},
+    tip:{en:'Music makes us smile!',zh:'音乐让我们微笑！',audio:'m_tip_music'},
+    cards:[
+      {en:'music',zh:'音乐',audio:'w_music'},
+      {en:'sing',zh:'唱歌',audio:'w_sing2'},
+      {en:'dance',zh:'跳舞',audio:'w_dance'},
+      {en:'clap',zh:'拍手',audio:'w_clap'},
+      {en:'Listen!',zh:'听！',audio:'w_listen'}
+    ]},
+  {id:'size',ic:'🐘',nm:'大和小',
+    q:{en:'Is an elephant big or small?',zh:'大象是大还是小？',audio:'m_t_size'},
+    a:{en:'An elephant is big!',zh:'大象很大！',audio:'k_t_size'},
+    q2:{en:'Is a mouse big or small?',zh:'老鼠是大还是小？',audio:'m_t_size2'},
+    a2:{en:'A mouse is small!',zh:'老鼠很小！',audio:'k_t_size2'},
+    tip:{en:'Big and small are opposites!',zh:'大和小是一对反义词！',audio:'m_tip_size'},
+    cards:[
+      {en:'big',zh:'大',audio:'w_big'},
+      {en:'small',zh:'小',audio:'w_small'},
+      {en:'elephant',zh:'大象',audio:'w_elephant'},
+      {en:'mouse',zh:'老鼠',audio:'w_mouse'},
+      {en:'tall / short',zh:'高 / 矮',audio:'w_tallshort'}
     ]}
 ];
 function meetTopicToday(){
@@ -1938,21 +2403,58 @@ function meetTopicToday(){
 }
 function meetGreeting(){
   var h=new Date().getHours();
-  if(h<12) return {en:'Good morning!',zh:'早上好！',audio:'m_greet_morning'};
-  if(h<18) return {en:'Good afternoon!',zh:'下午好！',audio:'m_greet_afternoon'};
-  return {en:'Good evening!',zh:'晚上好！',audio:'m_greet_evening'};
+  var d=parseDate(todayStr());
+  var start=new Date(d.getFullYear(),0,0);
+  var doy=Math.floor((d-start)/86400000);
+  var mornings=[
+    {en:'Good morning!',zh:'早上好！',audio:'m_greet_morning'},
+    {en:'Hello! Good morning, little trainer!',zh:'你好！早上好，小训练家！',audio:'m_greet_morning2'},
+    {en:'Rise and shine! Good morning!',zh:'太阳出来啦！早上好！',audio:'m_greet_morning3'}
+  ];
+  var afternoons=[
+    {en:'Good afternoon!',zh:'下午好！',audio:'m_greet_afternoon'},
+    {en:'Hello there! Good afternoon!',zh:'嗨！下午好！',audio:'m_greet_afternoon2'},
+    {en:'Good afternoon, my friend!',zh:'下午好，我的朋友！',audio:'m_greet_afternoon3'}
+  ];
+  var evenings=[
+    {en:'Good evening!',zh:'晚上好！',audio:'m_greet_evening'},
+    {en:'Hello! Good evening!',zh:'你好！晚上好！',audio:'m_greet_evening2'},
+    {en:'Good evening, little star!',zh:'晚上好，小星星！',audio:'m_greet_evening3'}
+  ];
+  var pool=h<12?mornings:(h<18?afternoons:evenings);
+  return pool[doy%pool.length];
+}
+function meetBye(){
+  var byes=[
+    {en:'Wonderful! See you tomorrow!',zh:'太棒了！明天见！',audio:'m_08_bye'},
+    {en:'Great job! Bye-bye!',zh:'干得漂亮！拜拜！',audio:'m_bye2'},
+    {en:'You did so well! See you soon!',zh:'你说得真好！下次见！',audio:'m_bye3'},
+    {en:'Awesome! Practice makes perfect!',zh:'真棒！熟能生巧！',audio:'m_bye4'},
+    {en:'Super! Come chat again tomorrow!',zh:'超棒！明天再来聊吧！',audio:'m_bye5'}
+  ];
+  var d=parseDate(todayStr());
+  var start=new Date(d.getFullYear(),0,0);
+  var doy=Math.floor((d-start)/86400000);
+  return byes[doy%byes.length];
 }
 function meetLines(){
-  var g=meetGreeting(), t=meetTopicToday();
+  var g=meetGreeting(), t=meetTopicToday(), bye=meetBye();
   var A=typeof t.a==='function'?t.a():t.a;
-  return [
+  var lines=[
     {who:'oak',en:g.en,zh:g.zh,audio:g.audio},
-    {who:'oak',en:"I'm Professor Oak. Nice to meet you!",zh:'我是大木博士，很高兴见到你！',audio:'m_02_meet'},
-    {who:'kid',en:'Nice to meet you, too!',zh:'我也很高兴见到你！',audio:'k_03'},
+    {who:'oak',en:"I'm Professor Oak. Let's practice English today!",zh:'我是大木博士，今天我们来练英语吧！',audio:'m_02_meet'},
+    {who:'kid',en:'Okay! I love English!',zh:'好呀！我喜欢英语！',audio:'k_03'},
     {who:'oak',en:t.q.en,zh:t.q.zh,audio:t.q.audio},
-    {who:'kid',en:A.en,zh:A.zh,audio:A.audio},
-    {who:'oak',en:'Wonderful! See you tomorrow!',zh:'太棒了！明天见！',audio:'m_08_bye'}
+    {who:'kid',en:A.en,zh:A.zh,audio:A.audio}
   ];
+  if(t.q2){
+    var A2=typeof t.a2==='function'?t.a2():t.a2;
+    lines.push({who:'oak',en:t.q2.en,zh:t.q2.zh,audio:t.q2.audio});
+    if(A2) lines.push({who:'kid',en:A2.en,zh:A2.zh,audio:A2.audio});
+  }
+  if(t.tip) lines.push({who:'oak',en:t.tip.en,zh:t.tip.zh,audio:t.tip.audio});
+  lines.push({who:'oak',en:bye.en,zh:bye.zh,audio:bye.audio});
+  return lines;
 }
 function meetDone(){ return !!(S.meet&&S.meet.date===todayStr()&&S.meet.done); }
 function meetBannerHTML(){
@@ -2637,7 +3139,7 @@ function playTrainerScene(replay,afterClose){
   if(sc.act==='throw') fx='<span class="tr-ball">🔴</span>';
   if(sc.act==='highfive'){
     var pal=S.team.length?S.team[Math.floor(Math.random()*S.team.length)]:null;
-    fx=(pal?'<img class="tr-pal" src="'+pokeImg(pal.sid)+'" alt="">':'')+'<span class="tr-fxbit" style="left:58%;top:44%;animation-delay:.5s">🤝</span>';
+    fx=(pal?'<img class="tr-pal" '+pokeImgAttrs(pal.sid)+'>':'')+'<span class="tr-fxbit" style="left:58%;top:44%;animation-delay:.5s">🤝</span>';
   }
   if(sc.act==='jump') fx='<span class="tr-fxbit" style="left:50%;top:18%;animation-delay:.4s">🌟</span><span class="tr-fxbit" style="left:26%;top:30%;animation-delay:.8s">✨</span>';
   if(sc.act==='polish') fx='<span class="tr-fxbit" style="left:38%;top:40%;animation-delay:.3s">✨</span><span class="tr-fxbit" style="left:62%;top:34%;animation-delay:.7s">✨</span><span class="tr-fxbit" style="left:50%;top:24%;animation-delay:1.1s">🏅</span>';
@@ -2856,11 +3358,11 @@ function openTeamMon(mid){
         return '<span class="md-move locked">'+esc(mv.m)+'<span class="lv">Lv.'+mv.at+' 解锁</span></span>';
       }).join('')
     : '<p class="md-note">没有更多可学招式了</p>';
-  var nickLine=(mon.nick!==sp.name)?('<div style="font-size:12px;color:#8a97ad;font-weight:700;margin-top:2px">本名 '+esc(sp.name)+'</div>'):'';
+  var nickLine=(mon.nick!==sp.name)?('<div style="font-size:12px;color:#8a7a6a;font-weight:700;margin-top:2px">本名 '+esc(sp.name)+'</div>'):'';
   sfxClick();
   showModal('<div class="dialog mon-detail">'+
     '<div style="text-align:center">'+
-      '<div style="font-size:11px;font-weight:900;color:#8a97ad">No.'+('000'+dexNo(mon.sid)).slice(-3)+'</div>'+
+      '<div style="font-size:11px;font-weight:900;color:#8a7a6a">No.'+('000'+dexNo(mon.sid)).slice(-3)+'</div>'+
       '<div class="big-emoji" style="margin:4px 0">'+pokeImgHTML(mon.sid,'style="width:120px;height:120px;object-fit:contain"')+'</div>'+
       '<h3 style="margin:2px 0 4px">'+esc(mon.nick)+'</h3>'+nickLine+
       '<div style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:8px">'+
@@ -2922,7 +3424,7 @@ function playSkill(mid){
   root.innerHTML='<div class="sk-aura" style="background:radial-gradient(circle at 50% 44%,'+col+'cc 0%,'+col+'33 40%,rgba(10,12,18,.94) 74%)"></div>'+
     '<div class="sk-rays" style="color:'+col+'"></div>'+
     '<div class="sk-parts">'+parts+'</div>'+
-    '<div class="sk-mon-wrap"><img class="sk-mon" src="'+pokeImg(mon.sid)+'" alt=""></div>'+
+    '<div class="sk-mon-wrap"><img class="sk-mon" '+pokeImgAttrs(mon.sid)+'></div>'+
     '<div class="sk-info"><span class="sk-type" style="background:'+col+'">'+esc(sp.type)+'</span>'+
       '<div class="sk-line">'+esc(mon.nick)+' 使用了</div>'+
       '<div class="sk-move">「'+esc(mv)+'」</div></div>'+
@@ -3068,7 +3570,7 @@ function viewTeamHTML(){
   var todayCnt=S.homework.filter(function(h){return h.date===todayT&&h.status!=='rejected';}).length;
   var sealHTML='';
   var sn=S.snorlax;
-  var hasSnorlax=S.team.some(function(m){return m.sid==='snorlax';});
+  var snLoc=findSnorlax();
   if(sn.state==='sealed'){
     var left=sealDaysLeft();
     var deg=Math.round((1-left/7)*360);
@@ -3076,8 +3578,10 @@ function viewTeamHTML(){
       '<b>卡比兽封印球</b>'+
       '<div class="d">道馆送的卡比兽正在沉睡中…<br>坚持每天打卡，'+left+' 天后它就会醒来加入队伍！</div>'+
       '<div class="seal-ring" style="--deg:'+deg+'deg"><div class="inner">'+left+'天</div></div></div>';
-  }else if(sn.state==='active'&&hasSnorlax){
+  }else if(sn.state==='active'&&snLoc&&snLoc.where==='team'){
     sealHTML='<div class="card" style="background:linear-gradient(135deg,#e2f5e3,#f1fbf2);border:1.5px solid #a5d6a7"><h3>🐻 卡比兽已苏醒！</h3><p style="margin:0;font-size:13.5px;color:#2e7d32;font-weight:600">它正在你的队伍里，等着和你一起打卡升级呢！</p></div>';
+  }else if(sn.state==='active'&&snLoc&&snLoc.where==='box'){
+    sealHTML='<div class="card" style="background:linear-gradient(180deg,#EEF6FF,#DCEEFF)"><h3>🐻 卡比兽在图鉴休息</h3><p style="margin:0 0 10px;font-size:13.5px;color:#1E4F9A;font-weight:600">它已经醒啦，正在图鉴盒子里养精蓄锐。想一起冒险时，去图鉴叫它上场就好～</p><button class="btn btn-yellow btn-block" onclick="go(\'dex\')">📖 去图鉴看看</button></div>';
   }else if(sn.state==='active'){
     sealHTML='<div class="card" style="background:linear-gradient(135deg,#fff3d0,#ffe9a8);border:1.5px solid #f0c24b"><h3>🐻 卡比兽醒了！</h3><p style="margin:0 0 10px;font-size:13.5px;color:#7a5200;font-weight:600">但队伍已经满了…选一位伙伴送回家，让它加入吧。</p><button class="btn btn-yellow btn-block" onclick="openReplace(\'snorlax\',\'gym\')">挑选替换</button></div>';
   }
@@ -3194,9 +3698,9 @@ function viewWorkHTML(){
         '<div style="text-align:center;font-weight:900;font-size:15px">'+approvedToday+'/'+todays.length+'<div style="font-size:10.5px;color:#8a6d3b">已通过</div></div>'+
       '</div>'+
       '<div style="margin-top:10px;background:rgba(255,255,255,.65);border-radius:12px;padding:8px 12px">'+
-        '<div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:800;color:#8a6d3b"><span>🎯 每日挑战 · 集满 7 个送捕捉券</span><span>'+approvedToday+'/7</span></div>'+
-        '<div class="xpbar" style="margin-top:5px;height:8px"><div class="xpfill" style="width:'+Math.min(100,Math.round(approvedToday/7*100))+'%"></div></div>'+
-        (approvedToday>=7?'<div style="font-size:12px;color:#2e7d32;font-weight:800;margin-top:4px">🎉 今日捕捉券已到手，周末去探险吧！</div>':'')+
+        '<div style="display:flex;justify-content:space-between;font-size:12.5px;font-weight:800;color:#8a6d3b"><span>🎯 每日挑战 · 集满 '+dailyTarget()+' 个送捕捉券 ×'+dailyReward()+'</span><span>'+approvedToday+'/'+dailyTarget()+'</span></div>'+
+        '<div class="xpbar" style="margin-top:5px;height:8px"><div class="xpfill" style="width:'+Math.min(100,Math.round(approvedToday/dailyTarget()*100))+'%"></div></div>'+
+        (approvedToday>=dailyTarget()?'<div style="font-size:12px;color:#2e7d32;font-weight:800;margin-top:4px">🎉 今日捕捉券已到手，周末去探险吧！</div>':'')+
       '</div></div>'+
     rejectTip+
     '<div class="card"><h3>✍️ 提交今天的任务</h3>'+
@@ -3338,15 +3842,15 @@ function viewArenaHTML(){
   };
   var canFight=bw.open&&rec.count<3;
   return '<div class="view">'+
-    '<div class="card" style="background:linear-gradient(135deg,#e8eaf6,#fff8e1);border:1.5px solid #c5cae9">'+
+    '<div class="card" style="background:linear-gradient(180deg,#FFFDF1,#FFE9A8)">'+
       '<div style="display:flex;align-items:center;gap:10px"><div style="font-size:34px">⚔️</div>'+
       '<div><b style="font-size:15.5px;font-weight:900">队内对战 · 每晚 20:00-22:00</b>'+
-      '<div style="font-size:12.5px;color:#5c6bc0;font-weight:700;margin-top:2px">'+bw.msg+'</div>'+
+      '<div style="font-size:12.5px;color:#1E4F9A;font-weight:700;margin-top:2px">'+bw.msg+'</div>'+
       '<div style="font-size:12px;color:#8a6d3b;font-weight:600;margin-top:2px">今天已战 '+rec.count+'/3 场 · '+(rec.xpGiven?'经验奖励已领取':'第一场胜者 +12 经验，败者 +5 经验')+'</div></div></div>'+
       '<div style="display:flex;align-items:center;justify-content:space-around;margin-top:12px">'+
-        '<div style="text-align:center"><img src="'+pokeImg(A.sid)+'" style="width:78px;height:78px;object-fit:contain" alt=""><div style="font-size:12px;font-weight:900">'+esc(A.nick)+'</div><div style="font-size:10.5px;color:#8a6d3b">Lv.'+A.level+' · '+spec(A.sid).type+'</div></div>'+
+        '<div style="text-align:center"><img '+pokeImgAttrs(A.sid,'style="width:78px;height:78px;object-fit:contain"')+'><div style="font-size:12px;font-weight:900">'+esc(A.nick)+'</div><div style="font-size:10.5px;color:#8a6d3b">Lv.'+A.level+' · '+spec(A.sid).type+'</div></div>'+
         '<div style="font-size:20px;font-weight:900;color:#e3350d">VS</div>'+
-        '<div style="text-align:center"><img src="'+pokeImg(B.sid)+'" style="width:78px;height:78px;object-fit:contain" alt=""><div style="font-size:12px;font-weight:900">'+esc(B.nick)+'</div><div style="font-size:10.5px;color:#8a6d3b">Lv.'+B.level+' · '+spec(B.sid).type+'</div></div>'+
+        '<div style="text-align:center"><img '+pokeImgAttrs(B.sid,'style="width:78px;height:78px;object-fit:contain"')+'><div style="font-size:12px;font-weight:900">'+esc(B.nick)+'</div><div style="font-size:10.5px;color:#8a6d3b">Lv.'+B.level+' · '+spec(B.sid).type+'</div></div>'+
       '</div>'+
       '<button class="btn '+(canFight?'btn-primary':'btn-gray')+' btn-block" style="margin-top:12px" '+(canFight?'':'disabled')+' onclick="startArena()">'+
         (bw.open?(rec.count>=3?'今天已战满 3 场':'⚔️ 开始对战'):'🕗 未到对战时间')+'</button>'+
@@ -3390,7 +3894,7 @@ function boxMonModal(bi){
   var sp=spec(m.sid);
   var mvs=(sp.moves||[]).filter(function(mv){return mv.at<=m.level;}).map(function(mv){return mv.m;});
   showModal('<div class="dialog"><div style="text-align:center">'+
-    '<div style="font-size:11px;font-weight:900;color:#8a97ad">No.'+('000'+dexNo(m.sid)).slice(-3)+'</div>'+
+    '<div style="font-size:11px;font-weight:900;color:#8a7a6a">No.'+('000'+dexNo(m.sid)).slice(-3)+'</div>'+
     '<div class="big-emoji">'+pokeImgHTML(m.sid,'style="width:110px;height:110px;object-fit:contain"')+'</div>'+
     '<h3 style="margin:4px 0 2px">'+esc(m.nick)+'</h3>'+
     '<span class="type-tag" style="background:'+tc(sp.type)+'">'+sp.type+'</span> <span class="lv-tag">Lv.'+m.level+'</span>'+
@@ -3447,13 +3951,13 @@ function viewDexHTML(){
       '<div style="height:8px;background:#ffe0b2;border-radius:99px;margin-top:6px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:linear-gradient(90deg,#ff9800,#e3350d);border-radius:99px"></div></div></div></div></div>'+
     '<div class="card"><h3>🎒 出战队伍（'+S.team.length+'/6）</h3>'+
       '<div class="dex-grid">'+(teamChips||'<div class="empty"><div class="t">还没有伙伴</div></div>')+'</div>'+
-      '<div style="font-size:11px;color:#8a97ad;font-weight:600;margin-top:6px">点击队员 → 送回图鉴休息；最多同时出战 6 只</div></div>'+
+      '<div style="font-size:11px;color:#8a7a6a;font-weight:600;margin-top:6px">点击队员 → 送回图鉴休息；最多同时出战 6 只</div></div>'+
     (S.box.length?'<div class="card"><h3>📥 图鉴盒子（'+S.box.length+' 只待命）</h3>'+
       '<div class="dex-grid">'+boxGrid+'</div>'+
-      '<div style="font-size:11px;color:#8a97ad;font-weight:600;margin-top:6px">点击盒中伙伴 → 加入队伍或替换队员</div></div>':'')+
+      '<div style="font-size:11px;color:#8a7a6a;font-weight:600;margin-top:6px">点击盒中伙伴 → 加入队伍或替换队员</div></div>':'')+
     '<div class="section-label">全图鉴 · '+POKE_TOTAL+' 只</div>'+
     '<div class="card"><div class="dex-grid dex-all">'+grid+'</div>'+
-      '<div style="font-size:11px;color:#8a97ad;font-weight:600;margin-top:8px">灰影 = 还没遇到过的神秘宝可梦，去野外探险收集吧！</div></div>'+
+      '<div style="font-size:11px;color:#8a7a6a;font-weight:600;margin-top:8px">灰影 = 还没遇到过的神秘宝可梦，去野外探险收集吧！</div></div>'+
   '</div>';
 }
 function dexMonInfo(sid){
@@ -3462,7 +3966,7 @@ function dexMonInfo(sid){
   var evoTxt=sp.evo.length?sp.evo.map(function(e){ return 'Lv.'+e.at+' → '+esc(SPECIES[e.to]?SPECIES[e.to].name:e.to); }).join('，'):'不再进化';
   var mvs=sp.moves.map(function(mv){ return mv.at>1?('Lv.'+mv.at+' '+esc(mv.m)):esc(mv.m); }).join('、');
   showModal('<div class="dialog"><div style="text-align:center">'+
-    '<div style="font-size:11px;font-weight:900;color:#8a97ad">No.'+('000'+dexNo(sid)).slice(-3)+'</div>'+
+    '<div style="font-size:11px;font-weight:900;color:#8a7a6a">No.'+('000'+dexNo(sid)).slice(-3)+'</div>'+
     '<div class="big-emoji">'+pokeImgHTML(sid,'style="width:110px;height:110px;object-fit:contain"')+'</div>'+
     '<h3 style="margin:4px 0 2px">'+esc(sp.name)+'</h3>'+
     '<span class="type-tag" style="background:'+tc(sp.type)+'">'+sp.type+'</span>'+
@@ -3485,7 +3989,7 @@ function viewCatchHTML(){
     '<div class="card" style="background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border:1.5px solid #a5d6a7">'+
       '<div style="display:flex;align-items:center;gap:10px"><div style="font-size:34px">🌲</div>'+
       '<div><b style="font-size:15.5px;font-weight:900">野外探险</b>'+
-      '<div style="font-size:12.5px;color:#33691e;font-weight:600;margin-top:2px">每周末 3 次免费机会 · 捕捉券 '+S.items.vouchers+' 张 · 稀有券 '+S.items.rareVouchers+' 张</div>'+
+      '<div style="font-size:12.5px;color:#33691e;font-weight:600;margin-top:2px">每周末 '+weekendFreeMax()+' 次免费机会 · 捕捉券 '+S.items.vouchers+' 张 · 稀有券 '+S.items.rareVouchers+' 张</div>'+
       '<div style="font-size:12px;color:#2e7d32;font-weight:700;margin-top:3px">🎯 每天通过 7 个任务，再送 1 张捕捉券！</div></div></div>'+
       '<div style="display:flex;gap:8px;margin-top:12px">'+
         '<button class="btn btn-green btn-sm" style="flex:1" '+(weekend&&(c.free>0||S.items.vouchers>0)?'':'disabled')+' onclick="startCatch(false)">🎣 出发探险（剩 '+c.free+' 次）</button>'+
@@ -3549,7 +4053,7 @@ function fishStageHTML(kind,foe){
   /* 上钩：把宝可梦亮出来 */
   return '<div class="fish-stage" id="fishStage">'+water+
     '<div class="fish-catch" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">'+
-      '<img src="'+pokeImg(foe.sid)+'" alt="">'+
+      '<img '+pokeImgAttrs(foe.sid)+'>'+
       '<div class="fish-tip" style="color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.4)">Lv.'+foe.level+'</div>'+
     '</div></div>';
 }
@@ -3709,18 +4213,42 @@ function catchThrow(){
 }
 function openReplace(sid,source){
   sfxClick();
+  /* 卡比兽：若已在盒子/队伍里，只做上场或提示，绝不再 new 一只 */
+  if(sid==='snorlax'){
+    var loc=findSnorlax();
+    if(loc&&loc.where==='team'){ toast('卡比兽已经在队伍里啦'); return; }
+    if(loc&&loc.where==='box'){ addFromBox(loc.i); return; }
+  }
+  /* 队伍满时 tryAddMon 已把新伙伴放进盒子：这里只换位，避免再造一只并弄丢旧伙伴 */
+  var bi=findBoxedSid(sid);
+  if(bi>=0){
+    var swapOpts=S.team.map(function(m,i){
+      return '<button class="btn btn-gray btn-block" style="justify-content:flex-start;display:flex;align-items:center;gap:10px" onclick="boxSwap('+bi+','+i+')">'+pokeImgHTML(m.sid,'style="width:38px;height:38px;object-fit:contain;border-radius:50%"')+' '+esc(m.nick)+'（Lv.'+m.level+'）</button>';
+    }).join('');
+    showModal('<div class="dialog"><h3>队伍满啦</h3><p class="lead">新伙伴已在图鉴盒子里。选一位伙伴回盒子休息，让它上场：</p><div class="dlg-actions" style="max-height:40dvh;overflow:auto">'+swapOpts+'</div>'+
+      '<div class="dlg-actions"><button class="btn btn-gray btn-block" onclick="closeModal()">先留在盒子里</button></div></div>');
+    return;
+  }
   var opts=S.team.map(function(m,i){
-    var sp=spec(m.sid);
     return '<button class="btn btn-gray btn-block" style="justify-content:flex-start;display:flex;align-items:center;gap:10px" onclick="doReplace('+i+',\''+sid+'\',\''+source+'\')">'+pokeImgHTML(m.sid,'style="width:38px;height:38px;object-fit:contain;border-radius:50%"')+' '+esc(m.nick)+'（Lv.'+m.level+'）</button>';
   }).join('');
-  showModal('<div class="dialog"><h3>队伍满啦</h3><p class="lead">选择一位伙伴送回家休息，让新朋友加入：</p><div class="dlg-actions" style="max-height:40dvh;overflow:auto">'+opts+'</div></div>');
+  showModal('<div class="dialog"><h3>队伍满啦</h3><p class="lead">选择一位伙伴送回图鉴休息，让新朋友加入：</p><div class="dlg-actions" style="max-height:40dvh;overflow:auto">'+opts+'</div></div>');
 }
 function doReplace(idx,sid,source){
   sfxOk();
-  replaceMon(idx,sid,source);
+  if(sid==='snorlax'){
+    var loc=findSnorlax();
+    if(loc&&loc.where==='team'){ toast('卡比兽已经在队伍里啦'); closeModal(); return; }
+    if(loc&&loc.where==='box'){
+      boxSwap(loc.i,idx); return;
+    }
+  }
+  var bi=findBoxedSid(sid);
+  if(bi>=0){ boxSwap(bi,idx); return; }
+  var old=replaceMon(idx,sid,source);
   closeModal(); closeModal();
   var sp=spec(sid);
-  toast(sp.name+' 加入了队伍！');
+  toast(esc(sp.name)+' 上场'+(old?'，'+esc(old.nick)+' 回到图鉴休息':'')+'！');
   render();
 }
 
@@ -3805,8 +4333,8 @@ function showResultModal(hw,xp,events,prize,deduct,voucher){
   var voucherHTML='';
   if(voucher){
     voucherHTML='<div style="background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border:1.5px solid #a5d6a7;border-radius:16px;padding:10px 12px;margin:10px 0 0">'+
-      '<b style="color:#2e7d32;font-size:15px">🎣 每日挑战达成！获得捕捉券 ×1</b>'+
-      '<div style="font-size:12.5px;color:#33691e;font-weight:600;margin-top:2px">今天已完成 7 个任务，捕捉券已放入背包，周末野外探险可以用！</div></div>';
+      '<b style="color:#2e7d32;font-size:15px">🎣 每日挑战达成！获得捕捉券 ×'+dailyReward()+'</b>'+
+      '<div style="font-size:12.5px;color:#33691e;font-weight:600;margin-top:2px">今天已完成 '+dailyTarget()+' 个任务，捕捉券已放入背包，周末野外探险可以用！</div></div>';
   }
   var evs='';
   events.forEach(function(ev){
@@ -3834,12 +4362,11 @@ function showResultModal(hw,xp,events,prize,deduct,voucher){
 }
 function claimPrizeBtn(sid){
   var r=claimPrize(sid);
-  if(r.ok){
-    sfxCatch(); confetti(); closeModal(); render();
-    showModal('<div class="dialog"><div class="big-emoji">'+pokeImgHTML(sid,'style="width:110px;height:110px;object-fit:contain"')+'</div><h3>'+esc(spec(sid).name)+' 加入队伍！</h3><p class="lead">这是你坚持 7 天打卡换来的伙伴，太了不起啦！</p><div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="closeModal()">耶！</button></div></div>');
+  sfxCatch(); confetti(); closeModal(); render();
+  if(r.boxed){
+    showModal('<div class="dialog"><div class="big-emoji">'+pokeImgHTML(sid,'style="width:110px;height:110px;object-fit:contain"')+'</div><h3>'+esc(spec(sid).name)+' 已存入图鉴！</h3><p class="lead">队伍满了，连击大奖伙伴先在盒子里休息。<br>你可以挑选替换上场，或稍后再去图鉴叫它。</p><div class="dlg-actions"><button class="btn btn-yellow btn-block" onclick="openReplace(\''+sid+'\',\'prize\')">🔄 挑选替换上场</button><button class="btn btn-primary btn-block" onclick="closeModal();go(\'dex\')">📖 去图鉴看看</button></div></div>');
   }else{
-    closeModal(); render();
-    openReplace(sid,'prize');
+    showModal('<div class="dialog"><div class="big-emoji">'+pokeImgHTML(sid,'style="width:110px;height:110px;object-fit:contain"')+'</div><h3>'+esc(spec(sid).name)+' 加入队伍！</h3><p class="lead">这是你坚持 7 天打卡换来的伙伴，太了不起啦！</p><div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="closeModal()">耶！</button></div></div>');
   }
 }
 
@@ -3899,10 +4426,27 @@ function viewSettingsHTML(){
       '<div class="field"><label>家长密码（空=不需要密码）</label><input id="setPin" type="password" maxlength="6" placeholder="4-6 位数字或字母" value="'+esc(S.pin)+'"></div>'+
       '<button class="btn btn-primary btn-block" onclick="saveSettings()">保存设置</button></div>'+
     '<div class="card"><h3>⚙️ 激励规则</h3>'+
-      '<div class="field"><label>快手奖励截止时间（此前提交经验 ×'+S.fastMult+'）</label><input id="setDeadline" type="time" value="'+esc(S.deadline)+'"></div>'+
+      '<div class="field"><label>快手奖励截止时间</label><input id="setDeadline" type="time" value="'+esc(S.deadline)+'"></div>'+
+      '<div class="field"><label>快手经验倍率（此前提交 × 倍率）</label><input id="setFast" type="number" min="1" max="3" step="0.1" value="'+S.fastMult+'"></div>'+
       '<div class="field"><label>单次任务基础经验</label><input id="setBase" type="number" min="5" max="100" value="'+S.baseXP+'"></div>'+
       '<div class="field"><label>连击大奖天数</label><input id="setStreak" type="number" min="3" max="14" value="'+S.streakTarget+'"></div>'+
       '<button class="btn btn-primary btn-block" onclick="saveRules()">保存规则</button></div>'+
+    '<div class="card"><h3>🎯 每日挑战与捕捉</h3>'+
+      '<p style="font-size:12.5px;color:#8a7a6a;margin:0 0 10px;font-weight:600">孩子当天通过审核的任务达到目标数，自动发放捕捉券。</p>'+
+      '<div class="field"><label>每日挑战目标（集满几个任务）</label><input id="setDailyTarget" type="number" min="1" max="20" value="'+dailyTarget()+'"></div>'+
+      '<div class="field"><label>达成后发放捕捉券张数</label><input id="setDailyReward" type="number" min="1" max="5" value="'+dailyReward()+'"></div>'+
+      '<div class="field"><label>周末免费捕捉次数</label><input id="setWeekendFree" type="number" min="0" max="7" value="'+weekendFreeMax()+'"></div>'+
+      '<button class="btn btn-primary btn-block" onclick="saveChallenge()">保存挑战设置</button>'+
+      '<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--pk-line)">'+
+        '<div style="font-size:13px;font-weight:800;margin-bottom:8px">🎒 背包补给（当前捕捉券 <b style="color:#2e7d32">'+S.items.vouchers+'</b> · 稀有券 <b style="color:#6a1b9a">'+S.items.rareVouchers+'</b>）</div>'+
+        '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
+          '<button class="btn btn-green btn-sm" style="flex:1" onclick="adjustVoucher(1)">捕捉券 +1</button>'+
+          '<button class="btn btn-gray btn-sm" style="flex:1" onclick="adjustVoucher(-1)">捕捉券 −1</button>'+
+          '<button class="btn btn-yellow btn-sm" style="flex:1" onclick="adjustRareVoucher(1)">稀有券 +1</button>'+
+          '<button class="btn btn-gray btn-sm" style="flex:1" onclick="adjustRareVoucher(-1)">稀有券 −1</button>'+
+        '</div>'+
+        '<p style="font-size:11.5px;color:#b0a090;margin:8px 0 0;font-weight:600">例如设成「集满 3 个送 1 张」，孩子更容易拿到周末探险机会</p>'+
+      '</div></div>'+
     '<div class="card"><h3>📚 任务类别</h3><div class="chips" id="subjChips">'+
       S.subjects.map(function(s){return '<button class="chip-opt" onclick="delSubject(\''+esc(s)+'\')">'+esc(s)+' ✕</button>';}).join('')+
     '</div><div style="display:flex;gap:8px"><input id="newSubj" placeholder="添加任务，如：收拾玩具" style="flex:1;border:2px solid var(--pk-line);border-radius:14px;padding:10px 12px"><button class="btn btn-gray btn-sm" onclick="addSubject()">添加</button></div>'+
@@ -3955,10 +4499,35 @@ function saveRules(){
   var d=$('setDeadline').value;
   var b=parseInt($('setBase').value,10);
   var st=parseInt($('setStreak').value,10);
+  var fm=parseFloat($('setFast').value);
   if(d) S.deadline=d;
   if(b>=5&&b<=100) S.baseXP=b;
   if(st>=3&&st<=14) S.streakTarget=st;
+  if(!isNaN(fm)&&fm>=1&&fm<=3) S.fastMult=Math.round(fm*10)/10;
   sfxOk(); save(); render(); toast('规则已保存');
+}
+function saveChallenge(){
+  var t=parseInt($('setDailyTarget').value,10);
+  var r=parseInt($('setDailyReward').value,10);
+  var w=parseInt($('setWeekendFree').value,10);
+  if(!(t>=1&&t<=20)){ toast('每日目标请填 1～20'); return; }
+  if(!(r>=1&&r<=5)){ toast('奖励张数请填 1～5'); return; }
+  if(!(w>=0&&w<=7)){ toast('周末免费次数请填 0～7'); return; }
+  S.dailyTarget=t; S.dailyReward=r; S.weekendFree=w;
+  /* 若今天已达标但还没发券（例如刚把目标从 7 改成 3），立刻补发 */
+  var just=refreshDailyVoucher();
+  sfxOk(); save(); render();
+  toast(just?('挑战设置已保存，并补发了今日捕捉券 ×'+dailyReward()):'挑战设置已保存');
+}
+function adjustVoucher(n){
+  S.items.vouchers=Math.max(0,(S.items.vouchers||0)+n);
+  sfxClick(); save(); render();
+  toast('捕捉券：'+S.items.vouchers+' 张');
+}
+function adjustRareVoucher(n){
+  S.items.rareVouchers=Math.max(0,(S.items.rareVouchers||0)+n);
+  sfxClick(); save(); render();
+  toast('稀有券：'+S.items.rareVouchers+' 张');
 }
 function addSubject(){
   var v=$('newSubj').value.trim();
@@ -4015,6 +4584,7 @@ function doReset(){
 /* ================= 启动 ================= */
 function init(){
   SOUND=!(S&&S.sound===false);
+  cleanupGymSnorlaxDupes();
   renderHeader(); renderTabbar();
   var seal=checkSeal();
   if(seal==='joined'){
@@ -4022,9 +4592,9 @@ function init(){
       confetti(); sfxEvo();
       showModal('<div class="dialog"><div class="big-emoji">'+pokeImgHTML('snorlax','style="width:120px;height:120px;object-fit:contain"')+'</div><h3>卡比兽苏醒啦！</h3><p class="lead">坚持 7 天封印解除，卡比兽加入队伍！它想和你一起打卡升级！</p><div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="closeModal()">欢迎！</button></div></div>');
     },300);
-  }else if(seal==='full'){
+  }else if(seal==='boxed'||seal==='full'){
     setTimeout(function(){
-      showModal('<div class="dialog"><div class="big-emoji">'+pokeImgHTML('snorlax','style="width:120px;height:120px;object-fit:contain"')+'</div><h3>卡比兽苏醒啦！</h3><p class="lead">但队伍已经满了…选一位伙伴送回家，让卡比兽加入吧。</p><div class="dlg-actions"><button class="btn btn-yellow btn-block" onclick="openReplace(\'snorlax\',\'gym\')">挑选替换</button><button class="btn btn-gray btn-block" onclick="closeModal()">稍后再说</button></div></div>');
+      showModal('<div class="dialog"><div class="big-emoji">'+pokeImgHTML('snorlax','style="width:120px;height:120px;object-fit:contain"')+'</div><h3>卡比兽苏醒啦！</h3><p class="lead">队伍已经满了，卡比兽先住进<b>图鉴盒子</b>休息。<br>你可以随时去图鉴叫它上场，或在这里挑选替换。</p><div class="dlg-actions"><button class="btn btn-yellow btn-block" onclick="openReplace(\'snorlax\',\'gym\')">挑选替换上场</button><button class="btn btn-gray btn-block" onclick="closeModal();go(\'dex\')">📖 先去图鉴看看</button></div></div>');
     },300);
   }
   var egg=checkEgg();
