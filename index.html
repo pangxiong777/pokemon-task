@@ -3052,67 +3052,23 @@ function publishTrainerTask(){
   var changed=t.task!==v;
   t.task=v; t.taskDate=todayStr();
   if(changed) t.days=[];
-  /* 顺手把自定义文案记进常用模板（最多 8 条） */
   if(!Array.isArray(t.presets)) t.presets=[];
   if(TRAINER_PRESETS.indexOf(v)<0){
     t.presets=t.presets.filter(function(x){return x!==v;});
     t.presets.unshift(v);
     if(t.presets.length>8) t.presets=t.presets.slice(0,8);
   }
-  save(); sfxOk(); closeModal(); render();
+  save(); sfxOk(); render();
   toast(changed?'本周特别任务已发布':'本周特别任务已更新');
 }
 function clearTrainerTask(){
   var t=trainerS();
   if(!t.task){ toast('本周还没有任务'); return; }
-  t.task=''; t.taskDate=''; t.days=[]; save(); sfxClick(); closeModal(); render();
+  t.task=''; t.taskDate=''; t.days=[]; save(); sfxClick(); render();
   toast('已清除本周特别任务');
 }
 function useTrainerPreset(p){
   var el=$('trTaskInput'); if(el){ el.value=p; sfxClick(); }
-}
-function openTrainerTaskEditor(){
-  if(!trainerUnlocked()){ sfxBad(); toast('通过水系道馆后才能设置特别任务'); return; }
-  var go=function(){
-    var t=trainerS();
-    var chips=trainerPresetList().map(function(p){
-      return '<button class="chip-opt" type="button" onclick=\'useTrainerPreset('+JSON.stringify(String(p))+')\'>'+esc(p)+'</button>';
-    }).join('');
-    showModal(
-      '<div class="dialog"><h3>✏️ 设置本周特别任务</h3>'+
-      '<p class="lead">写一句孩子每天要完成的小事，打卡满 7 天就能解锁新时装。</p>'+
-      '<div class="field" style="margin-top:10px"><label>自定义任务内容</label>'+
-        '<input id="trTaskInput" maxlength="40" placeholder="例如：每天整理书包" value="'+esc(t.task)+'"></div>'+
-      '<div class="chips" style="margin-top:8px">'+chips+'</div>'+
-      '<div class="dlg-actions">'+
-        '<button class="btn btn-primary btn-block" onclick="publishTrainerTask()">保存并发布</button>'+
-        (t.task?'<button class="btn btn-gray btn-block" onclick="clearTrainerTask()">清除本周任务</button>':'')+
-        '<button class="btn btn-gray btn-block" onclick="closeModal()">取消</button>'+
-      '</div></div>'
-    );
-    setTimeout(function(){ var i=$('trTaskInput'); if(i){ i.focus(); i.select&&i.select(); } },80);
-  };
-  /* 孩子端若设了家长密码，先验证再改 */
-  if(viewMode!=='parent' && S.pin){
-    showModal(
-      '<div class="dialog"><h3>家长验证</h3>'+
-      '<p class="lead">设置每周特别任务需要家长确认：</p>'+
-      '<div class="field" style="margin-top:12px"><input id="trPinInput" type="password" inputmode="numeric" placeholder="家长密码" style="text-align:center;letter-spacing:8px;font-size:20px;font-weight:800"></div>'+
-      '<div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="confirmTrainerTaskPin()">继续设置</button>'+
-      '<button class="btn btn-gray btn-block" onclick="closeModal()">取消</button></div></div>'
-    );
-    setTimeout(function(){ var i=$('trPinInput'); if(i) i.focus(); },80);
-    window.__trTaskEditorAfterPin=go;
-    return;
-  }
-  go();
-}
-function confirmTrainerTaskPin(){
-  var el=$('trPinInput'); var v=el?el.value:'';
-  if(v!==S.pin){ sfxBad(); toast('密码不对哦'); return; }
-  sfxOk(); closeModal();
-  var fn=window.__trTaskEditorAfterPin; window.__trTaskEditorAfterPin=null;
-  if(fn) fn();
 }
 function resetTrainerDays(){
   var t=trainerS(); if(!t.days.length){ toast('本周还没有打卡记录'); return; }
@@ -3455,7 +3411,7 @@ function trainerBannerHTML(){
   if(!trainerUnlocked()) return '';
   var t=trainerS(); syncTrainerOutfits();
   var n=trainerDays();
-  var sub=t.task?('本周：'+esc(t.task)+' · 已打卡 '+n+'/7 天'):(t.gender?'本周特别任务还没设置，点进来自定义吧':'通过两个道馆啦，快去领取训练家执照！');
+  var sub=t.task?('本周：'+esc(t.task)+' · 已打卡 '+n+'/7 天'):(t.gender?'本周特别任务还没发布，让爸爸妈妈去设置里写一条吧':'通过两个道馆啦，快去领取训练家执照！');
   return '<div class="tr-banner" onclick="go(\'trainer\')">'+
     '<div class="tb-ava">'+trainerSVG(t.gender||'boy',t.outfit,'mini')+'</div>'+
     '<div class="tb-info"><b>🎓 我的训练家</b><div class="tb-sub">'+sub+'</div></div>'+
@@ -3472,11 +3428,11 @@ function viewTrainerHTML(){
   var n=trainerDays();
   var o=outfitById(t.outfit);
   var done=n>=7;
-  var taskLine=t.task?esc(t.task):'还没有设置本周特别任务，点下面自定义一条吧';
+  var taskLine=t.task?esc(t.task):'爸爸妈妈还没有在「家长 · 设置」里发布本周特别任务';
   var btnHTML=done?
     '<button class="btn btn-green btn-block" onclick="playTrainerScene(false)">🎬 播放今天的过场动画</button>':
     (t.task?('<button class="btn '+(trainerDoneToday()?'btn-gray':'btn-primary')+' btn-block" '+(trainerDoneToday()?'disabled':'')+' onclick="trainerCheckIn()">'+(trainerDoneToday()?'✅ 今天已打卡，明天继续':'✋ 今天我完成了！')+'</button>')
-      :'<button class="btn btn-yellow btn-block" onclick="openTrainerTaskEditor()">✏️ 自定义本周任务</button>');
+      :'<button class="btn btn-gray btn-block" disabled>请爸爸妈妈去「设置」里发布任务</button>');
   var wardrobe=OUTFITS.map(function(of){
     var stt=outfitState(of.id);
     var stText=stt==='wearing'?'正在穿':stt==='owned'?'已拥有':stt==='waiting'?('下周一起可穿'):'未解锁';
@@ -3497,13 +3453,12 @@ function viewTrainerHTML(){
           '</div></div>'+
       '</div>'+
     '</div>'+
-    '<div class="card"><h3 style="display:flex;align-items:center;justify-content:space-between;gap:8px">📌 本周特别任务'+
-      '<button class="btn btn-gray btn-sm" type="button" onclick="openTrainerTaskEditor()" style="flex:none">✏️ 设置</button></h3>'+
-      '<div class="tr-task" '+(t.task?'':'style="cursor:pointer" onclick="openTrainerTaskEditor()"')+'>'+taskLine+'</div>'+
+    '<div class="card"><h3>📌 本周特别任务</h3>'+
+      '<div class="tr-task">'+taskLine+'</div>'+
       '<div class="tr-dots">'+trDotsHTML()+'</div>'+
       '<div class="tr-prog">'+(done?'🎉 7 天全部完成！':('已坚持 <b>'+n+'</b> 天 / 还差 <b>'+(7-n)+'</b> 天'))+'</div>'+
       btnHTML+
-      (t.task?'<button class="btn btn-gray btn-block" style="margin-top:8px" onclick="openTrainerTaskEditor()">✏️ 修改本周任务</button>':'')+
+      '<p class="tr-note">任务内容由爸爸妈妈在「家长 → 设置」里自定义发布</p>'+
       (t.pending?('<p class="tr-note">🎁 「'+esc(outfitById(t.pending.id).nm)+'」已解锁，'+t.pending.from.slice(5)+' 起可穿</p>'):'')+
     '</div>'+
     '<div class="section-label">👗 我的时装（每天都有不同登场动画）</div>'+
@@ -4915,20 +4870,20 @@ function viewSettingsHTML(){
     '</div><div class="inline-add"><input id="newSubj" placeholder="添加任务，如：收拾玩具"><button class="btn btn-gray btn-sm" onclick="addSubject()">添加</button></div>'+
     '<p style="font-size:11.5px;color:#b0a090;margin:8px 0 0;font-weight:600">点击已有任务可删除（至少保留 1 个）</p></div>'+
     '<div class="card"><h3>🎓 训练家 · 每周特别任务</h3>'+
-      (trainerUnlocked()?
-        ('<div class="tr-setnow">本周任务：'+(trainerS().task?esc(trainerS().task):'<b style="color:#b0a090">还没有发布</b>')+' · 已打卡 <b>'+trainerDays()+'</b>/7 天</div>'+
-        '<div class="field"><label>自定义本周打卡任务（孩子每天点一次「我完成了」）</label>'+
-          '<input id="trTaskInput" maxlength="40" placeholder="自己写，如：每天读一本绘本" value="'+esc(trainerS().task)+'"></div>'+
-        '<div class="chips">'+trainerPresetList().map(function(p){
-          return '<button class="chip-opt" type="button" onclick=\'useTrainerPreset('+JSON.stringify(String(p))+')\'>'+esc(p)+'</button>';
-        }).join('')+'</div>'+
-        '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">'+
-          '<button class="btn btn-primary btn-sm" style="flex:1" onclick="publishTrainerTask()">发布 / 更新</button>'+
-          '<button class="btn btn-gray btn-sm" style="flex:1" onclick="resetTrainerDays()">清空本周打卡</button>'+
-          (trainerS().task?'<button class="btn btn-gray btn-sm" style="flex:1" onclick="clearTrainerTask()">清除任务</button>':'')+
-        '</div>'+
-        '<p style="font-size:11.5px;color:#b0a090;margin:8px 0 0;font-weight:600">可自由填写内容；自定义过的任务会留在常用模板里。孩子端「训练家」页也能点设置修改（有家长密码时需验证）。</p>')
-        :'<p style="margin:0;font-size:13px;color:#8a7a6a;font-weight:600">队伍通过第 2 个道馆（水系道馆）后，这里会开放训练家每周特别任务的设置。</p>')+
+      '<div class="tr-setnow">本周任务：'+(trainerS().task?esc(trainerS().task):'<b style="color:#b0a090">还没有发布</b>')+' · 已打卡 <b>'+trainerDays()+'</b>/7 天'+(trainerUnlocked()?'':' · <span style="color:#c62828">训练家未解锁</span>')+'</div>'+
+      '<div class="field"><label>自定义任务内容（随便写，孩子每天点一次「我完成了」）</label>'+
+        '<textarea id="trTaskInput" rows="2" maxlength="40" placeholder="自己写，例如：每天读一本绘本 / 每天跳绳 100 下">'+esc(trainerS().task)+'</textarea></div>'+
+      '<div class="chips">'+trainerPresetList().map(function(p){
+        return '<button class="chip-opt" type="button" onclick=\'useTrainerPreset('+JSON.stringify(String(p))+')\'>'+esc(p)+'</button>';
+      }).join('')+'</div>'+
+      '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">'+
+        '<button class="btn btn-primary btn-sm" style="flex:1" onclick="publishTrainerTask()">发布 / 更新</button>'+
+        '<button class="btn btn-gray btn-sm" style="flex:1" onclick="resetTrainerDays()">清空本周打卡</button>'+
+        (trainerS().task?'<button class="btn btn-gray btn-sm" style="flex:1" onclick="clearTrainerTask()">清除任务</button>':'')+
+      '</div>'+
+      '<p style="font-size:11.5px;color:#b0a090;margin:8px 0 0;font-weight:600">'+(trainerUnlocked()
+        ?'可自由填写；自定义过的内容会留在常用模板。孩子在「训练家」页打卡，满 7 天解锁时装。'
+        :'现在就可以先写好并发布。等孩子通过第 2 个道馆（水系）解锁训练家后，就能在训练家页看到并打卡。')+'</p>'+
     '</div>'+
     '<div class="card"><h3>👨‍👩‍👧‍👦 孩子管理</h3>'+
       '<p style="font-size:12.5px;color:#8a7a6a;margin:0 0 10px;font-weight:600">每个孩子有独立的宝可梦队伍、徽章和打卡记录。最多 3 个。</p>'+
