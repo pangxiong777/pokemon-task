@@ -4492,7 +4492,14 @@ function viewCatchHTML(){
         '<button class="btn '+(fl>0?'btn-primary':'btn-gray')+' btn-block" '+(fl>0?'':'disabled')+' onclick="startFish()">'+(fl>0?('🎣 去钓鱼（今天还剩 '+fl+' 次）'):'今天钓满啦，明天再来')+'</button>'+
       '</div></div>'+
     '<div class="card"><h3>🎒 我的伙伴（'+S.team.length+'/6）</h3>'+
-      (S.team.map(function(m){var sp=spec(m.sid);return '<span class="move" style="font-size:14px;padding:6px 12px;display:inline-flex;align-items:center;gap:6px">'+pokeImgHTML(m.sid,'style="width:30px;height:30px;object-fit:contain;border-radius:50%"')+' '+esc(m.nick)+' <span style="color:#8a7a6a">Lv.'+m.level+'</span></span>';}).join('')||'<div class="empty"><div class="t">还没有伙伴</div></div>')+
+      (S.team.length
+        ?('<div class="mon-pick-grid">'+S.team.map(function(m){
+            return '<div class="chip-opt care-pick" style="cursor:default">'+
+              pokeImgHTML(m.sid,'class="care-pick-img"')+
+              '<span class="care-pick-tx"><b>'+esc(m.nick)+'</b><i>Lv.'+m.level+'</i></span>'+
+            '</div>';
+          }).join('')+'</div>')
+        :'<div class="empty"><div class="t">还没有伙伴</div></div>')+
     '</div>'+
   '</div>';
 }
@@ -4536,9 +4543,13 @@ function fishActsHTML(){
   var chips='';
   if(S.team.length>1){
     if(fishPick>=S.team.length) fishPick=0;
-    chips='<div class="chips" style="margin:10px 0 4px">'+S.team.map(function(m,i){
-      return '<button class="chip'+(i===fishPick?' on':'')+'" onclick="fishPickMon('+i+')">'+pokeImgHTML(m.sid,'style="width:22px;height:22px;object-fit:contain;vertical-align:-5px"')+' '+esc(m.nick)+' Lv.'+m.level+'</button>';
-    }).join('')+'</div>';
+    chips='<div style="font-size:12.5px;font-weight:800;color:#0d5f7a;margin:8px 0 6px">选择出战伙伴</div>'+
+      '<div class="mon-pick-grid" style="margin:0 0 10px">'+S.team.map(function(m,i){
+        return '<button class="chip-opt care-pick'+(i===fishPick?' on':'')+'" type="button" onclick="fishPickMon('+i+')">'+
+          pokeImgHTML(m.sid,'class="care-pick-img"')+
+          '<span class="care-pick-tx"><b>'+esc(m.nick)+'</b><i>Lv.'+m.level+'</i></span>'+
+        '</button>';
+      }).join('')+'</div>';
   }
   return chips+
     '<button class="btn btn-primary btn-block btn-lg" onclick="fishFight()">⚔️ 派 '+(me?esc(me.nick):'伙伴')+' 比试一场</button>'+
