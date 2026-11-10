@@ -4318,7 +4318,11 @@ function viewArenaHTML(){
   var A=S.team[arenaA], B=S.team[arenaB];
   var chips=function(cur,who){
     return S.team.map(function(m,i){
-      return '<button class="chip-opt'+(i===cur?' on':'')+'" onclick="pickArena(\''+who+'\','+i+')">'+esc(m.nick)+' Lv.'+m.level+'</button>';
+      var sp=spec(m.sid)||{};
+      return '<button class="chip-opt care-pick'+(i===cur?' on':'')+'" onclick="pickArena(\''+who+'\','+i+')">'+
+        pokeImgHTML(m.sid,'class="care-pick-img"')+
+        '<span class="care-pick-tx"><b>'+esc(m.nick)+'</b><i>Lv.'+m.level+(sp.type?(' · '+esc(sp.type)):'')+'</i></span>'+
+      '</button>';
     }).join('');
   };
   var canFight=bw.open&&rec.count<3;
