@@ -950,9 +950,25 @@ function ensureAudio(){
   if(!SOUND) return null;
   var ac=audio();
   if(ac&&ac.state==='suspended'&&ac.resume){
-    try{ ac.resume(); }catch(e){}
+    try{
+      var p=ac.resume();
+      if(p&&typeof p.then==='function') window.__acResume=p;
+    }catch(e){}
   }
   return ac;
+}
+/* 等 AudioContext 真正跑起来再发声（解决 iOS 上 resume 异步导致首段静音） */
+function withAudio(fn){
+  if(!SOUND||!fn) return;
+  var ac=ensureAudio();
+  if(!ac){ try{fn();}catch(e){} return; }
+  if(ac.state==='running'){ try{fn();}catch(e){} return; }
+  var go=function(){ try{fn();}catch(e){} };
+  try{
+    var p=ac.resume?ac.resume():null;
+    if(p&&typeof p.then==='function'){ p.then(go).catch(go); return; }
+  }catch(e){}
+  go();
 }
 function beep(f,d,type,vol){
   var ac=ensureAudio(); if(!ac) return;
@@ -3643,37 +3659,45 @@ function stopCry(){
 function sfxSkill(type){
   stopCry();
   type=type||'一般';
-  if(type==='火'){
-    beep(190,0.1,'sawtooth',0.08); setTimeout(function(){beep(360,0.16,'sawtooth',0.1);},70);
-    setTimeout(function(){beep(520,0.22,'triangle',0.08);},180);
-  }else if(type==='水'){
-    beep(480,0.08,'sine',0.07); setTimeout(function(){beep(360,0.12,'sine',0.08);},90);
-    setTimeout(function(){beep(260,0.2,'triangle',0.09);},200);
-  }else if(type==='电'){
-    beep(980,0.05,'square',0.07); setTimeout(function(){beep(1400,0.05,'square',0.08);},60);
-    setTimeout(function(){beep(760,0.14,'sawtooth',0.09);},130); setTimeout(function(){beep(1600,0.08,'square',0.06);},240);
-  }else if(type==='草'){
-    beep(520,0.08,'triangle',0.07); setTimeout(function(){beep(660,0.12,'sine',0.08);},100);
-    setTimeout(function(){beep(784,0.18,'triangle',0.08);},220);
-  }else if(type==='岩石'||type==='地面'){
-    beep(120,0.14,'sawtooth',0.09); setTimeout(function(){beep(90,0.18,'square',0.08);},110);
-    setTimeout(function(){beep(160,0.12,'triangle',0.07);},240);
-  }else if(type==='飞行'||type==='龙'){
-    beep(420,0.08,'sine',0.07); setTimeout(function(){beep(640,0.1,'triangle',0.08);},80);
-    setTimeout(function(){beep(880,0.16,'sine',0.09);},180);
-  }else if(type==='超能力'||type==='妖精'){
-    beep(700,0.1,'sine',0.07); setTimeout(function(){beep(940,0.12,'triangle',0.08);},120);
-    setTimeout(function(){beep(1180,0.2,'sine',0.08);},240);
-  }else if(type==='毒'||type==='恶'){
-    beep(240,0.12,'sawtooth',0.07); setTimeout(function(){beep(180,0.16,'square',0.08);},120);
-    setTimeout(function(){beep(300,0.14,'triangle',0.07);},250);
-  }else if(type==='冰'){
-    beep(860,0.07,'sine',0.06); setTimeout(function(){beep(1100,0.1,'triangle',0.07);},90);
-    setTimeout(function(){beep(1320,0.16,'sine',0.08);},200);
-  }else{
-    beep(340,0.08,'square',0.07); setTimeout(function(){beep(520,0.1,'triangle',0.08);},90);
-    setTimeout(function(){beep(700,0.16,'sine',0.08);},200);
-  }
+  withAudio(function(){
+    /* 音量加大，确保手机外放可听 */
+    if(type==='火'){
+      beep(190,0.12,'sawtooth',0.22); setTimeout(function(){beep(360,0.18,'sawtooth',0.24);},70);
+      setTimeout(function(){beep(520,0.24,'triangle',0.2);},180);
+      setTimeout(function(){beep(720,0.16,'sawtooth',0.16);},320);
+    }else if(type==='水'){
+      beep(480,0.1,'sine',0.2); setTimeout(function(){beep(360,0.14,'sine',0.22);},90);
+      setTimeout(function(){beep(260,0.22,'triangle',0.2);},200);
+      setTimeout(function(){beepSlide(400,180,0.2,'sine',0.16);},340);
+    }else if(type==='电'){
+      beep(980,0.06,'square',0.2); setTimeout(function(){beep(1400,0.06,'square',0.22);},60);
+      setTimeout(function(){beep(760,0.16,'sawtooth',0.22);},130); setTimeout(function(){beep(1600,0.1,'square',0.18);},240);
+    }else if(type==='草'){
+      beep(520,0.1,'triangle',0.2); setTimeout(function(){beep(660,0.14,'sine',0.22);},100);
+      setTimeout(function(){beep(784,0.2,'triangle',0.2);},220);
+    }else if(type==='岩石'||type==='地面'){
+      beep(120,0.16,'sawtooth',0.24); setTimeout(function(){beep(90,0.2,'square',0.22);},110);
+      setTimeout(function(){beep(160,0.14,'triangle',0.18);},240);
+    }else if(type==='飞行'||type==='龙'){
+      beep(420,0.1,'sine',0.2); setTimeout(function(){beep(640,0.12,'triangle',0.22);},80);
+      setTimeout(function(){beep(880,0.18,'sine',0.2);},180);
+    }else if(type==='超能力'||type==='妖精'){
+      beep(700,0.12,'sine',0.2); setTimeout(function(){beep(940,0.14,'triangle',0.22);},120);
+      setTimeout(function(){beep(1180,0.22,'sine',0.2);},240);
+    }else if(type==='毒'||type==='恶'){
+      beep(240,0.14,'sawtooth',0.2); setTimeout(function(){beep(180,0.18,'square',0.22);},120);
+      setTimeout(function(){beep(300,0.16,'triangle',0.18);},250);
+    }else if(type==='冰'){
+      beep(860,0.09,'sine',0.18); setTimeout(function(){beep(1100,0.12,'triangle',0.2);},90);
+      setTimeout(function(){beep(1320,0.18,'sine',0.2);},200);
+    }else if(type==='格斗'||type==='虫'){
+      beep(280,0.1,'square',0.22); setTimeout(function(){beep(180,0.12,'sawtooth',0.2);},80);
+      setTimeout(function(){beep(420,0.16,'triangle',0.18);},200);
+    }else{
+      beep(340,0.1,'square',0.2); setTimeout(function(){beep(520,0.12,'triangle',0.22);},90);
+      setTimeout(function(){beep(700,0.18,'sine',0.2);},200);
+    }
+  });
 }
 function findMonById(mid){
   var mon=null, id=String(mid||'');
@@ -3703,10 +3727,16 @@ function playSkill(mid,moveName){
   try{
     var mon=findMonById(mid);
     if(!mon){ toast('找不到这只伙伴'); return; }
+    window.__skReturnMid=String(mon.id);
+    /* 必须在用户点击手势内立刻解锁音频，不能延后 */
     try{ primeVoice(); ensureAudio(); }catch(e0){}
     stopCry();
     closeSkill();
-    try{ closeModal(); }catch(eClose){}
+    /* 只关掉「选招式」上层弹窗，保留宝可梦详情，关掉演示后还能回来 */
+    try{
+      var mr=$('modalRoot');
+      if(mr&&mr.childNodes.length>1) closeTopModal();
+    }catch(eClose){}
     var sp=spec(mon.sid)||{type:'一般',name:mon.nick};
     var mvList=movesOf(mon);
     var known={}; mvList.forEach(function(x){ known[x.m]=true; });
@@ -3749,12 +3779,33 @@ function playSkill(mid,moveName){
     try{ toast('技能演示失败，请刷新后再试'); }catch(e2){}
   }
 }
-function closeSkill(){ var r=window.__skRoot; if(r){ r.remove(); window.__skRoot=null; } }
+function closeSkill(){
+  var r=window.__skRoot;
+  if(r){ r.remove(); window.__skRoot=null; }
+  var mid=window.__skReturnMid;
+  if(!mid) return;
+  /* 若详情被关掉了，关掉演示后重新打开该宝可梦详情 */
+  try{
+    var mr=$('modalRoot');
+    var hasDetail=mr&&mr.querySelector&&mr.querySelector('.mon-detail');
+    if(!hasDetail){
+      var keep=mid; window.__skReturnMid=null;
+      setTimeout(function(){ openTeamMon(keep); },0);
+    }
+  }catch(e){}
+}
 /* 技能演示：用 data-* 委托，避免 inline onclick 引号/移除节点导致无响应 */
 (function bindSkillDemoClicks(){
   var root=document.getElementById('modalRoot');
   if(!root||root.__skillDemoBound) return;
   root.__skillDemoBound=true;
+  root.addEventListener('pointerdown',function(ev){
+    var t=ev.target;
+    if(!t||!t.closest) return;
+    if(t.closest('[data-skill-demo],[data-skill-pick]')){
+      try{ ensureAudio(); }catch(e){}
+    }
+  },{passive:true});
   root.addEventListener('click',function(ev){
     var t=ev.target;
     if(!t||!t.closest) return;
@@ -3763,16 +3814,16 @@ function closeSkill(){ var r=window.__skRoot; if(r){ r.remove(); window.__skRoot
     var pick=t.closest('[data-skill-pick]');
     if(pick){
       ev.preventDefault();
+      try{ ensureAudio(); }catch(e){}
       pickSkillDemo(pick.getAttribute('data-mid'));
       return;
     }
     var demo=t.closest('[data-skill-demo]');
     if(demo){
       ev.preventDefault();
-      var mid=demo.getAttribute('data-mid');
-      var move=demo.getAttribute('data-move');
-      /* 延后一帧：先让当前点击结束，再拆弹窗，避免 WebKit 中断后续逻辑 */
-      setTimeout(function(){ playSkill(mid, move); }, 0);
+      try{ ensureAudio(); }catch(e){}
+      /* 同步调用，保留 iOS 用户手势，音频才能响起 */
+      playSkill(demo.getAttribute('data-mid'), demo.getAttribute('data-move'));
     }
   });
 })();
