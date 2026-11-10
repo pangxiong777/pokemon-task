@@ -194,6 +194,13 @@ main{padding:14px 14px 8px;}
 .mon-pick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:4px;}
 .chip-opt.care-pick{
   display:inline-flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border-radius:18px;min-height:48px;
+  /* 属性色底由内联 background 注入；未注入时退回奶油纸色 */
+  background:var(--pk-paper);
+}
+.chip-opt.care-pick.on{
+  /* 选中用黄环提示，不覆盖属性色底 */
+  box-shadow:0 2px 0 rgba(42,36,32,.12),0 0 0 3px var(--pk-yellow);
+  color:var(--pk-ink);
 }
 .mon-pick-grid .chip-opt.care-pick{width:100%;justify-content:flex-start;margin:0;}
 .chip-opt.care-pick img,.chip-opt.care-pick .care-pick-img{
@@ -204,7 +211,7 @@ main{padding:14px 14px 8px;}
 .chip-opt.care-pick .care-pick-tx{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15;gap:2px;min-width:0;}
 .chip-opt.care-pick .care-pick-tx b{font-size:13.5px;font-weight:900;font-family:var(--font-display);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;}
 .chip-opt.care-pick .care-pick-tx i{font-style:normal;font-size:11px;font-weight:800;color:var(--pk-ink-soft);}
-.chip-opt.care-pick.on .care-pick-tx i{color:#7A4E00;}
+.chip-opt.care-pick.on .care-pick-tx i{color:var(--pk-ink-soft);}
 .chip-opt.care-pick .care-pick-tag{font-size:14px;line-height:1;margin-left:auto;flex:none;}
 
 /* ===== 宝可梦卡 ===== */
@@ -282,7 +289,7 @@ main{padding:14px 14px 8px;}
 .status.approved{background:#e2f5e3;color:#2e7d32;}
 .status.deducted{background:#fde8e0;color:#c0392b;}
 .status.rejected{background:#fdeaea;color:#c62828;}
-.fast-tag{font-size:10.5px;font-weight:900;background:linear-gradient(135deg,#ffe27a,var(--pk-yellow));color:#5d4300;border-radius:7px;padding:2px 7px;}
+.fast-tag{display:inline-block;font-size:10.5px;font-weight:900;background:linear-gradient(135deg,#ffe27a,var(--pk-yellow));color:#5d4300;border-radius:7px;padding:2px 7px;white-space:nowrap;}
 
 /* ===== 道馆 ===== */
 .gym-row{display:flex;align-items:center;gap:12px;padding:12px;border-radius:18px;background:linear-gradient(180deg,var(--pk-paper-2),var(--pk-soft));margin-bottom:10px;border:2.5px solid var(--pk-edge);box-shadow:0 3px 0 rgba(42,36,32,.1);}
@@ -873,7 +880,7 @@ img.tr-svg.mini{width:100%;height:100%;}
 /* ===== 图鉴 ===== */
 .dex-grid{display:flex;flex-wrap:wrap;gap:7px;}
 .dex-slot{flex:0 0 calc((100% - 14px)/3);min-width:0;box-sizing:border-box;background:var(--pk-paper);border:2.5px solid var(--pk-edge);border-radius:12px;padding:7px 4px;text-align:center;cursor:pointer;box-shadow:0 2px 0 rgba(42,36,32,.1);}
-.dex-slot.on{background:linear-gradient(180deg,#FFF8E1,#FFE9A8);border-color:var(--pk-edge);box-shadow:0 2px 0 rgba(42,36,32,.12),0 0 0 2px rgba(255,203,5,.4);}
+.dex-slot.on{border-color:var(--pk-edge);box-shadow:0 2px 0 rgba(42,36,32,.12),0 0 0 2px rgba(255,203,5,.45);}
 .dex-slot .ds-ic{height:44px;display:flex;align-items:center;justify-content:center;}
 .dex-slot .ds-nm{font-size:10.5px;font-weight:900;color:var(--pk-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--font-display);}
 .dex-slot .ds-lv{font-size:9px;color:var(--pk-ink-soft);font-weight:800;}
@@ -1242,6 +1249,25 @@ function cryFallback(sid){
 /* ================= 图鉴数据 ================= */
 var TYPE_COLOR={草:'#43a047',火:'#ef6c00',水:'#1e88e5',电:'#f9a825',虫:'#7cb342',飞行:'#5c9bd6',一般:'#8d8d8d',龙:'#5c6bc0',超能力:'#8e24aa',岩石:'#8d6e63',地面:'#a1887f',毒:'#ab47bc',恶:'#5d4037',妖精:'#ec407a',冰:'#4fc3f7',格斗:'#e53935'};
 function tc(t){return TYPE_COLOR[t]||'#8d8d8d';}
+/* 选宠卡属性色底（捕捉/照顾/对战/钓鱼共用） */
+function carePickBgStyle(type){
+  var c=tc(type||'一般');
+  /* 水系蓝 / 电系黄 / 一般灰等：属性色更明显一点 */
+  return '--pick-c:'+c+';background:linear-gradient(145deg,'+c+'66 0%,'+c+'33 45%,#ffffff 100%)';
+}
+function carePickHTML(m,opts){
+  opts=opts||{};
+  var sp=spec(m.sid)||{};
+  var style=carePickBgStyle(sp.type)+(opts.style?(';'+opts.style):'');
+  var cls='chip-opt care-pick'+(opts.on?' on':'');
+  var body=pokeImgHTML(m.sid,'class="care-pick-img"')+
+    '<span class="care-pick-tx"><b>'+esc(m.nick)+'</b><i>Lv.'+m.level+'</i></span>'+
+    (opts.tag?'<span class="care-pick-tag">'+opts.tag+'</span>':'');
+  if(opts.as==='div'){
+    return '<div class="'+cls+'" style="'+style+'">'+body+'</div>';
+  }
+  return '<button type="button" class="'+cls+'" style="'+style+'"'+(opts.onclick?(' onclick="'+opts.onclick+'"'):'')+'>'+body+'</button>';
+}
 
 var SPECIES={
   bulbasaur:{name:'妙蛙种子',type:'草',emoji:'🌱',evo:[{at:10,to:'ivysaur'},{at:25,to:'venusaur'}],moves:[{at:1,m:'撞击'},{at:4,m:'藤鞭'},{at:10,m:'飞叶快刀'},{at:16,m:'寄生种子'},{at:26,m:'日光束'}]},
@@ -4172,11 +4198,7 @@ function viewCareHTML(){
   var list=S.team.map(function(m,i){
     var on=i===careSel;
     var tags=(st.feed&&S.care.feedMon===m.id?'🍖':'')+(st.bath&&S.care.bathMon===m.id?'🛁':'');
-    return '<button class="chip-opt care-pick'+(on?' on':'')+'" onclick="pickCareMon('+i+')">'+
-      pokeImgHTML(m.sid,'class="care-pick-img"')+
-      '<span class="care-pick-tx"><b>'+esc(m.nick)+'</b><i>Lv.'+m.level+'</i></span>'+
-      (tags?'<span class="care-pick-tag">'+tags+'</span>':'')+
-    '</button>';
+    return carePickHTML(m,{on:on,tag:tags,onclick:'pickCareMon('+i+')'});
   }).join('');
   var foodBtns=FOODS.map(function(f,i){
     return '<button class="care-item'+(i===favIdx?' fav':'')+'" onclick="openCare(\'feed\',false,'+i+')">'+
@@ -4251,7 +4273,8 @@ function viewWorkHTML(){
       '<div style="display:flex;align-items:center;gap:10px">'+
         '<div style="font-size:34px">⏰</div>'+
         '<div style="flex:1;min-width:0"><b style="font-size:15.5px;font-weight:900">今日任务 · '+fmtCN(t)+' '+weekdayCN(t)+'</b>'+
-        '<div style="font-size:12.5px;color:#8a6d3b;font-weight:600;margin-top:2px">'+dead+' 前提交任务，经验 ×'+S.fastMult+'！'+fastNote+'</div></div>'+
+        '<div style="font-size:12.5px;color:#8a6d3b;font-weight:600;margin-top:2px">'+dead+' 前提交任务，经验 ×'+S.fastMult+'！</div>'+
+        '<div style="margin-top:4px">'+fastNote+'</div></div>'+
         '<div style="text-align:center;font-weight:900;font-size:15px">'+approvedToday+'/'+todays.length+'<div style="font-size:10.5px;color:#8a6d3b">已通过</div></div>'+
       '</div>'+
       '<div style="margin-top:10px;background:rgba(255,255,255,.65);border-radius:12px;padding:8px 12px">'+
@@ -4403,10 +4426,7 @@ function viewArenaHTML(){
   var A=S.team[arenaA], B=S.team[arenaB];
   var chips=function(cur,who){
     return S.team.map(function(m,i){
-      return '<button class="chip-opt care-pick'+(i===cur?' on':'')+'" onclick="pickArena(\''+who+'\','+i+')">'+
-        pokeImgHTML(m.sid,'class="care-pick-img"')+
-        '<span class="care-pick-tx"><b>'+esc(m.nick)+'</b><i>Lv.'+m.level+'</i></span>'+
-      '</button>';
+      return carePickHTML(m,{on:i===cur,onclick:'pickArena(\''+who+'\','+i+')'});
     }).join('');
   };
   var canFight=bw.open&&rec.count<3;
@@ -4489,15 +4509,15 @@ function viewDexHTML(){
   var pct=Math.round(caught/POKE_TOTAL*100);
   /* 队伍 */
   var teamChips=S.team.map(function(m,i){
-    var sp=spec(m.sid);
-    return '<button class="dex-slot on" onclick="teamToBoxModal('+i+')">'+
+    var sp=spec(m.sid)||{};
+    return '<button class="dex-slot on" style="'+carePickBgStyle(sp.type)+'" onclick="teamToBoxModal('+i+')">'+
       '<div class="ds-ic">'+pokeImgHTML(m.sid,'style="width:46px;height:46px;object-fit:contain"')+'</div>'+
       '<div class="ds-nm">'+esc(m.nick)+'</div><div class="ds-lv">Lv.'+m.level+'</div></button>';
   }).join('');
   /* 盒子 */
   var boxGrid=S.box.map(function(m,i){
-    var sp=spec(m.sid);
-    return '<button class="dex-slot" onclick="boxMonModal('+i+')">'+
+    var sp=spec(m.sid)||{};
+    return '<button class="dex-slot" style="'+carePickBgStyle(sp.type)+'" onclick="boxMonModal('+i+')">'+
       '<div class="ds-ic">'+pokeImgHTML(m.sid,'style="width:46px;height:46px;object-fit:contain"')+'</div>'+
       '<div class="ds-nm">'+esc(m.nick)+'</div><div class="ds-lv">Lv.'+m.level+'</div></button>';
   }).join('');
@@ -4578,10 +4598,7 @@ function viewCatchHTML(){
     '<div class="card"><h3>🎒 我的伙伴（'+S.team.length+'/6）</h3>'+
       (S.team.length
         ?('<div class="mon-pick-grid">'+S.team.map(function(m){
-            return '<div class="chip-opt care-pick" style="cursor:default">'+
-              pokeImgHTML(m.sid,'class="care-pick-img"')+
-              '<span class="care-pick-tx"><b>'+esc(m.nick)+'</b><i>Lv.'+m.level+'</i></span>'+
-            '</div>';
+            return carePickHTML(m,{as:'div',style:'cursor:default'});
           }).join('')+'</div>')
         :'<div class="empty"><div class="t">还没有伙伴</div></div>')+
     '</div>'+
@@ -4629,10 +4646,7 @@ function fishActsHTML(){
     if(fishPick>=S.team.length) fishPick=0;
     chips='<div style="font-size:12.5px;font-weight:800;color:#0d5f7a;margin:8px 0 6px">选择出战伙伴</div>'+
       '<div class="mon-pick-grid" style="margin:0 0 10px">'+S.team.map(function(m,i){
-        return '<button class="chip-opt care-pick'+(i===fishPick?' on':'')+'" type="button" onclick="fishPickMon('+i+')">'+
-          pokeImgHTML(m.sid,'class="care-pick-img"')+
-          '<span class="care-pick-tx"><b>'+esc(m.nick)+'</b><i>Lv.'+m.level+'</i></span>'+
-        '</button>';
+        return carePickHTML(m,{on:i===fishPick,onclick:'fishPickMon('+i+')'});
       }).join('')+'</div>';
   }
   return chips+
