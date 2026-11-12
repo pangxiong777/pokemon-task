@@ -661,6 +661,9 @@ table.rec tr:last-child td{border-bottom:none;}
 .speech{position:absolute;left:12px;right:12px;top:36px;background:var(--pk-paper);border:2.5px solid var(--pk-edge);border-radius:14px;padding:9px 12px;box-shadow:0 4px 0 rgba(42,36,32,.12);z-index:5;min-height:64px;display:flex;flex-direction:column;justify-content:center;}
 .speech .en{font-size:16.5px;font-weight:900;color:var(--pk-ink);line-height:1.35;font-family:var(--font-display);}
 .speech .zh{font-size:12px;color:var(--pk-ink-soft);font-weight:700;margin-top:3px;}
+.speech.word-mode .en{font-size:32px;letter-spacing:.04em;text-align:center;}
+.speech.word-mode .zh{font-size:15px;text-align:center;margin-top:6px;}
+.speech.word-mode .word-hint{font-size:11px;font-weight:800;color:#8a7a6a;text-align:center;margin-bottom:4px;}
 .meet-char{position:absolute;bottom:30px;width:88px;height:88px;border-radius:50%;z-index:3;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 30%,#ffffff,#eaf1fb);box-shadow:0 6px 14px rgba(40,60,90,.16);border:2px solid #fff;transition:transform .22s ease,opacity .22s ease,box-shadow .22s ease;}
 .meet-char.oak{left:10px;}
 .meet-char.kid{right:10px;font-size:46px;}
@@ -1412,6 +1415,8 @@ function defaultState(){
     streakTarget:7, subjects:NEW_SUBJECTS.slice(),
     /* 家长可调：每日挑战目标、精灵球奖励个数、周末免费捕捉次数 */
     dailyTarget:7, dailyReward:1, weekendFree:3,
+    /* 大木博士英语：words=单词入门 / easy=简单短句 / normal=现有内容 / hard=挑战 */
+    meetDiff:'words', meetHideZh:false,
     sound:true, firstRun:true, team:[],
     homework:[], streak:{count:0,lastDate:null,lastPrize:0,record:0},
     badges:[], snorlax:{state:'none',sealedAt:0},
@@ -1455,6 +1460,8 @@ function load(){
   if(typeof s.dailyReward!=='number'||!(s.dailyReward>=1)) s.dailyReward=1;
   if(typeof s.weekendFree!=='number'||!(s.weekendFree>=0)) s.weekendFree=3;
   if(typeof s.fastMult!=='number'||!(s.fastMult>=1)) s.fastMult=1.2;
+  if(s.meetDiff!=='words'&&s.meetDiff!=='easy'&&s.meetDiff!=='normal'&&s.meetDiff!=='hard') s.meetDiff='words';
+  if(typeof s.meetHideZh!=='boolean') s.meetHideZh=false;
   s.baseXP=coerceNum(s.baseXP,20,5,100);
   s.streakTarget=coerceNum(s.streakTarget,7,3,14);
   s.fastMult=Math.round(coerceNum(s.fastMult,1.2,1,3)*10)/10;
@@ -1562,6 +1569,8 @@ function normalizeState(s){
   if(typeof s.dailyReward!=='number'||!(s.dailyReward>=1)) s.dailyReward=1;
   if(typeof s.weekendFree!=='number'||!(s.weekendFree>=0)) s.weekendFree=3;
   if(typeof s.fastMult!=='number'||!(s.fastMult>=1)) s.fastMult=1.2;
+  if(s.meetDiff!=='words'&&s.meetDiff!=='easy'&&s.meetDiff!=='normal'&&s.meetDiff!=='hard') s.meetDiff='words';
+  if(typeof s.meetHideZh!=='boolean') s.meetHideZh=false;
   s.baseXP=coerceNum(s.baseXP,20,5,100);
   s.streakTarget=coerceNum(s.streakTarget,7,3,14);
   s.fastMult=Math.round(coerceNum(s.fastMult,1.2,1,3)*10)/10;
@@ -1571,6 +1580,16 @@ function normalizeState(s){
 function dailyTarget(){ return Math.max(1,Math.min(20,S.dailyTarget|0||7)); }
 function dailyReward(){ return Math.max(1,Math.min(5,S.dailyReward|0||1)); }
 function weekendFreeMax(){ return Math.max(0,Math.min(7,S.weekendFree!=null?S.weekendFree|0:3)); }
+function meetDiff(){ var d=S&&S.meetDiff; return (d==='words'||d==='easy'||d==='normal'||d==='hard')?d:'words'; }
+function meetSpeakRate(){
+  var d=meetDiff();
+  if(d==='words') return 0.58;
+  if(d==='easy') return 0.72;
+  if(d==='hard') return 1.02;
+  return 0.88;
+}
+function meetShowZhAlways(){ return meetDiff()!=='hard'||!S.meetHideZh; }
+function meetUseTtsOnly(){ return meetDiff()==='words'||meetDiff()==='easy'; }
 function switchKid(key){
   if(!KIDS||key===KIDS.active) return;
   var target=KIDS.list.filter(function(x){return x.key===key;})[0];
@@ -2864,28 +2883,231 @@ var MEET_TOPICS=[
       {en:'tall / short',zh:'高 / 矮',audio:'w_tallshort'}
     ]}
 ];
+/* 单词档（约 3～4 岁）：每天只学几个单词，跟读，不讲句子 */
+var MEET_WORDS={
+  name:[{en:'hello',zh:'你好',audio:'m_greet_morning'},{en:'name',zh:'名字',audio:'w_name'},{en:'me',zh:'我',audio:'w_me'}],
+  age:[{en:'one',zh:'1',audio:'w_one'},{en:'two',zh:'2',audio:'w_two'},{en:'three',zh:'3',audio:'w_three'},{en:'four',zh:'4',audio:'w_four'}],
+  food:[{en:'apple',zh:'苹果',audio:'w_apple'},{en:'bread',zh:'面包',audio:'w_bread'},{en:'egg',zh:'鸡蛋',audio:'w_egg'}],
+  drink:[{en:'milk',zh:'牛奶',audio:'w_milk'},{en:'water',zh:'水',audio:'w_water'},{en:'juice',zh:'果汁',audio:'w_juice'}],
+  color:[{en:'red',zh:'红色',audio:'w_red'},{en:'blue',zh:'蓝色',audio:'w_blue'},{en:'yellow',zh:'黄色',audio:'w_yellow'},{en:'pink',zh:'粉色',audio:'w_pink'}],
+  weather:[{en:'sun',zh:'太阳',audio:'w_sun'},{en:'rain',zh:'雨',audio:'w_rain'},{en:'cloud',zh:'云',audio:'w_cloud'}],
+  from:[{en:'home',zh:'家',audio:'w_home'},{en:'China',zh:'中国',audio:'w_china'},{en:'door',zh:'门',audio:'w_door'}],
+  pokemon:[{en:'Pikachu',zh:'皮卡丘',audio:'w_pikachu'},{en:'ball',zh:'球',audio:'w_ball'},{en:'cute',zh:'可爱',audio:'w_cute'}],
+  family:[{en:'mom',zh:'妈妈',audio:'w_mom'},{en:'dad',zh:'爸爸',audio:'w_dad'},{en:'baby',zh:'宝宝',audio:'w_baby'}],
+  friend:[{en:'friend',zh:'朋友',audio:'w_friend'},{en:'play',zh:'玩',audio:'w_play'},{en:'hug',zh:'抱抱',audio:'w_hug'}],
+  school:[{en:'school',zh:'学校',audio:'w_school'},{en:'book',zh:'书',audio:'w_book'},{en:'draw',zh:'画画',audio:'w_draw'}],
+  feelings:[{en:'happy',zh:'开心',audio:'w_happy'},{en:'sad',zh:'难过',audio:'w_sad'},{en:'smile',zh:'微笑',audio:'w_smile'}],
+  animals:[{en:'cat',zh:'猫',audio:'w_cat'},{en:'dog',zh:'狗',audio:'w_dog'},{en:'bird',zh:'鸟',audio:'w_bird'},{en:'fish',zh:'鱼',audio:'w_fish'}],
+  toys:[{en:'toy',zh:'玩具',audio:'w_toy'},{en:'bear',zh:'小熊',audio:'w_teddy'},{en:'ball',zh:'球',audio:'w_ball'}],
+  numbers:[{en:'one',zh:'1',audio:'w_one'},{en:'two',zh:'2',audio:'w_two'},{en:'three',zh:'3',audio:'w_three'},{en:'four',zh:'4',audio:'w_four'},{en:'five',zh:'5',audio:'w_five'}],
+  body:[{en:'eyes',zh:'眼睛',audio:'w_eyes'},{en:'ears',zh:'耳朵',audio:'w_ears'},{en:'nose',zh:'鼻子',audio:'w_nose'},{en:'mouth',zh:'嘴巴',audio:'w_mouth'}],
+  polite:[{en:'please',zh:'请',audio:'w_please'},{en:'thanks',zh:'谢谢',audio:'w_thankyou'},{en:'sorry',zh:'对不起',audio:'w_sorry'}],
+  morning:[{en:'morning',zh:'早上',audio:'w_morning'},{en:'wash',zh:'洗',audio:'w_washface'},{en:'teeth',zh:'牙齿',audio:'w_brush'}],
+  sport:[{en:'run',zh:'跑',audio:'w_run'},{en:'jump',zh:'跳',audio:'w_jump'},{en:'ball',zh:'球',audio:'w_ball2'}],
+  fruit:[{en:'banana',zh:'香蕉',audio:'w_banana'},{en:'apple',zh:'苹果',audio:'w_apple'},{en:'orange',zh:'橙子',audio:'w_orange'}],
+  season:[{en:'spring',zh:'春天',audio:'w_spring'},{en:'summer',zh:'夏天',audio:'w_summer'},{en:'snow',zh:'雪',audio:'w_winter'}],
+  birthday:[{en:'cake',zh:'蛋糕',audio:'w_cake'},{en:'gift',zh:'礼物',audio:'w_gift'},{en:'candle',zh:'蜡烛',audio:'w_candle'}],
+  bedtime:[{en:'bed',zh:'床',audio:'w_bed'},{en:'sleep',zh:'睡觉',audio:'w_sleep'},{en:'moon',zh:'月亮',audio:'w_moon'}],
+  books:[{en:'book',zh:'书',audio:'w_book'},{en:'read',zh:'读',audio:'w_read'},{en:'page',zh:'页',audio:'w_page'}],
+  help:[{en:'help',zh:'帮忙',audio:'w_help'},{en:'toys',zh:'玩具',audio:'w_toys'},{en:'clean',zh:'收拾',audio:'w_tidy'}],
+  transport:[{en:'car',zh:'汽车',audio:'w_car'},{en:'bus',zh:'公交车',audio:'w_bus'},{en:'bike',zh:'自行车',audio:'w_bike'}],
+  nature:[{en:'tree',zh:'树',audio:'w_tree'},{en:'flower',zh:'花',audio:'w_flower'},{en:'sky',zh:'天空',audio:'w_sky'}],
+  music:[{en:'sing',zh:'唱歌',audio:'w_sing2'},{en:'dance',zh:'跳舞',audio:'w_dance'},{en:'clap',zh:'拍手',audio:'w_clap'}],
+  size:[{en:'big',zh:'大',audio:'w_big'},{en:'small',zh:'小',audio:'w_small'},{en:'tall',zh:'高',audio:'w_tallshort'}]
+};
+/* 简单档：更短、更基础的词句（家长把难度设为「简单」时使用） */
+var MEET_EASY={
+  name:{q:{en:'What is your name?',zh:'你叫什么名字？',audio:'m_t_name'},
+    a:function(){var n=S.childName||'Xiaoyou';return {en:'My name is '+n+'.',zh:'我叫'+n+'。',audio:'k_dyn_name'};},
+    tip:{en:'Nice name!',zh:'好听的名字！',audio:'m_tip_name'},
+    cards:[{en:'name',zh:'名字',audio:'w_name'},{en:'My name is…',zh:'我叫……',audio:'w_myname'},{en:'Hello!',zh:'你好！',audio:'m_greet_morning'}]},
+  age:{q:{en:'How old are you?',zh:'你几岁了？',audio:'m_t_age'},
+    a:{en:'I am six.',zh:'我六岁。',audio:'k_t_age'},
+    tip:{en:'Good!',zh:'很好！',audio:'m_tip_age'},
+    cards:[{en:'six',zh:'6',audio:'w_six'},{en:'old',zh:'多大',audio:'w_old'},{en:'I am six.',zh:'我六岁。',audio:'k_t_age'}]},
+  food:{q:{en:'What food do you like?',zh:'你喜欢吃什么？',audio:'m_t_food'},
+    a:{en:'I like apples.',zh:'我喜欢苹果。',audio:'k_t_food'},
+    tip:{en:'Yummy!',zh:'好吃！',audio:'m_tip_food'},
+    cards:[{en:'food',zh:'食物',audio:'w_food'},{en:'apple',zh:'苹果',audio:'w_apple'},{en:'I like…',zh:'我喜欢……',audio:'w_ilike'}]},
+  drink:{q:{en:'What do you drink?',zh:'你喝什么？',audio:'m_t_drink'},
+    a:{en:'I like milk.',zh:'我喜欢牛奶。',audio:'k_t_drink'},
+    tip:{en:'Drink water!',zh:'要喝水哦！',audio:'m_tip_drink'},
+    cards:[{en:'milk',zh:'牛奶',audio:'w_milk'},{en:'water',zh:'水',audio:'w_water'},{en:'drink',zh:'喝',audio:'w_drink'}]},
+  color:{q:{en:'What color do you like?',zh:'你喜欢什么颜色？',audio:'m_t_color'},
+    a:{en:'I like pink.',zh:'我喜欢粉色。',audio:'k_t_color'},
+    tip:{en:'Nice color!',zh:'好看的颜色！',audio:'m_tip_color'},
+    cards:[{en:'color',zh:'颜色',audio:'w_color'},{en:'pink',zh:'粉色',audio:'w_pink'},{en:'blue',zh:'蓝色',audio:'w_blue'}]},
+  weather:{q:{en:'How is the weather?',zh:'天气怎么样？',audio:'m_t_weather'},
+    a:{en:'It is sunny.',zh:'是晴天。',audio:'k_t_weather'},
+    tip:{en:'Nice day!',zh:'好天气！',audio:'m_tip_weather'},
+    cards:[{en:'sunny',zh:'晴天',audio:'w_sunny'},{en:'rainy',zh:'下雨',audio:'w_rainy'},{en:'warm',zh:'暖和',audio:'w_warm'}]},
+  from:{q:{en:'Where are you from?',zh:'你来自哪里？',audio:'m_t_from'},
+    a:{en:'I am from China.',zh:'我来自中国。',audio:'k_t_from'},
+    tip:{en:'I love China!',zh:'我爱中国！',audio:'m_tip_from'},
+    cards:[{en:'China',zh:'中国',audio:'w_china'},{en:'home',zh:'家',audio:'w_home'},{en:'I am from China.',zh:'我来自中国。',audio:'k_t_from'}]},
+  pokemon:{q:{en:'Do you like Pokemon?',zh:'你喜欢宝可梦吗？',audio:'m_06_like'},
+    a:{en:'Yes! I love Pikachu.',zh:'喜欢！我爱皮卡丘。',audio:'k_07'},
+    tip:{en:'Pikachu is cute!',zh:'皮卡丘好可爱！',audio:'m_tip_poke'},
+    cards:[{en:'Pokemon',zh:'宝可梦',audio:'w_pokemon'},{en:'Pikachu',zh:'皮卡丘',audio:'w_pikachu'},{en:'cute',zh:'可爱',audio:'w_cute'}]},
+  family:{q:{en:'Who is in your family?',zh:'你家里有谁？',audio:'m_t_family'},
+    a:{en:'Mom, dad and me.',zh:'妈妈、爸爸和我。',audio:'k_t_family'},
+    tip:{en:'I love my family!',zh:'我爱我的家人！',audio:'m_tip_family'},
+    cards:[{en:'mom',zh:'妈妈',audio:'w_mom'},{en:'dad',zh:'爸爸',audio:'w_dad'},{en:'family',zh:'家人',audio:'w_family'}]},
+  friend:{q:{en:'Do you have a friend?',zh:'你有朋友吗？',audio:'m_t_friend'},
+    a:{en:'Yes! I have friends.',zh:'有！我有朋友。',audio:'k_t_friend'},
+    tip:{en:'Friends are fun!',zh:'有朋友真开心！',audio:'m_tip_friend'},
+    cards:[{en:'friend',zh:'朋友',audio:'w_friend'},{en:'play',zh:'玩',audio:'w_play'},{en:'share',zh:'分享',audio:'w_share'}]},
+  school:{q:{en:'Do you go to school?',zh:'你去上学吗？',audio:'m_t_school'},
+    a:{en:'Yes. I go to school.',zh:'去。我去上学。',audio:'k_t_school'},
+    tip:{en:'School is fun!',zh:'学校真有趣！',audio:'m_tip_school'},
+    cards:[{en:'school',zh:'学校',audio:'w_school'},{en:'sing',zh:'唱歌',audio:'w_sing'},{en:'draw',zh:'画画',audio:'w_draw'}]},
+  feelings:{q:{en:'How are you?',zh:'你好吗？',audio:'m_t_feel'},
+    a:{en:'I am happy!',zh:'我很开心！',audio:'k_t_feel'},
+    tip:{en:'Smile!',zh:'笑一笑！',audio:'m_tip_feel'},
+    cards:[{en:'happy',zh:'开心',audio:'w_happy'},{en:'sad',zh:'难过',audio:'w_sad'},{en:'How are you?',zh:'你好吗？',audio:'m_t_feel'}]},
+  animals:{q:{en:'What animal do you like?',zh:'你喜欢什么动物？',audio:'m_t_animal'},
+    a:{en:'I like cats.',zh:'我喜欢猫。',audio:'k_t_animal'},
+    tip:{en:'Animals are friends!',zh:'动物是朋友！',audio:'m_tip_animal'},
+    cards:[{en:'cat',zh:'猫',audio:'w_cat'},{en:'dog',zh:'狗',audio:'w_dog'},{en:'animal',zh:'动物',audio:'w_animal'}]},
+  toys:{q:{en:'What toy do you like?',zh:'你喜欢什么玩具？',audio:'m_t_toy'},
+    a:{en:'I like my teddy.',zh:'我喜欢小熊。',audio:'k_t_toy'},
+    tip:{en:'Share toys!',zh:'玩具要分享！',audio:'m_tip_toy'},
+    cards:[{en:'toy',zh:'玩具',audio:'w_toy'},{en:'teddy bear',zh:'玩具熊',audio:'w_teddy'},{en:'ball',zh:'球',audio:'w_ball'}]},
+  numbers:{q:{en:'Can you count?',zh:'你会数数吗？',audio:'m_t_num'},
+    a:{en:'One, two, three!',zh:'一、二、三！',audio:'k_t_num'},
+    tip:{en:'Good job!',zh:'真棒！',audio:'m_tip_num'},
+    cards:[{en:'one',zh:'1',audio:'w_one'},{en:'two',zh:'2',audio:'w_two'},{en:'three',zh:'3',audio:'w_three'}]},
+  body:{q:{en:'What do you see with?',zh:'你用什么看？',audio:'m_t_body'},
+    a:{en:'I see with my eyes.',zh:'我用眼睛看。',audio:'k_t_body'},
+    tip:{en:'Good!',zh:'很好！',audio:'m_tip_body'},
+    cards:[{en:'eyes',zh:'眼睛',audio:'w_eyes'},{en:'ears',zh:'耳朵',audio:'w_ears'},{en:'nose',zh:'鼻子',audio:'w_nose'}]},
+  polite:{q:{en:'How do you say thank you?',zh:'谢谢怎么说？',audio:'m_t_polite'},
+    a:{en:'Thank you!',zh:'谢谢你！',audio:'k_t_polite'},
+    tip:{en:'Please and thank you!',zh:'请和谢谢！',audio:'m_tip_polite'},
+    cards:[{en:'please',zh:'请',audio:'w_please'},{en:'thank you',zh:'谢谢',audio:'w_thankyou'},{en:'sorry',zh:'对不起',audio:'w_sorry'}]},
+  morning:{q:{en:'What do you do in the morning?',zh:'你早上做什么？',audio:'m_t_morning'},
+    a:{en:'I brush my teeth.',zh:'我刷牙。',audio:'k_t_morning'},
+    tip:{en:'Good morning!',zh:'早上好！',audio:'m_tip_morning'},
+    cards:[{en:'morning',zh:'早上',audio:'w_morning'},{en:'brush my teeth',zh:'刷牙',audio:'w_brush'},{en:'breakfast',zh:'早餐',audio:'w_breakfast'}]},
+  sport:{q:{en:'Do you like sports?',zh:'你喜欢运动吗？',audio:'m_t_sport'},
+    a:{en:'Yes! I like running.',zh:'喜欢！我喜欢跑。',audio:'k_t_sport'},
+    tip:{en:'Run and jump!',zh:'跑一跑，跳一跳！',audio:'m_tip_sport'},
+    cards:[{en:'run',zh:'跑',audio:'w_run'},{en:'jump',zh:'跳',audio:'w_jump'},{en:'ball',zh:'球',audio:'w_ball2'}]},
+  fruit:{q:{en:'What fruit do you like?',zh:'你喜欢什么水果？',audio:'m_t_fruit'},
+    a:{en:'I like bananas.',zh:'我喜欢香蕉。',audio:'k_t_fruit'},
+    tip:{en:'Eat fruit!',zh:'多吃水果！',audio:'m_tip_fruit'},
+    cards:[{en:'fruit',zh:'水果',audio:'w_fruit'},{en:'banana',zh:'香蕉',audio:'w_banana'},{en:'apple',zh:'苹果',audio:'w_apple'}]},
+  season:{q:{en:'What season do you like?',zh:'你喜欢什么季节？',audio:'m_t_season'},
+    a:{en:'I like summer.',zh:'我喜欢夏天。',audio:'k_t_season'},
+    tip:{en:'Summer is hot!',zh:'夏天很热！',audio:'m_tip_season'},
+    cards:[{en:'spring',zh:'春天',audio:'w_spring'},{en:'summer',zh:'夏天',audio:'w_summer'},{en:'winter',zh:'冬天',audio:'w_winter'}]},
+  birthday:{q:{en:'Do you like cake?',zh:'你喜欢蛋糕吗？',audio:'m_t_bday'},
+    a:{en:'Yes! Happy birthday!',zh:'喜欢！生日快乐！',audio:'k_t_bday'},
+    tip:{en:'Make a wish!',zh:'许个愿吧！',audio:'m_tip_bday'},
+    cards:[{en:'cake',zh:'蛋糕',audio:'w_cake'},{en:'birthday',zh:'生日',audio:'w_birthday'},{en:'Happy birthday!',zh:'生日快乐！',audio:'w_happybday'}]},
+  bedtime:{q:{en:'What do you say at night?',zh:'晚上说什么？',audio:'m_t_bed'},
+    a:{en:'Good night!',zh:'晚安！',audio:'k_t_bed'},
+    tip:{en:'Sweet dreams!',zh:'做个好梦！',audio:'m_tip_bed'},
+    cards:[{en:'Good night!',zh:'晚安！',audio:'w_goodnight'},{en:'sleep',zh:'睡觉',audio:'w_sleep'},{en:'bed',zh:'床',audio:'w_bed'}]},
+  books:{q:{en:'Do you like books?',zh:'你喜欢书吗？',audio:'m_t_book'},
+    a:{en:'Yes! Books are fun.',zh:'喜欢！书本很有趣。',audio:'k_t_book'},
+    tip:{en:'Read with me!',zh:'一起读书吧！',audio:'m_tip_book'},
+    cards:[{en:'book',zh:'书',audio:'w_book'},{en:'read',zh:'读',audio:'w_read'},{en:'story',zh:'故事',audio:'w_story'}]},
+  help:{q:{en:'Do you help at home?',zh:'你在家帮忙吗？',audio:'m_t_help'},
+    a:{en:'Yes! I tidy toys.',zh:'帮忙！我收拾玩具。',audio:'k_t_help'},
+    tip:{en:'You can help!',zh:'你能帮忙！',audio:'m_tip_help'},
+    cards:[{en:'help',zh:'帮忙',audio:'w_help'},{en:'tidy up',zh:'收拾',audio:'w_tidy'},{en:'toys',zh:'玩具',audio:'w_toys'}]},
+  transport:{q:{en:'How do you go to school?',zh:'你怎么去学校？',audio:'m_t_trans'},
+    a:{en:'I go by car.',zh:'我坐车去。',audio:'k_t_trans'},
+    tip:{en:'Be safe!',zh:'要注意安全！',audio:'m_tip_trans'},
+    cards:[{en:'car',zh:'汽车',audio:'w_car'},{en:'bus',zh:'公交车',audio:'w_bus'},{en:'bike',zh:'自行车',audio:'w_bike'}]},
+  nature:{q:{en:'What do you see outside?',zh:'你在外面看到什么？',audio:'m_t_nature'},
+    a:{en:'I see trees.',zh:'我看到树。',audio:'k_t_nature'},
+    tip:{en:'Nature is nice!',zh:'大自然真美！',audio:'m_tip_nature'},
+    cards:[{en:'tree',zh:'树',audio:'w_tree'},{en:'flower',zh:'花',audio:'w_flower'},{en:'sky',zh:'天空',audio:'w_sky'}]},
+  music:{q:{en:'Do you like music?',zh:'你喜欢音乐吗？',audio:'m_t_music'},
+    a:{en:'Yes! I like to sing.',zh:'喜欢！我喜欢唱歌。',audio:'k_t_music'},
+    tip:{en:'Clap your hands!',zh:'拍拍手！',audio:'m_tip_music'},
+    cards:[{en:'sing',zh:'唱歌',audio:'w_sing2'},{en:'dance',zh:'跳舞',audio:'w_dance'},{en:'clap',zh:'拍手',audio:'w_clap'}]},
+  size:{q:{en:'Is an elephant big?',zh:'大象大吗？',audio:'m_t_size'},
+    a:{en:'Yes. It is big.',zh:'大。它很大。',audio:'k_t_size'},
+    tip:{en:'Big and small!',zh:'大和小！',audio:'m_tip_size'},
+    cards:[{en:'big',zh:'大',audio:'w_big'},{en:'small',zh:'小',audio:'w_small'},{en:'elephant',zh:'大象',audio:'w_elephant'}]}
+};
 function meetTopicToday(){
   var d=parseDate(todayStr());
   var start=new Date(d.getFullYear(),0,0);
   var doy=Math.floor((d-start)/86400000);
   return MEET_TOPICS[doy%MEET_TOPICS.length];
 }
+function meetWordsOf(topic){
+  var t=topic||meetTopicToday();
+  var list=MEET_WORDS[t.id];
+  if(list&&list.length) return list.slice(0,4);
+  /* 兜底：从话题卡片里抽出单词（不含空格、省略号的短词） */
+  var out=[], seen={};
+  (t.cards||[]).forEach(function(c){
+    if(!c||!c.en) return;
+    var en=String(c.en).trim();
+    if(/\s|…|\.\.\.|[!?]/.test(en)) return;
+    if(en.length>12) return;
+    var k=en.toLowerCase();
+    if(seen[k]) return;
+    seen[k]=1; out.push({en:en,zh:c.zh,audio:c.audio});
+  });
+  return out.slice(0,4);
+}
+function meetTopicActive(){
+  var t=meetTopicToday(), d=meetDiff();
+  if(d==='words'){
+    var words=meetWordsOf(t);
+    return {id:t.id, ic:t.ic, nm:t.nm, cards:words, words:words};
+  }
+  if(d!=='easy') return t;
+  var e=MEET_EASY[t.id];
+  if(!e) return t;
+  return {
+    id:t.id, ic:t.ic, nm:t.nm,
+    q:e.q||t.q, a:e.a!=null?e.a:t.a,
+    q2:null, a2:null,
+    tip:e.tip||t.tip,
+    cards:e.cards||t.cards
+  };
+}
 function meetGreeting(){
   var h=new Date().getHours();
   var d=parseDate(todayStr());
   var start=new Date(d.getFullYear(),0,0);
   var doy=Math.floor((d-start)/86400000);
-  var mornings=[
+  var mode=meetDiff();
+  if(mode==='words'){
+    var hi=[{en:'Hello!',zh:'你好！',audio:'m_greet_morning'},{en:'Hi!',zh:'嗨！',audio:'m_greet_afternoon'},{en:'Hello!',zh:'你好！',audio:'m_greet_evening'}];
+    return hi[doy%hi.length];
+  }
+  var easy=mode==='easy';
+  var mornings=easy?[
+    {en:'Good morning!',zh:'早上好！',audio:'m_greet_morning'},
+    {en:'Hello!',zh:'你好！',audio:'m_greet_morning2'},
+    {en:'Hi! Good morning!',zh:'嗨！早上好！',audio:'m_greet_morning3'}
+  ]:[
     {en:'Good morning!',zh:'早上好！',audio:'m_greet_morning'},
     {en:'Hello! Good morning, little trainer!',zh:'你好！早上好，小训练家！',audio:'m_greet_morning2'},
     {en:'Rise and shine! Good morning!',zh:'太阳出来啦！早上好！',audio:'m_greet_morning3'}
   ];
-  var afternoons=[
+  var afternoons=easy?[
+    {en:'Good afternoon!',zh:'下午好！',audio:'m_greet_afternoon'},
+    {en:'Hello!',zh:'你好！',audio:'m_greet_afternoon2'},
+    {en:'Hi!',zh:'嗨！',audio:'m_greet_afternoon3'}
+  ]:[
     {en:'Good afternoon!',zh:'下午好！',audio:'m_greet_afternoon'},
     {en:'Hello there! Good afternoon!',zh:'嗨！下午好！',audio:'m_greet_afternoon2'},
     {en:'Good afternoon, my friend!',zh:'下午好，我的朋友！',audio:'m_greet_afternoon3'}
   ];
-  var evenings=[
+  var evenings=easy?[
+    {en:'Good evening!',zh:'晚上好！',audio:'m_greet_evening'},
+    {en:'Hello!',zh:'你好！',audio:'m_greet_evening2'},
+    {en:'Hi!',zh:'嗨！',audio:'m_greet_evening3'}
+  ]:[
     {en:'Good evening!',zh:'晚上好！',audio:'m_greet_evening'},
     {en:'Hello! Good evening!',zh:'你好！晚上好！',audio:'m_greet_evening2'},
     {en:'Good evening, little star!',zh:'晚上好，小星星！',audio:'m_greet_evening3'}
@@ -2894,29 +3116,56 @@ function meetGreeting(){
   return pool[doy%pool.length];
 }
 function meetBye(){
-  var byes=[
+  var mode=meetDiff();
+  var byes=mode==='words'?[
+    {en:'Bye-bye!',zh:'拜拜！',audio:'m_08_bye'},
+    {en:'Bye!',zh:'拜拜！',audio:'m_bye2'},
+    {en:'Good!',zh:'真棒！',audio:'m_bye3'}
+  ]:(mode==='easy'?[
+    {en:'Bye-bye!',zh:'拜拜！',audio:'m_08_bye'},
+    {en:'See you!',zh:'再见！',audio:'m_bye2'},
+    {en:'Good job! Bye!',zh:'真棒！拜拜！',audio:'m_bye3'},
+    {en:'See you tomorrow!',zh:'明天见！',audio:'m_bye4'},
+    {en:'Bye! Come again!',zh:'拜拜！再来玩！',audio:'m_bye5'}
+  ]:[
     {en:'Wonderful! See you tomorrow!',zh:'太棒了！明天见！',audio:'m_08_bye'},
     {en:'Great job! Bye-bye!',zh:'干得漂亮！拜拜！',audio:'m_bye2'},
     {en:'You did so well! See you soon!',zh:'你说得真好！下次见！',audio:'m_bye3'},
     {en:'Awesome! Practice makes perfect!',zh:'真棒！熟能生巧！',audio:'m_bye4'},
     {en:'Super! Come chat again tomorrow!',zh:'超棒！明天再来聊吧！',audio:'m_bye5'}
-  ];
+  ]);
   var d=parseDate(todayStr());
   var start=new Date(d.getFullYear(),0,0);
   var doy=Math.floor((d-start)/86400000);
   return byes[doy%byes.length];
 }
 function meetLines(){
-  var g=meetGreeting(), t=meetTopicToday(), bye=meetBye();
+  var mode=meetDiff(), g=meetGreeting(), t=meetTopicActive(), bye=meetBye();
+  if(mode==='words'){
+    var lines=[{who:'oak',en:g.en,zh:g.zh,audio:g.audio,word:false}];
+    lines.push({who:'oak',en:'Words!',zh:'学单词！',audio:'m_02_meet',word:false});
+    (t.words||[]).forEach(function(w){
+      lines.push({who:'oak',en:w.en,zh:w.zh,audio:w.audio,word:true,hint:'跟大木博士读'});
+      lines.push({who:'kid',en:w.en,zh:w.zh,audio:w.audio,word:true,hint:'你来读'});
+    });
+    lines.push({who:'oak',en:bye.en,zh:bye.zh,audio:bye.audio,word:false});
+    return lines;
+  }
   var A=typeof t.a==='function'?t.a():t.a;
+  var intro=mode==='easy'
+    ?{en:'I am Oak. Let us learn English!',zh:'我是大木博士，我们来学英语吧！',audio:'m_02_meet'}
+    :{en:"I'm Professor Oak. Let's practice English today!",zh:'我是大木博士，今天我们来练英语吧！',audio:'m_02_meet'};
+  var kidOk=mode==='easy'
+    ?{en:'Okay!',zh:'好呀！',audio:'k_03'}
+    :{en:'Okay! I love English!',zh:'好呀！我喜欢英语！',audio:'k_03'};
   var lines=[
     {who:'oak',en:g.en,zh:g.zh,audio:g.audio},
-    {who:'oak',en:"I'm Professor Oak. Let's practice English today!",zh:'我是大木博士，今天我们来练英语吧！',audio:'m_02_meet'},
-    {who:'kid',en:'Okay! I love English!',zh:'好呀！我喜欢英语！',audio:'k_03'},
+    {who:'oak',en:intro.en,zh:intro.zh,audio:intro.audio},
+    {who:'kid',en:kidOk.en,zh:kidOk.zh,audio:kidOk.audio},
     {who:'oak',en:t.q.en,zh:t.q.zh,audio:t.q.audio},
     {who:'kid',en:A.en,zh:A.zh,audio:A.audio}
   ];
-  if(t.q2){
+  if(t.q2&&mode!=='easy'){
     var A2=typeof t.a2==='function'?t.a2():t.a2;
     lines.push({who:'oak',en:t.q2.en,zh:t.q2.zh,audio:t.q2.audio});
     if(A2) lines.push({who:'kid',en:A2.en,zh:A2.zh,audio:A2.audio});
@@ -2926,12 +3175,19 @@ function meetLines(){
   return lines;
 }
 function meetDone(){ return !!(S.meet&&S.meet.date===todayStr()&&S.meet.done); }
+function meetDiffLabel(){
+  var d=meetDiff();
+  if(d==='words') return '单词';
+  if(d==='easy') return '简单';
+  if(d==='hard') return '挑战';
+  return '标准';
+}
 function meetBannerHTML(){
   if(S.firstRun) return '';
   var done=meetDone(), t=meetTopicToday();
   return '<button class="meet-banner" onclick="openMeet(true)">'+
     '<span class="mb-ic">🎓</span>'+
-    '<span class="mb-text"><b>大木博士的每日英语</b><i>'+(done?('今天聊过 '+t.ic+' '+t.nm+' · 可以再练一遍'):('今日话题 '+t.ic+' '+t.nm+' · 和大木博士练英语'))+'</i></span>'+
+    '<span class="mb-text"><b>大木博士的每日英语</b><i>'+(done?('今天聊过 '+t.ic+' '+t.nm+' · 可以再练一遍'):('今日话题 '+t.ic+' '+t.nm+' · '+meetDiffLabel()+'难度'))+'</i></span>'+
     '<span class="mb-go">'+(done?'✅ 已见面':'GO →')+'</span></button>';
 }
 /* 英语发音：优先用嵌入的 ASSET_VOICE；否则用系统 TTS。
@@ -2979,7 +3235,7 @@ function speakFallback(text, sync){
     if(!window.speechSynthesis) return;
     refreshEnVoice();
     var u=new SpeechSynthesisUtterance(String(text));
-    u.lang='en-US'; u.rate=0.88;
+    u.lang='en-US'; u.rate=meetSpeakRate();
     if(enVoice) u.voice=enVoice;
     window.speechSynthesis.cancel();
     if(sync){
@@ -3032,22 +3288,23 @@ var OAK_SVG='<svg viewBox="0 0 100 100" style="width:100%;height:100%;border-rad
   '<path d="M50 50v5" stroke="#e0a97f" stroke-width="2" stroke-linecap="round"/>'+
   '<path d="M43 58q7 6 14 0" stroke="#a86a4a" stroke-width="2.6" fill="none" stroke-linecap="round"/>'+
 '</svg>';
-var meetIdx=0, meetFirst=false, meetNeedTap=false;
+var meetIdx=0, meetFirst=false, meetNeedTap=false, meetZhPeek=false;
 function openMeet(fromGesture){
   if(!S.meet||S.meet.date!==todayStr()) S.meet={date:todayStr(),done:false,count:(S.meet?S.meet.count:0)};
   meetFirst=!meetDone();
   meetIdx=0;
+  meetZhPeek=false;
   /* 自动弹出（无点击）时，iOS 不允许直接发音，先让孩子点一下开始 */
   meetNeedTap=!(fromGesture||voicePrimed);
   if(fromGesture) primeVoice();
   var tt=meetTopicToday();
   showModal('<div class="dialog meet-dialog">'+
     '<div class="meet-top"><b>🎓 大木博士的每日英语</b><span id="meetStep">1 / 6</span></div>'+
-    '<div class="meet-topic" id="meetTopicTag">今日话题 '+tt.ic+' '+tt.nm+'</div>'+
+    '<div class="meet-topic" id="meetTopicTag">今日话题 '+tt.ic+' '+tt.nm+' · '+meetDiffLabel()+'</div>'+
     '<div class="lab">'+
       '<div class="lab-sign">OAK LAB · 大木研究所</div>'+
       '<span class="lab-ball" style="right:12px"></span><span class="lab-ball" style="right:30px"></span><span class="lab-ball" style="right:48px"></span><span class="lab-ball" style="right:66px"></span>'+
-      '<div class="speech" id="meetSpeech"><div class="en" id="meetEn">Hello!</div><div class="zh" id="meetZh">你好！</div></div>'+
+      '<div class="speech" id="meetSpeech"><div class="word-hint" id="meetHint" style="display:none"></div><div class="en" id="meetEn">Hello!</div><div class="zh" id="meetZh">你好！</div></div>'+
       '<div class="meet-char oak" id="charOak">'+OAK_SVG+'<div class="nm">大木博士</div></div>'+
       '<div class="meet-char kid" id="charKid">🧒<div class="nm">'+esc(S.childName||'小朋友')+'</div></div>'+
     '</div>'+
@@ -3055,6 +3312,15 @@ function openMeet(fromGesture){
     '<div class="dlg-actions" id="meetActs"></div>'+
   '</div>');
   meetRender(!!fromGesture);
+}
+function meetToggleZh(){
+  meetZhPeek=!meetZhPeek;
+  var zh=$('meetZh');
+  if(zh){
+    zh.style.display=meetZhPeek?'':'none';
+    zh.style.opacity=meetZhPeek?'1':'';
+  }
+  sfxClick();
 }
 function meetStartListen(){
   primeVoice();
@@ -3064,8 +3330,19 @@ function meetStartListen(){
 function meetRender(fromGesture){
   var lines=meetLines(), L=lines[meetIdx];
   var en=$('meetEn'), zh=$('meetZh'), step=$('meetStep'), dots=$('meetDots');
+  var speech=$('meetSpeech'), hint=$('meetHint');
   if(!en) return;
   en.textContent=L.en; zh.textContent=L.zh;
+  if(speech) speech.className='speech'+(L.word?' word-mode':'');
+  if(hint){
+    if(L.word&&L.hint){ hint.style.display=''; hint.textContent=L.hint; }
+    else{ hint.style.display='none'; hint.textContent=''; }
+  }
+  meetZhPeek=false;
+  if(zh){
+    if(meetShowZhAlways()){ zh.style.display=''; zh.style.opacity=''; }
+    else{ zh.style.display='none'; }
+  }
   if(step) step.textContent=(meetIdx+1)+' / '+lines.length;
   if(dots){
     dots.innerHTML=lines.map(function(_,i){
@@ -3082,17 +3359,21 @@ function meetRender(fromGesture){
     }
     return;
   }
-  playVoice(L.audio,L.en,!!fromGesture);
+  /* 单词/简单档与录音可能不一致，优先用 TTS，保证听到的就是屏幕上的字 */
+  playVoice(meetUseTtsOnly()?null:L.audio,L.en,!!fromGesture);
   if(acts){
-    acts.innerHTML='<button class="btn btn-gray btn-sm" style="flex:1" onclick="meetSpeakAgain()">🔊 再听一次</button>'+
-      '<button class="btn btn-primary btn-sm" style="flex:1.4" onclick="meetNext()">'+(meetIdx<lines.length-1?'下一句 ▶':'结束对话 🎉')+'</button>';
+    var zhBtn=meetShowZhAlways()?'':('<button class="btn btn-gray btn-sm" style="flex:1" onclick="meetToggleZh()">中文</button>');
+    var nextLabel=meetIdx<lines.length-1?(L.word?(L.who==='oak'?'我来跟读 ▶':'下一个词 ▶'):'下一句 ▶'):(meetDiff()==='words'?'学完啦 🎉':'结束对话 🎉');
+    acts.innerHTML=zhBtn+
+      '<button class="btn btn-gray btn-sm" style="flex:1" onclick="meetSpeakAgain()">🔊 再听一次</button>'+
+      '<button class="btn btn-primary btn-sm" style="flex:1.4" onclick="meetNext()">'+nextLabel+'</button>';
   }
 }
 function meetSpeakAgain(){
   primeVoice();
   meetNeedTap=false;
   var L=meetLines()[meetIdx];
-  playVoice(L.audio,L.en,true);
+  playVoice(meetUseTtsOnly()?null:L.audio,L.en,true);
   sfxClick();
 }
 function meetNext(){
@@ -3122,9 +3403,10 @@ function meetFinish(){
   }else{
     sfxOk();
   }
-  var topic=meetTopicToday();
-  var words=topic.cards.map(function(w){
-    return '<button class="mw" onclick="playVoice(\''+w.audio+'\',\''+w.en.replace(/'/g,"\\'")+'\')">'+
+  var topic=meetTopicActive();
+  var words=(topic.cards||[]).map(function(w){
+    var aud=meetUseTtsOnly()?'':w.audio;
+    return '<button class="mw" onclick="playVoice(\''+aud+'\',\''+w.en.replace(/'/g,"\\'")+'\')">'+
       '<span><b>'+w.en+'</b><i>'+w.zh+'</i></span><span class="sp">🔊</span></button>';
   }).join('');
   var acts=$('meetActs');
@@ -3135,8 +3417,8 @@ function meetFinish(){
   }
   var dots=$('meetDots');
   if(dots) dots.innerHTML='<div class="meet-finish"><div class="big-emoji" style="margin:2px 0 4px">🎓</div>'+
-    '<b>'+(meetFirst?'今天的英语课完成啦！':'又练了一遍，真棒！')+'</b>'+
-    '<div class="finish-sub">明天会有新的英语话题，记得来和大木博士聊一聊哦～</div>'+gainHTML+evHTML+'</div><div class="mw-grid">'+words+'</div>';
+    '<b>'+(meetFirst?(meetDiff()==='words'?'今天的单词学完啦！':'今天的英语课完成啦！'):'又练了一遍，真棒！')+'</b>'+
+    '<div class="finish-sub">'+(meetDiff()==='words'?'点下面的单词再听一遍，明天还有新词哦～':'明天会有新的英语话题，记得来和大木博士聊一聊哦～')+'</div>'+gainHTML+evHTML+'</div><div class="mw-grid">'+words+'</div>';
   render();
 }
 
@@ -5154,6 +5436,21 @@ function viewSettingsHTML(){
       }).join('')+
       (KIDS.list.length<KIDS_MAX?'<button class="btn btn-yellow btn-block" style="margin-top:10px" onclick="openKidAdd()">➕ 添加孩子</button>':'')+
     '</div>'+
+    '<div class="card"><h3>🎓 大木博士英语难度</h3>'+
+      '<p style="font-size:12.5px;color:#8a7a6a;margin:0 0 10px;font-weight:600">4 岁建议从「单词」开始：一次只学一个词，跟读就好。</p>'+
+      '<div class="chips" style="margin-bottom:10px">'+
+        [['words','单词 · 一词一读'],['easy','简单 · 短句'],['normal','标准 · 对话'],['hard','挑战 · 更快']].map(function(x){
+          return '<button type="button" class="chip-opt'+(meetDiff()===x[0]?' on':'')+'" onclick="setMeetDiff(\''+x[0]+'\')">'+x[1]+'</button>';
+        }).join('')+
+      '</div>'+
+      (meetDiff()==='hard'
+        ?('<div class="field" style="margin-bottom:8px"><label style="display:flex;align-items:center;gap:8px;font-weight:800;cursor:pointer">'+
+            '<input type="checkbox" id="setMeetHideZh" '+(S.meetHideZh?'checked':'')+' onchange="setMeetHideZh(this.checked)" style="width:18px;height:18px">'+
+            '挑战模式先藏中文（孩子可点「中文」偷看）</label></div>')
+        :'')+
+      '<p style="font-size:11.5px;color:#b0a090;margin:0;font-weight:600">当前：'+meetDiffLabel()+
+        (meetDiff()==='words'?' · 每天几个单词，大字慢速跟读':(meetDiff()==='easy'?' · 短句，少一轮问答，语速较慢':(meetDiff()==='hard'?' · 完整对话，语速稍快':' · 完整对话，正常语速')))+
+        '。点选项即保存。</p></div>'+
     '<div class="card"><h3>🔊 声音</h3>'+
       '<button class="btn '+(S.sound?'btn-green':'btn-gray')+' btn-block" onclick="toggleSound()">'+(S.sound?'声音已开启（点击关闭）':'声音已关闭（点击开启）')+'</button></div>'+
     '<div class="card"><h3>💾 存档管理</h3>'+
@@ -5239,6 +5536,18 @@ function delSubject(s){
   if(S.subjects.length<=1){toast('至少保留 1 个任务');return;}
   S.subjects=S.subjects.filter(function(x){return x!==s;});
   sfxClick(); save(); render();
+}
+function setMeetDiff(d){
+  if(d!=='words'&&d!=='easy'&&d!=='normal'&&d!=='hard') return;
+  S.meetDiff=d;
+  if(d!=='hard') S.meetHideZh=false;
+  sfxOk(); save(); render();
+  toast('英语难度已设为「'+meetDiffLabel()+'」');
+}
+function setMeetHideZh(on){
+  S.meetHideZh=!!on;
+  sfxClick(); save(); render();
+  toast(S.meetHideZh?'挑战模式：先藏中文':'挑战模式：一直显示中文');
 }
 function toggleSound(){
   S.sound=!S.sound;
