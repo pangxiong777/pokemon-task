@@ -983,17 +983,18 @@ function makeBeepWavUrl(freq,dur,vol){
     return URL.createObjectURL(new Blob([buf],{type:'audio/wav'}));
   }catch(e){ return null; }
 }
-function playHtmlBeep(freq){
+function playHtmlBeep(freq,dur,vol){
   try{
     if(!SOUND) return;
-    var url=makeBeepWavUrl(freq||720,0.14,0.7);
+    var url=makeBeepWavUrl(freq||720,dur==null?0.12:dur,vol==null?0.85:vol);
     if(!url) return;
     var a=new Audio(url);
     a.setAttribute('playsinline','playsinline');
+    a.setAttribute('webkit-playsinline','webkit-playsinline');
     a.volume=1;
     var p=a.play();
     if(p&&p.catch) p.catch(function(){});
-    setTimeout(function(){ try{ URL.revokeObjectURL(url); }catch(e){} },800);
+    setTimeout(function(){ try{ URL.revokeObjectURL(url); }catch(e){} },900);
   }catch(e){}
 }
 /* iOS/Safari：手势里同步 resume + 静音 buffer + HTMLAudio 预热 */
@@ -1073,71 +1074,180 @@ function slideAt(ac,f0,f1,t0,d,type,vol){
 }
 function beep(f,d,type,vol){
   if(!SOUND) return;
-  var ac=unlockAudio(); if(!ac) return;
+  var ac=unlockAudio();
+  if(!ac){ try{ playHtmlBeep(f||660,d||0.1,0.8); }catch(e0){} return; }
   var play=function(){ toneAt(ac,f,ac.currentTime,d,type,vol); };
   if(ac.state==='running'){ play(); return; }
+  /* iPhone：异步 resume 可能丢手势，先用 HTMLAudio 兜底再试 WebAudio */
+  try{ playHtmlBeep(f||660,d||0.1,0.75); }catch(e1){}
   try{
     var p=ac.resume&&ac.resume();
-    if(p&&typeof p.then==='function'){ p.then(play).catch(play); return; }
+    if(p&&typeof p.then==='function'){ p.then(play).catch(function(){}); return; }
   }catch(e){}
   play();
 }
 function beepSlide(f0,f1,d,type,vol){
   if(!SOUND) return;
-  var ac=unlockAudio(); if(!ac) return;
+  var ac=unlockAudio();
+  if(!ac){ try{ playHtmlBeep(f0||400,d||0.16,0.75); }catch(e0){} return; }
   var play=function(){ slideAt(ac,f0,f1,ac.currentTime,d,type,vol); };
   if(ac.state==='running'){ play(); return; }
+  try{ playHtmlBeep(f0||400,d||0.16,0.75); }catch(e1){}
   try{
     var p=ac.resume&&ac.resume();
-    if(p&&typeof p.then==='function'){ p.then(play).catch(play); return; }
+    if(p&&typeof p.then==='function'){ p.then(play).catch(function(){}); return; }
   }catch(e){}
   play();
 }
-function sfxClick(){beep(660,0.07,'triangle',0.1);}
-function sfxOk(){beep(660,0.1,'triangle',0.14);setTimeout(function(){beep(880,0.14,'triangle',0.14);},90);}
-function sfxBad(){beep(220,0.22,'sawtooth',0.1);}
-function sfxLevel(){[523,659,784,1047].forEach(function(f,i){setTimeout(function(){beep(f,0.16,'triangle',0.14);},i*110);});}
-function sfxCatch(){[660,880,1047,1319].forEach(function(f,i){setTimeout(function(){beep(f,0.12,'sine',0.14);},i*90);});}
-function sfxEvo(){[392,523,659,784,1047,1319].forEach(function(f,i){setTimeout(function(){beep(f,0.13,'sine',0.13);},i*95);});}
-/* 喂食：香味提示 → 咀嚼 → 满足（音量加大，确保手机可听） */
+var lastClickSfxAt=0;
+function sfxClick(){
+  if(!SOUND) return;
+  var now=Date.now();
+  /* 全局按下 + 按钮 onclick 常相隔 100～300ms，去重窗口要盖住整次点击 */
+  if(now-lastClickSfxAt<420) return;
+  lastClickSfxAt=now;
+  try{ unlockAudio(); playHtmlBeep(700,0.08,0.9); }catch(e){}
+  /* 不再叠播 WebAudio，避免 HTMLAudio 与 beep 各响一声 */
+}
+function sfxOk(){
+  try{ unlockAudio(); playHtmlBeep(760,0.1,0.85); }catch(e){}
+  withAudio(function(ac){
+    if(!ac) return;
+    var t0=ac.currentTime+0.01;
+    toneAt(ac,660,t0,0.1,'triangle',0.3);
+    toneAt(ac,880,t0+0.09,0.14,'triangle',0.3);
+  });
+}
+function sfxBad(){
+  try{ unlockAudio(); playHtmlBeep(220,0.18,0.8); }catch(e){}
+  beep(220,0.22,'sawtooth',0.22);
+}
+function sfxLevel(){
+  try{ unlockAudio(); playHtmlBeep(784,0.1,0.85); }catch(e){}
+  withAudio(function(ac){
+    if(!ac) return;
+    var t0=ac.currentTime+0.02;
+    [523,659,784,1047].forEach(function(f,i){ toneAt(ac,f,t0+i*0.11,0.16,'triangle',0.3); });
+  });
+}
+function sfxCatch(){
+  try{ unlockAudio(); playHtmlBeep(880,0.1,0.85); }catch(e){}
+  withAudio(function(ac){
+    if(!ac) return;
+    var t0=ac.currentTime+0.02;
+    [660,880,1047,1319].forEach(function(f,i){ toneAt(ac,f,t0+i*0.09,0.12,'sine',0.3); });
+  });
+}
+function sfxEvo(){
+  try{ unlockAudio(); playHtmlBeep(1047,0.12,0.9); }catch(e){}
+  withAudio(function(ac){
+    if(!ac) return;
+    var t0=ac.currentTime+0.02;
+    [392,523,659,784,1047,1319].forEach(function(f,i){ toneAt(ac,f,t0+i*0.095,0.13,'sine',0.3); });
+  });
+}
+/* 喂食/洗澡：与对战相同，手势里 HTMLAudio 叫醒 + AudioContext 时间轴排程（适配 iPhone） */
 function sfxFeedStart(foodIdx){
-  ensureAudio();
-  beepSlide(520,820,0.2,'sine',0.18);
-  setTimeout(function(){ beep(700+((foodIdx||0)%6)*45,0.1,'triangle',0.16); },100);
-  setTimeout(function(){ beep(420,0.08,'square',0.12); },220);
+  try{ SOUND=!(S&&S.sound===false); unlockAudio(); playHtmlBeep(760,0.1,0.9); }catch(e){}
+  withAudio(function(ac){
+    if(!ac) return;
+    var t0=ac.currentTime+0.02;
+    slideAt(ac,520,820,t0,0.2,'sine',0.34);
+    toneAt(ac,700+((foodIdx||0)%6)*45,t0+0.1,0.1,'triangle',0.32);
+    toneAt(ac,420,t0+0.22,0.08,'square',0.26);
+  });
 }
 function sfxFeedMunch(i){
-  ensureAudio();
-  var base=200+((i||0)%4)*30;
-  beep(base,0.08,'square',0.16); setTimeout(function(){ beep(base*1.4,0.06,'sawtooth',0.12); },50);
+  withAudio(function(ac){
+    if(!ac) return;
+    var t0=ac.currentTime;
+    var base=200+((i||0)%4)*30;
+    toneAt(ac,base,t0,0.08,'square',0.32);
+    toneAt(ac,base*1.4,t0+0.05,0.06,'sawtooth',0.26);
+  });
 }
 function sfxFeedHappy(isFav){
-  ensureAudio();
-  var seq=isFav?[523,659,784,988,1175]:[523,659,784,988];
-  seq.forEach(function(f,i){ setTimeout(function(){ beep(f,0.14,'triangle',0.16); },i*95); });
+  try{ unlockAudio(); playHtmlBeep(880,0.1,0.9); }catch(e){}
+  withAudio(function(ac){
+    if(!ac) return;
+    var t0=ac.currentTime+0.02;
+    var seq=isFav?[523,659,784,988,1175]:[523,659,784,988];
+    seq.forEach(function(f,i){ toneAt(ac,f,t0+i*0.095,0.14,'triangle',0.32); });
+  });
 }
-/* 洗澡：下水溅起 → 搓泡泡 → 冲干净 */
+function sfxFeedSequence(foodIdx,isFav){
+  try{ SOUND=!(S&&S.sound===false); unlockAudio(); playHtmlBeep(760,0.1,0.95); }catch(e){}
+  withAudio(function(ac){
+    if(!ac) return;
+    var t0=ac.currentTime+0.02;
+    slideAt(ac,520,820,t0,0.2,'sine',0.34);
+    toneAt(ac,700+((foodIdx||0)%6)*45,t0+0.1,0.1,'triangle',0.32);
+    toneAt(ac,420,t0+0.22,0.08,'square',0.26);
+    for(var mi=0;mi<5;mi++){
+      var tt=t0+0.42+mi*0.32, base=200+((mi+(foodIdx||0))%4)*30;
+      toneAt(ac,base,tt,0.08,'square',0.32);
+      toneAt(ac,base*1.4,tt+0.05,0.06,'sawtooth',0.26);
+    }
+    var happy=isFav?[523,659,784,988,1175]:[523,659,784,988];
+    happy.forEach(function(f,i){ toneAt(ac,f,t0+2.1+i*0.095,0.14,'triangle',0.32); });
+  });
+}
 function sfxBathStart(bathIdx){
-  ensureAudio();
-  beepSlide(480,160,0.26,'sine',0.2);
-  setTimeout(function(){ beep(150,0.14,'triangle',0.16); },70);
-  setTimeout(function(){ beep(280+(bathIdx||0)*35,0.1,'sine',0.14); },160);
-  setTimeout(function(){ beep(520,0.06,'square',0.1); },260);
+  try{ SOUND=!(S&&S.sound===false); unlockAudio(); playHtmlBeep(420,0.12,0.9); }catch(e){}
+  withAudio(function(ac){
+    if(!ac) return;
+    var t0=ac.currentTime+0.02;
+    slideAt(ac,480,160,t0,0.26,'sine',0.36);
+    toneAt(ac,150,t0+0.07,0.14,'triangle',0.3);
+    toneAt(ac,280+(bathIdx||0)*35,t0+0.16,0.1,'sine',0.28);
+    toneAt(ac,520,t0+0.26,0.06,'square',0.22);
+  });
 }
 function sfxBathBubble(i){
-  ensureAudio();
-  var f=760+((i||0)%5)*100;
-  beep(f,0.07,'sine',0.12); setTimeout(function(){ beep(f*1.2,0.05,'triangle',0.1); },45);
+  withAudio(function(ac){
+    if(!ac) return;
+    var t0=ac.currentTime, f=760+((i||0)%5)*100;
+    toneAt(ac,f,t0,0.07,'sine',0.26);
+    toneAt(ac,f*1.2,t0+0.045,0.05,'triangle',0.22);
+  });
 }
 function sfxBathRinse(){
-  ensureAudio();
-  beepSlide(980,280,0.32,'sine',0.18);
-  setTimeout(function(){ beepSlide(720,200,0.26,'triangle',0.14); },110);
-  setTimeout(function(){ beep(360,0.1,'sine',0.12); },240);
+  try{ unlockAudio(); playHtmlBeep(720,0.1,0.85); }catch(e){}
+  withAudio(function(ac){
+    if(!ac) return;
+    var t0=ac.currentTime+0.02;
+    slideAt(ac,980,280,t0,0.32,'sine',0.34);
+    slideAt(ac,720,200,t0+0.11,0.26,'triangle',0.28);
+    toneAt(ac,360,t0+0.24,0.1,'sine',0.26);
+  });
 }
 function sfxBathDone(){
-  ensureAudio();
-  [660,784,988,1175].forEach(function(f,i){ setTimeout(function(){ beep(f,0.13,'sine',0.16); },i*100); });
+  try{ unlockAudio(); playHtmlBeep(988,0.1,0.9); }catch(e){}
+  withAudio(function(ac){
+    if(!ac) return;
+    var t0=ac.currentTime+0.02;
+    [660,784,988,1175].forEach(function(f,i){ toneAt(ac,f,t0+i*0.1,0.13,'sine',0.32); });
+  });
+}
+function sfxBathSequence(bathIdx){
+  try{ SOUND=!(S&&S.sound===false); unlockAudio(); playHtmlBeep(420,0.12,0.95); }catch(e){}
+  withAudio(function(ac){
+    if(!ac) return;
+    var t0=ac.currentTime+0.02;
+    slideAt(ac,480,160,t0,0.26,'sine',0.36);
+    toneAt(ac,150,t0+0.07,0.14,'triangle',0.3);
+    toneAt(ac,280+(bathIdx||0)*35,t0+0.16,0.1,'sine',0.28);
+    toneAt(ac,520,t0+0.26,0.06,'square',0.22);
+    for(var bi=0;bi<6;bi++){
+      var tt=t0+0.38+bi*0.28, f=760+((bi+(bathIdx||0))%5)*100;
+      toneAt(ac,f,tt,0.07,'sine',0.26);
+      toneAt(ac,f*1.2,tt+0.045,0.05,'triangle',0.22);
+    }
+    slideAt(ac,980,280,t0+2.0,0.32,'sine',0.34);
+    slideAt(ac,720,200,t0+2.11,0.26,'triangle',0.28);
+    toneAt(ac,360,t0+2.24,0.1,'sine',0.26);
+    [660,784,988,1175].forEach(function(f,i){ toneAt(ac,f,t0+3.0+i*0.1,0.13,'sine',0.32); });
+  });
 }
 /* ---------- 对战音效（AudioContext 时间轴，适配 iPhone） ---------- */
 function sfxBattleArm(){
@@ -2013,8 +2123,12 @@ function careStatus(){
   return {feed:S.care.feedDate===t,bath:S.care.bathDate===t};
 }
 function openCare(action,replay,kind){
-  /* 必须在用户手势里立刻解锁音频，否则 iPhone 上后续音效会被静音 */
-  try{ primeVoice(); ensureAudio(); }catch(e){}
+  /* 必须在用户手势里立刻解锁并响一声，否则 iPhone 上后续音效会被静音 */
+  try{
+    SOUND=!(S&&S.sound===false);
+    primeVoice(); unlockAudio();
+    playHtmlBeep(action==='feed'?760:420,0.1,0.95);
+  }catch(e){}
   var isFeed=action==='feed';
   var st=careStatus();
   var done=isFeed?st.feed:st.bath;
@@ -2090,19 +2204,17 @@ function openCare(action,replay,kind){
     html+='<div class="water-rip"></div><div class="water-rip" style="animation-delay:.8s;bottom:18px;width:120px"></div>';
   }
   fx.innerHTML=html;
-  /* 分阶段动作 + 专属音效（不再只用通用点击音） */
+  /* 分阶段动作 + 专属音效：音效用 AudioContext 时间轴一次排好，避免 iPhone setTimeout 后静音 */
   if(isFeed){
-    sfxFeedStart(fi);
+    sfxFeedSequence(fi,isFav);
     setMonPose('eat'); setPhase('phase-eat');
-    for(var mi=0;mi<5;mi++){ (function(ii){ setTimeout(function(){ sfxFeedMunch(ii+fi); }, 420+ii*320); })(mi); }
-    setTimeout(function(){ setMonPose('happy'); setPhase('phase-happy'); sfxFeedHappy(isFav); }, 2100);
+    setTimeout(function(){ setMonPose('happy'); setPhase('phase-happy'); }, 2100);
   }else{
-    sfxBathStart(bi);
+    sfxBathSequence(bi);
     var splash=$('careSplash'); if(splash){ setTimeout(function(){ splash.classList.add('go'); },180); }
     setMonPose('scrub'); setPhase('phase-scrub');
-    for(var bi2=0;bi2<6;bi2++){ (function(ii){ setTimeout(function(){ sfxBathBubble(ii+bi); }, 380+ii*280); })(bi2); }
-    setTimeout(function(){ setMonPose('rinse'); setPhase('phase-rinse'); sfxBathRinse(); }, 2000);
-    setTimeout(function(){ setMonPose('sparkle'); setPhase('phase-happy'); sfxBathDone(); }, 3000);
+    setTimeout(function(){ setMonPose('rinse'); setPhase('phase-rinse'); }, 2000);
+    setTimeout(function(){ setMonPose('sparkle'); setPhase('phase-happy'); }, 3000);
   }
   var lines=isFeed
     ? [mon.nick+' 闻到 '+food.nm+' 的香味跑过来啦！','啊呜啊呜，'+food.nm+'真好吃！',(isFav?'这是它最爱的一口，开心得原地转圈！':'摸摸圆滚滚的肚子，好满足～')]
@@ -3229,6 +3341,32 @@ function primeVoice(){
 ['pointerdown','touchstart','click'].forEach(function(ev){
   document.addEventListener(ev,function(){ try{ unlockAudio(); primeVoice(); }catch(e){} },{capture:true,passive:true});
 });
+/* 所有可点控件：按下即响点击音。只绑一种事件，避免 pointerdown+touchstart 各响一次 */
+(function(){
+  var SEL='button,.btn,.chip,.chip-opt,.tab,.care-item,.meet-banner,.mw,.mode-btn,.kid-switch,.mon-tap,.nav .tab,[onclick]';
+  /* 这些控件自带专用音效，不要再叠一层点击音 */
+  var SKIP='[data-skill-demo],[data-skill-pick],.md-move.demoable,.sk-close,[onclick*="playCry"],[onclick*="sfxBattle"],[onclick*="playSkill"]';
+  function isClickable(el){
+    if(!el||!el.closest) return null;
+    var t=el.closest(SEL);
+    if(!t) return null;
+    if(t.disabled||t.getAttribute('aria-disabled')==='true') return null;
+    if(t.classList&&t.classList.contains('off')) return null;
+    if(t.closest(SKIP)||t.matches(SKIP)) return null;
+    return t;
+  }
+  function onPress(ev){
+    if(ev&&ev.button!=null&&ev.button!==0) return;
+    if(!isClickable(ev.target)) return;
+    try{ unlockAudio(); sfxClick(); }catch(e){}
+  }
+  if(window.PointerEvent){
+    document.addEventListener('pointerdown',onPress,{capture:true,passive:true});
+  }else{
+    document.addEventListener('touchstart',onPress,{capture:true,passive:true});
+    document.addEventListener('mousedown',onPress,{capture:true,passive:true});
+  }
+})();
 function speakFallback(text, sync){
   if(!text||!soundEnabled()) return;
   try{
@@ -4298,9 +4436,8 @@ function closeSkill(){
     if(t.closest('[data-skill-demo],[data-skill-pick]')){
       try{
         SOUND=!(S&&S.sound===false);
+        /* 只解锁，不预播哔声，避免和后面的招式音叠在一起 */
         unlockAudio();
-        /* iPhone：在 touchstart 里先响一下，把音频会话叫醒 */
-        playHtmlBeep(520);
       }catch(e){}
     }
   }
@@ -4314,7 +4451,7 @@ function closeSkill(){
     var pick=t.closest('[data-skill-pick]');
     if(pick){
       ev.preventDefault();
-      try{ SOUND=!(S&&S.sound===false); unlockAudio(); playHtmlBeep(600); }catch(e){}
+      try{ SOUND=!(S&&S.sound===false); unlockAudio(); }catch(e){}
       pickSkillDemo(pick.getAttribute('data-mid'));
       return;
     }
