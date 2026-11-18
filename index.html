@@ -296,7 +296,55 @@ main{padding:14px 14px 8px;}
 .gym-ico{width:52px;height:52px;border-radius:16px;flex:none;display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;box-shadow:inset 0 -3px 6px rgba(0,0,0,.18);border:2px solid var(--pk-edge);}
 .gym-info{flex:1;min-width:0;}
 .gym-info b{font-size:15.5px;font-weight:900;display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-family:var(--font-display);}
-.gym-info .need{font-size:12px;color:#8a7a6a;font-weight:600;margin-top:2px;}
+.gym-info .need{font-size:12px;color:#8a7a6a;font-weight:600;margin-top:2px;line-height:1.45;}
+.arena.gym-stage{background:none;height:312px;}
+.arena.gym-stage .vs-badge{top:42px;font-size:12px;padding:3px 12px;}
+.gym-place{position:absolute;left:50%;top:8px;transform:translateX(-50%);z-index:6;pointer-events:none;font-size:11px;font-weight:900;color:#fff;letter-spacing:.4px;text-shadow:0 1px 2px rgba(0,0,0,.45);background:rgba(20,14,10,.32);border-radius:99px;padding:2px 10px;}
+.gym-bench{position:absolute;top:8px;display:flex;gap:4px;z-index:6;}
+.gym-bench.mine{left:8px;}
+.gym-bench.foe{right:8px;}
+.gym-pip{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.9);border:2px solid #2a2420;display:grid;place-items:center;overflow:hidden;}
+.gym-pip img{width:22px;height:22px;object-fit:contain;}
+.gym-pip.now{box-shadow:0 0 0 2px #ffcb05;}
+.gym-pip.out{filter:grayscale(1);opacity:.35;}
+.gym-pip.wait{opacity:.72;}
+.gym-talk{position:relative;height:360px;border-radius:18px;overflow:hidden;margin-bottom:10px;border:2.5px solid var(--pk-edge);}
+.gym-talk .gym-place{left:10px;right:auto;transform:none;}
+.gym-leader{position:absolute;left:50%;top:4px;z-index:5;width:min(272px,94%);height:calc(100% - 10px);transform:translateX(-50%);animation:gymLeaderIn .48s cubic-bezier(.2,1.35,.4,1) both;filter:drop-shadow(0 10px 8px rgba(0,0,0,.22));pointer-events:none;}
+@keyframes gymLeaderIn{from{transform:translateX(-50%) translateY(22px) scale(.86);opacity:0;}to{transform:translateX(-50%) scale(1);opacity:1;}}
+.gym-leader svg{width:100%;height:100%;display:block;}
+.gym-bubble{background:#fff;border:2.5px solid var(--pk-edge);border-radius:16px;padding:10px 12px 8px;min-height:78px;box-shadow:0 3px 0 rgba(42,36,32,.08);cursor:pointer;}
+.gym-bubble .who{font-size:12px;font-weight:900;color:#8a6d3b;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center;}
+.gym-bubble .say{font-size:15.5px;font-weight:800;line-height:1.55;color:#2a2420;}
+.gym-dots{display:flex;gap:5px;}
+.gym-dots i{width:7px;height:7px;border-radius:50%;background:#e4d8c8;display:block;}
+.gym-dots i.on{background:#e3350d;}
+.papa-card{display:flex;flex-direction:column;gap:10px;align-items:stretch;padding:12px;margin-bottom:12px;border-radius:18px;background:linear-gradient(180deg,#fff4e0,#ffe0b8);border:2.5px solid var(--pk-edge);box-shadow:0 3px 0 rgba(42,36,32,.1);}
+.papa-pic{width:100%;flex:none;}
+.papa-photo{width:100%;height:auto;display:block;border-radius:18px;object-fit:contain;background:#f4efe6;}
+.papa-body{flex:1;min-width:0;}
+.papa-body b{display:block;font-size:16px;font-weight:900;}
+.papa-body p{margin:4px 0 6px;font-size:12.5px;line-height:1.45;font-weight:700;color:#6b4a2a;}
+.papa-note{font-size:12.5px;font-weight:900;color:#8a4b12;margin-bottom:8px;}
+.papa-home{width:100%;display:flex;align-items:center;gap:8px;text-align:left;padding:8px 10px;margin:0 0 10px;border-radius:16px;background:linear-gradient(180deg,#fff4e0,#ffe0b8);border:2.5px solid var(--pk-edge);box-shadow:0 3px 0 rgba(42,36,32,.1);color:inherit;}
+.papa-home-pic{width:136px;flex:none;}
+.papa-home-pic .papa-photo{border-radius:14px;}
+.papa-home-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+.papa-home-tx b{font-size:14px;font-weight:900;}
+.papa-home-tx i{font-style:normal;font-size:12px;font-weight:700;color:#8a4b12;line-height:1.35;}
+.papa-home-go{flex:none;font-size:12px;font-weight:900;color:#e3350d;}
+.legend-home{background:linear-gradient(180deg,#f4f0ff,#fff8e4);border-color:#b9a4e6;}
+.legend-home .papa-home-tx i{color:#5c4e88;}
+.legend-home-ic{width:54px;height:64px;flex:none;display:grid;place-items:center;font-size:32px;line-height:1;}
+.legend-home-names{font-size:11px;font-weight:700;color:#6d5c96;line-height:1.35;}
+.papa-meet{display:flex;flex-direction:column;gap:8px;align-items:center;margin-bottom:8px;}
+.papa-meet .papa-photo{width:min(100%,320px);border-radius:18px;}
+.papa-meet p{margin:0;font-size:13px;font-weight:800;line-height:1.45;color:#6b4a2a;text-align:center;}
+.papa-foe{display:flex;gap:8px;align-items:center;background:#fff;border:2px solid var(--pk-edge);border-radius:14px;padding:8px;}
+.papa-foe b{font-size:16px;font-weight:900;}
+.papa-soft{font-size:12px;color:#8a6d3b;font-weight:700;margin-top:2px;line-height:1.4;}
+.papa-mins{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px;}
+.papa-mini{text-align:center;font-size:11px;font-weight:800;width:72px;}
 .badge-tag{font-size:11px;font-weight:900;background:linear-gradient(180deg,var(--pk-yellow-s),var(--pk-yellow));color:#5D4300;border-radius:8px;padding:2px 8px;border:1.5px solid var(--pk-edge);}
 .badge-tag.got{background:linear-gradient(180deg,#E8F8E9,#C8E6C9);color:#1B5E20;border-color:#2E7D32;}
 
@@ -341,6 +389,12 @@ main{padding:14px 14px 8px;}
 .badge-cell .nm{font-size:11px;font-weight:800;margin-top:4px;color:#8a7a6a;}
 .badge-cell.got{background:linear-gradient(180deg,#FFF8E1,#FFE9A8);border-color:var(--pk-edge);box-shadow:0 2px 0 rgba(42,36,32,.1),0 0 0 2px rgba(255,203,5,.35);}
 .badge-cell.got .nm{color:#7A5200;}
+.lg-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:8px;}
+.lg-one{appearance:none;border:2.5px solid var(--pk-edge);border-radius:14px;background:#fff;padding:6px 2px 7px;text-align:center;font-weight:900;color:var(--pk-ink);line-height:1.15;}
+.lg-one img{width:44px;height:44px;object-fit:contain;display:block;margin:0 auto 2px;}
+.lg-one .nm{font-size:11px;}
+.lg-one .lv{font-size:10px;color:#8a6d3b;font-weight:800;margin-top:1px;}
+.lg-one.on{background:linear-gradient(180deg,#fff6cc,#ffe08a);box-shadow:0 0 0 2px #e3350d;}
 
 /* ===== 成就/统计 ===== */
 .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
@@ -1501,15 +1555,92 @@ function ballLabel(kind,text,px){
   return '<span class="ball-pair">'+ballIco(kind,px||18)+'<span>'+text+'</span></span>';
 }
 var GYMS=[
-  {id:'rock',name:'岩石道馆',leader:'小刚',emoji:'🪨',type:'岩石',need:6,gift:'卡比兽封印球',giftIco:'🐻'},
-  {id:'water',name:'水系道馆',leader:'小霞',emoji:'💧',type:'水',need:8,gift:'精灵球 ×2',giftIco:'poke'},
-  {id:'electric',name:'电系道馆',leader:'马志士',emoji:'⚡',type:'电',need:10,gift:'精灵球 ×2',giftIco:'poke'},
-  {id:'grass',name:'草系道馆',leader:'莉佳',emoji:'🌿',type:'草',need:13,gift:'下次任务经验 ×1.5',giftIco:'🌟'},
-  {id:'fire',name:'火系道馆',leader:'夏伯',emoji:'🔥',type:'火',need:16,gift:'精灵球 ×3',giftIco:'poke'},
-  {id:'psychic',name:'超能力道馆',leader:'娜姿',emoji:'🔮',type:'超能力',need:19,gift:'大师球 ×1',giftIco:'master'},
-  {id:'ground',name:'地面道馆',leader:'坂木',emoji:'🏜️',type:'地面',need:22,gift:'精灵球 ×3',giftIco:'poke'},
-  {id:'dragon',name:'龙系道馆',leader:'渡',emoji:'🐉',type:'龙',need:25,gift:'神秘蛋',giftIco:'🥚'}
+  {id:'rock',name:'岩石道馆',leader:'小刚',emoji:'🪨',type:'岩石',need:6,gift:'卡比兽封印球',giftIco:'🐻',giftMon:'geodude'},
+  {id:'water',name:'水系道馆',leader:'小霞',emoji:'💧',type:'水',need:8,gift:'精灵球 ×2',giftIco:'poke',giftMon:'staryu'},
+  {id:'electric',name:'电系道馆',leader:'马志士',emoji:'⚡',type:'电',need:10,gift:'精灵球 ×2',giftIco:'poke',giftMon:'magnemite'},
+  {id:'grass',name:'草系道馆',leader:'莉佳',emoji:'🌿',type:'草',need:13,gift:'下次任务经验 ×1.5',giftIco:'🌟',giftMon:'oddish'},
+  {id:'fire',name:'火系道馆',leader:'夏伯',emoji:'🔥',type:'火',need:16,gift:'精灵球 ×3',giftIco:'poke',giftMon:'growlithe'},
+  {id:'psychic',name:'超能力道馆',leader:'娜姿',emoji:'🔮',type:'超能力',need:19,gift:'大师球 ×1',giftIco:'master',giftMon:'abra'},
+  {id:'ground',name:'地面道馆',leader:'坂木',emoji:'🏜️',type:'地面',need:22,gift:'精灵球 ×3',giftIco:'poke',giftMon:'sandshrew'},
+  {id:'dragon',name:'龙系道馆',leader:'渡',emoji:'🐉',type:'龙',need:25,gift:'神秘蛋',giftIco:'🥚',giftMon:'dratini'}
 ];
+/* 馆主出战 3 只；giftMon 是挑战成功后送给孩子的那一只 */
+var GYM_ROSTER={
+  rock:['geodude','graveler','onix'],
+  water:['staryu','psyduck','seaking'],
+  electric:['voltrob','magnemite','pikachu'],
+  grass:['oddish','bellsprout','tangela'],
+  fire:['ponyta','growlithe','magmar'],
+  psychic:['abra','drowzee','kadabra'],
+  ground:['sandshrew','diglett','rhyhorn'],
+  dragon:['dratini','dragonair','dragonite']
+};
+/* 馆主出场：先对话，再说完才选宝可梦决斗。半身画在 gymLeaderSVG，不再套通用训练家 */
+var GYM_LEADER={
+  rock:{gender:'boy',outfit:'forest'},
+  water:{gender:'girl',outfit:'beach'},
+  electric:{gender:'boy',outfit:'thunder'},
+  grass:{gender:'girl',outfit:'forest'},
+  fire:{gender:'boy',outfit:'snow'},
+  psychic:{gender:'girl',outfit:'starry'},
+  ground:{gender:'boy',outfit:'rookie'},
+  dragon:{gender:'boy',outfit:'champion'}
+};
+var GYM_LINES={
+  rock:[
+    '我是岩石道馆的馆主，小刚！',
+    '我的宝可梦像石头一样结实。你要派出 3 只，来和我比一比。',
+    '准备好了吗？让我看看你的伙伴有多努力！'
+  ],
+  water:[
+    '欢迎来到水系道馆，我是小霞！',
+    '水会流动，也会保护朋友。你的 3 只宝可梦准备好了吗？',
+    '那我们就在水边开始决斗吧！'
+  ],
+  electric:[
+    '我是电系道馆的马志士，噼里啪啦！',
+    '电系宝可梦跑得快、打得响。你也带 3 只上来吧。',
+    '充电完成！可以决斗了！'
+  ],
+  grass:[
+    '你好呀，我是草系道馆的莉佳。',
+    '花和叶子都会慢慢长大。你的 3 只伙伴，也一起来吧。',
+    '深呼吸……我们开始决斗！'
+  ],
+  fire:[
+    '哈哈哈，我是火系道馆的夏伯！',
+    '火焰很热，也可以用来保护朋友。派出你的 3 只吧。',
+    '烧起来吧，决斗时间到了！'
+  ],
+  psychic:[
+    '我是超能力道馆的娜姿。我好像已经看见你来了。',
+    '用心想想你的伙伴，选出 3 只，和我对战吧。',
+    '集中精神……决斗要开始了。'
+  ],
+  ground:[
+    '我是地面道馆的坂木。',
+    '脚下的土地很稳。想通过这里，就让 3 只宝可梦站上来。',
+    '好。决斗开始。'
+  ],
+  dragon:[
+    '我是龙系道馆的渡。能走到这里，你已经很棒了。',
+    '龙很珍惜努力的训练家。请派出你的 3 只伙伴。',
+    '来吧，这是一场重要的决斗！'
+  ]
+};
+var gymTalkStep=0;
+var GYM_SCENE={
+  rock:{bg:'linear-gradient(180deg,#f3ddc0 0%,#fff1df 42%,#d7c09a 42%,#b08968 100%)',a:'⛰️',b:'🪨',c:'🏔️',fg:'grass',place:'岩石山道'},
+  water:{bg:'linear-gradient(180deg,#b7e6ff 0%,#e8f7ff 42%,#7ec8ea 42%,#3d98c8 100%)',a:'🌊',b:'💧',c:'🐚',fg:'water',place:'水蓝码头'},
+  electric:{bg:'linear-gradient(180deg,#fff3b0 0%,#fffbe4 42%,#f0d35c 42%,#e2b000 100%)',a:'⚡',b:'🏭',c:'💡',fg:'grass',place:'发电厂'},
+  grass:{bg:'linear-gradient(180deg,#d7f6c4 0%,#f4ffe9 42%,#8ed46a 42%,#4ea338 100%)',a:'🌿',b:'🌸',c:'🌳',fg:'grass',place:'绿荫道馆'},
+  fire:{bg:'linear-gradient(180deg,#ffd2b4 0%,#ffe8d8 42%,#f0a070 42%,#d25428 100%)',a:'🌋',b:'🔥',c:'☀️',fg:'grass',place:'火焰道馆'},
+  psychic:{bg:'linear-gradient(180deg,#f0d2ff 0%,#fbeaff 42%,#c9a0e8 42%,#8a4ec4 100%)',a:'🔮',b:'✨',c:'🌙',fg:'grass',place:'超能塔'},
+  ground:{bg:'linear-gradient(180deg,#f3e2bc 0%,#fff6df 42%,#d8b56a 42%,#b8883a 100%)',a:'🏜️',b:'🦴',c:'🌵',fg:'grass',place:'沙尘竞技场'},
+  dragon:{bg:'linear-gradient(180deg,#d5e4ff 0%,#eef3ff 42%,#9eb0d8 42%,#5a6aa8 100%)',a:'🐉',b:'⛰️',c:'☁️',fg:'grass',place:'龙之谷'},
+  legend:{bg:'linear-gradient(180deg,#d9dcff 0%,#fff6d8 42%,#f3d48a 42%,#e0b85a 100%)',a:'✨',b:'🌟',c:'🌙',fg:'grass',place:'神兽祭坛'},
+  papa:{bg:'linear-gradient(180deg,#ffe6bf 0%,#fff8ee 42%,#f0c27a 42%,#d3924a 100%)',a:'🍯',b:'🌳',c:'☀️',fg:'grass',place:'胖熊家的院子'}
+};
 var PRIZE_POOL=[{sid:'eevee',nm:'伊布',emoji:'🦊'},{sid:'growlithe',nm:'卡蒂狗',emoji:'🐕'},{sid:'dratini',nm:'迷你龙',emoji:'🐉'},{sid:'jigglypuff',nm:'皮皮',emoji:'🎈'}];
 
 /* ================= 状态 ================= */
@@ -1533,13 +1664,15 @@ function defaultState(){
     captures:{week:'',used:0}, items:{vouchers:0,rareVouchers:0},
     fish:{date:'',used:0},
     nextBonusMult:1, egg:null, totalXP:0,
-    care:{feedDate:'',bathDate:'',feedMon:'',bathMon:'',feedKind:0,bathKind:0},
+    care:{feedDate:'',bathDate:'',feedMon:'',bathMon:'',feedKind:0,bathKind:0,feedIds:[],bathIds:[]},
     daily:{date:'',count:0,granted:false},
     arena:{date:'',count:0,xpGiven:false},
     box:[], dex:{},
     meet:{date:'',done:false,count:0,autoDate:''},
     trainer:{gender:'',outfit:'rookie',outfits:['rookie'],task:'',taskDate:'',days:[],log:[],pending:null,lastScene:''},
-    av:''                                   /* 头像 emoji（多娃切换用） */
+    av:'',                                  /* 头像 emoji（多娃切换用） */
+    legend:null,                            /* 神兽试炼 {week:周一日期,used,sid}；老存档没有这个字段也能接着玩 */
+    papa:{date:'',done:false}               /* 周三胖熊爸爸的考验；老存档没有这个字段也能接着玩 */
   };
 }
 /* S 在 kidsInit() 之后才真正加载（见下方 S=load()）：
@@ -1576,8 +1709,39 @@ function load(){
   s.streakTarget=coerceNum(s.streakTarget,7,3,14);
   s.fastMult=Math.round(coerceNum(s.fastMult,1.2,1,3)*10)/10;
   if(!s.deadline) s.deadline='21:30';
+  ensureMonIds(s.team); ensureMonIds(s.box);
+  ensureLegend(s);
+  ensurePapa(s);
   /* 兼容：把老存档里未知物种（若数据更新前残留）也标记到图鉴 */
   return s;
+}
+/* 照顾按每只的 id 记账：缺 id 或撞 id 时补一个，避免只有第一只能领经验。
+   物种若被存成图鉴编号（如 025），改回物种 id，否则队伍页会打不开。 */
+var monIdsRepaired=false;
+function sidFromDex(raw){
+  var n=String(raw==null?'':raw);
+  if(!/^\d+$/.test(n)||typeof POKE_IMG==='undefined') return '';
+  n=('000'+parseInt(n,10)).slice(-3);
+  var k;
+  for(k in POKE_IMG){
+    if(('000'+POKE_IMG[k]).slice(-3)===n && typeof SPECIES!=='undefined' && SPECIES[k]) return k;
+  }
+  return '';
+}
+function ensureMonIds(list){
+  if(!Array.isArray(list)) return false;
+  var seen={}, changed=false, i, m, fixed;
+  for(i=0;i<list.length;i++){
+    m=list[i];
+    if(!m||typeof m!=='object') continue;
+    if(typeof SPECIES==='undefined'||!SPECIES[m.sid]){
+      fixed=sidFromDex(m.sid);
+      if(fixed){ m.sid=fixed; if(!m.nick) m.nick=SPECIES[fixed].name; changed=true; monIdsRepaired=true; }
+    }
+    if(!m.id||seen[m.id]){ m.id=uid(); changed=true; monIdsRepaired=true; }
+    seen[m.id]=1;
+  }
+  return changed;
 }
 function coerceNum(v,fallback,min,max){
   var n=(typeof v==='number')?v:parseFloat(v);
@@ -1590,7 +1754,16 @@ function coerceNum(v,fallback,min,max){
 function save(){
   try{
     var k=activeKid();
-    localStorage.setItem(k?kidStorageKey(k.key):KEY,JSON.stringify(S));
+    var data=S;
+    var L=S&&S.legend;
+    /* 还没挑战过就不要把空字段写进老存档 */
+    var empty=!L||typeof L!=='object'||Array.isArray(L)||(!L.week&&!L.used&&!L.sid);
+    if(empty&&S){
+      data={};
+      var key;
+      for(key in S){ if(key!=='legend') data[key]=S[key]; }
+    }
+    localStorage.setItem(k?kidStorageKey(k.key):KEY,JSON.stringify(data));
   }catch(e){}
 }
 
@@ -1642,6 +1815,7 @@ function kidsInit(){
 }
 kidsInit();
 S=load();                                 /* 多娃系统就绪后再加载当前孩子的进度 */
+if(monIdsRepaired){ monIdsRepaired=false; save(); }
 function activeKid(){
   if(!KIDS||!KIDS.list.length) kidsInit();
   var k=KIDS.list.filter(function(x){return x.key===KIDS.active;})[0];
@@ -1685,6 +1859,9 @@ function normalizeState(s){
   s.streakTarget=coerceNum(s.streakTarget,7,3,14);
   s.fastMult=Math.round(coerceNum(s.fastMult,1.2,1,3)*10)/10;
   if(!s.deadline) s.deadline='21:30';
+  ensureMonIds(s.team); ensureMonIds(s.box);
+  ensureLegend(s);
+  ensurePapa(s);
   return s;
 }
 function dailyTarget(){ return Math.max(1,Math.min(20,S.dailyTarget|0||7)); }
@@ -1804,10 +1981,10 @@ function doRemoveKid(key){
   closeModal(); render(); toast('已删除该孩子的记录');
 }
 
-function movesOf(mon){ var sp=spec(mon.sid); return (sp.moves||[]).filter(function(mv){return mv.at<=mon.level;}); }
-function nextEvo(mon){ var sp=spec(mon.sid); for(var i=0;i<sp.evo.length;i++){ if(sp.evo[i].at>mon.level) return sp.evo[i]; } return null; }
-function canEvo(mon){ var sp=spec(mon.sid); return sp.evo.length>0 && mon.level>=sp.evo[0].at; }
-function evoAt(mon){ var sp=spec(mon.sid); return sp.evo.length?sp.evo[0].at:null; }
+function movesOf(mon){ var sp=spec(mon.sid); return ((sp&&sp.moves)||[]).filter(function(mv){return mv.at<=mon.level;}); }
+function nextEvo(mon){ var sp=spec(mon.sid); if(!sp||!sp.evo) return null; for(var i=0;i<sp.evo.length;i++){ if(sp.evo[i].at>mon.level) return sp.evo[i]; } return null; }
+function canEvo(mon){ var sp=spec(mon.sid); return !!(sp&&sp.evo&&sp.evo.length>0&&mon.level>=sp.evo[0].at); }
+function evoAt(mon){ var sp=spec(mon.sid); return (sp&&sp.evo&&sp.evo.length)?sp.evo[0].at:null; }
 function avgLevel(){ if(!S.team.length)return 0; var t=0; S.team.forEach(function(m){t+=m.level;}); return Math.round(t/S.team.length); }
 function newMon(sid,level,source){
   return {id:uid(),sid:sid,nick:spec(sid).name,level:level||5,xp:0,source:source||'starter'};
@@ -1817,6 +1994,7 @@ function addXP(mon,xp){
   while(mon.xp>=xpNeed(mon.level)){
     mon.xp-=xpNeed(mon.level); mon.level++;
     var sp=spec(mon.sid);
+    if(!sp) break;
     var mv=null, eo=null;
     sp.moves.forEach(function(m){ if(m.at===mon.level) mv=m.m; });
     if(canEvo(mon)){
@@ -1873,6 +2051,34 @@ function tryAddMon(sid,source,level){
   if(S.team.length>=6){ S.box.push(newMon(sid,level||5,source)); save(); return {ok:true,boxed:true}; }
   S.team.push(newMon(sid,level||5,source));
   save(); return {ok:true};
+}
+function xpEventHTML(ev){
+  return (ev||[]).map(function(e){
+    if(e.type==='evo') return '<p class="lead" style="color:#8e24aa;font-weight:900;margin:2px 0">'+esc(e.mon.nick)+' 进化了！！</p>';
+    if(e.type==='levelmove') return '<p class="lead" style="color:#a06800;font-weight:900;margin:2px 0">'+esc(e.mon.nick)+' 升到 Lv.'+e.newLevel+'，学会「'+esc(e.move)+'」！</p>';
+    if(e.type==='level') return '<p class="lead" style="color:#1e88e5;font-weight:900;margin:2px 0">'+esc(e.mon.nick)+' 升到 Lv.'+e.newLevel+'！</p>';
+    return '';
+  }).join('');
+}
+/* 队伍优先，其次图鉴盒子。相同物种只保留已有的那一只 */
+function findMonBySid(sid){
+  var i;
+  for(i=0;i<S.team.length;i++){ if(S.team[i].sid===sid) return {where:'team',i:i,m:S.team[i]}; }
+  var box=S.box||[];
+  for(i=0;i<box.length;i++){ if(box[i].sid===sid) return {where:'box',i:i,m:box[i]}; }
+  return null;
+}
+/* 已有同种：给它加经验；没有才新收一只 */
+function grantSpecies(sid,source,level,dupXP){
+  markDex(sid);
+  var own=findMonBySid(sid);
+  if(own){
+    var ev=addXP(own.m, dupXP);
+    save();
+    return {ok:true,dup:true,where:own.where,mon:own.m,sid:sid,xp:dupXP,ev:ev};
+  }
+  var r=tryAddMon(sid,source,level||5);
+  return {ok:true,dup:false,boxed:!!r.boxed,sid:sid,level:level||5};
 }
 /* 图鉴盒子：入队 / 送回 */
 function addFromBox(bi){
@@ -1959,14 +2165,16 @@ function addBadge(gid){
     var g=GYMS.filter(function(x){return x.id===gid;})[0];
     var giftText='';
     if(gid==='rock'){ S.snorlax={state:'sealed',sealedAt:Date.now()}; }
-    else if(gid==='water'||gid==='electric'){ S.items.vouchers+=2; }
+    else if(gid==='water'){ S.items.vouchers+=2; }
+    else if(gid==='electric'){ S.items.vouchers+=2; }
     else if(gid==='grass'){ S.nextBonusMult=1.5; }
     else if(gid==='fire'){ S.items.vouchers+=3; }
     else if(gid==='psychic'){ S.items.rareVouchers+=1; }
     else if(gid==='ground'){ S.items.vouchers+=3; }
     else if(gid==='dragon'){ S.egg={hatchAt:Date.now()+2*86400000}; }
+    var monGrant=g.giftMon?grantSpecies(g.giftMon,'gym',5,20):null;
     save();
-    return {g:g,gift:g.gift};
+    return {g:g,gift:g.gift,monGrant:monGrant};
   }
   return null;
 }
@@ -2118,9 +2326,29 @@ function favFood(sid){
   for(var i=0;i<s.length;i++){ h=(h*31+s.charCodeAt(i)+i*17)%997; }
   return h%FOODS.length;
 }
-function careStatus(){
+function careBook(){
+  if(!S.care||typeof S.care!=='object'){
+    S.care={feedDate:'',bathDate:'',feedMon:'',bathMon:'',feedKind:0,bathKind:0,feedIds:[],bathIds:[]};
+  }
+  if(!Array.isArray(S.care.feedIds)) S.care.feedIds=[];
+  if(!Array.isArray(S.care.bathIds)) S.care.bathIds=[];
   var t=todayStr();
-  return {feed:S.care.feedDate===t,bath:S.care.bathDate===t};
+  /* 旧存档只有“今天喂过谁”一只：补进名单，避免同一只再领一次 */
+  if(S.care.feedDate===t&&S.care.feedMon&&S.care.feedIds.indexOf(S.care.feedMon)<0) S.care.feedIds.push(S.care.feedMon);
+  if(S.care.bathDate===t&&S.care.bathMon&&S.care.bathIds.indexOf(S.care.bathMon)<0) S.care.bathIds.push(S.care.bathMon);
+  return S.care;
+}
+function careStatus(){
+  var c=careBook();
+  var t=todayStr();
+  var feedIds=c.feedDate===t?c.feedIds:[];
+  var bathIds=c.bathDate===t?c.bathIds:[];
+  var n=S.team.length, feedN=0, bathN=0, i;
+  for(i=0;i<n;i++){
+    if(feedIds.indexOf(S.team[i].id)>=0) feedN++;
+    if(bathIds.indexOf(S.team[i].id)>=0) bathN++;
+  }
+  return {feed:n>0&&feedN>=n,bath:n>0&&bathN>=n,feedN:feedN,bathN:bathN,feedIds:feedIds,bathIds:bathIds};
 }
 function openCare(action,replay,kind){
   /* 必须在用户手势里立刻解锁并响一声，否则 iPhone 上后续音效会被静音 */
@@ -2130,12 +2358,13 @@ function openCare(action,replay,kind){
     playHtmlBeep(action==='feed'?760:420,0.1,0.95);
   }catch(e){}
   var isFeed=action==='feed';
-  var st=careStatus();
-  var done=isFeed?st.feed:st.bath;
-  if(done) replay=true;                     /* 今天已完成 → 自动进入回放，不再加经验 */
   if(kind===undefined||kind===null||isNaN(kind)) kind=isFeed?(S.care.feedKind||0):(S.care.bathKind||0);
   if(careSel>=S.team.length||!S.team[careSel]) careSel=0;
   var mon=S.team[careSel]; if(!mon) return;
+  var st=careStatus();
+  var doneIds=isFeed?st.feedIds:st.bathIds;
+  var done=doneIds.indexOf(mon.id)>=0;
+  if(done) replay=true;                     /* 这只今天已经照顾过 → 回放，不再加经验 */
   var d=parseDate(todayStr()).getDay();
   var sc=CARE_SCENES[d];
   var fi=Math.abs(kind)%FOODS.length, bi=Math.abs(kind)%BATHS.length;
@@ -2227,8 +2456,16 @@ function openCare(action,replay,kind){
     if(!replay){
       var target=S.team.filter(function(x){return x.id===mon.id;})[0];
       var ev=target?addXP(target,gain):[];
-      if(isFeed){ S.care.feedDate=todayStr(); S.care.feedMon=mon.id; S.care.feedKind=fi; }
-      else{ S.care.bathDate=todayStr(); S.care.bathMon=mon.id; S.care.bathKind=bi; }
+      var tday=todayStr();
+      if(isFeed){
+        if(S.care.feedDate!==tday) S.care.feedIds=[];
+        S.care.feedDate=tday; S.care.feedMon=mon.id; S.care.feedKind=fi;
+        if(S.care.feedIds.indexOf(mon.id)<0) S.care.feedIds.push(mon.id);
+      }else{
+        if(S.care.bathDate!==tday) S.care.bathIds=[];
+        S.care.bathDate=tday; S.care.bathMon=mon.id; S.care.bathKind=bi;
+        if(S.care.bathIds.indexOf(mon.id)<0) S.care.bathIds.push(mon.id);
+      }
       save();
       var lv=ev.map(function(e){
         if(e.type==='evo') return '<p class="lead" style="color:#8e24aa;font-weight:900;margin:2px 0">'+esc(e.mon.nick)+' 进化了！！</p>';
@@ -2459,8 +2696,11 @@ function calcDmg(atk,def,mv){
   var d=Math.round(base*eff*rand*(crit?1.5:1)*0.42);
   return {dmg:Math.max(info.p>0?3:0,d),eff:eff,crit:crit,info:info};
 }
-function simBattle(a,b){
-  var A={mon:a,hp:hpOf(a),max:hpOf(a)}, B={mon:b,hp:hpOf(b),max:hpOf(b)};
+function simBattle(a,b,opt){
+  opt=opt||{};
+  var maxA=hpOf(a), maxB=opt.maxB!=null?opt.maxB:hpOf(b);
+  var hpA=opt.hpA!=null?opt.hpA:maxA, hpB=opt.hpB!=null?opt.hpB:maxB;
+  var A={mon:a,hp:Math.max(0,Math.min(maxA,hpA)),max:maxA}, B={mon:b,hp:Math.max(0,Math.min(maxB,hpB)),max:maxB};
   var turns=[], guard=0;
   while(A.hp>0&&B.hp>0&&guard<40){
     guard++;
@@ -2482,7 +2722,7 @@ function simBattle(a,b){
   }
   var winner=(A.hp>0&&B.hp<=0)?'A':((B.hp>0&&A.hp<=0)?'B':'A');
   if(A.hp>0&&B.hp>0) winner=(A.hp/A.max>=B.hp/B.max)?'A':'B'; /* 超时按剩余血量判定 */
-  return {turns:turns,winner:winner};
+  return {turns:turns,winner:winner,hpA:A.hp,hpB:B.hp,maxA:A.max,maxB:B.max};
 }
 function battleSideText(eff){
   if(eff>=2) return '效果拔群！';
@@ -2597,11 +2837,11 @@ function playArena(A,B,sim,rewardOK,cfg){
     var evHTML='';
     if(rewardOK){
       var ev1=addXP(winMon,12), ev2=addXP(loseMon,5);
-      S.arena.xpGiven=true; save();
+      save();
       var lv=lvHTML(ev1.concat(ev2));
       evHTML='<p class="lead" style="margin:6px 0 2px"><b style="color:#43a047">'+esc(winMon.nick)+' +12 经验</b> · <b style="color:#1e88e5">'+esc(loseMon.nick)+' +5 经验</b></p>'+lv;
     }else{
-      evHTML='<p class="lead" style="margin:6px 0 2px">友谊赛结束，今天的第一场才有经验奖励哦～</p>';
+      evHTML='<p class="lead" style="margin:6px 0 2px">这场是练习赛，没有经验奖励～</p>';
     }
     try{ sfxBattleWin(); }catch(e){} confetti();
     var e=$('arenaEnd');
@@ -4165,6 +4405,7 @@ function confetti(){
 /* ================= 通用组件 ================= */
 function monCardHTML(m,idx){
   var sp=spec(m.sid);
+  if(!sp) return '';
   var need=xpNeed(m.level);
   var pct=Math.min(100,Math.round(m.xp/need*100));
   var evo=nextEvo(m);
@@ -4174,7 +4415,7 @@ function monCardHTML(m,idx){
     var isNew=mv.at===m.level;
     return '<span class="move">'+esc(mv.m)+(isNew?'<span class="new">新!</span>':'')+'</span>';
   }).join('');
-  var srcMap={starter:'初始伙伴',wild:'野外捕捉',fish:'江边钓鱼',gym:'道馆伙伴',prize:'连击大奖',egg:'神秘蛋'};
+  var srcMap={starter:'初始伙伴',wild:'野外捕捉',fish:'江边钓鱼',gym:'道馆伙伴',prize:'连击大奖',egg:'神秘蛋',legend:'神兽试炼'};
   return '<div class="mon-card mon-tap" onclick="openTeamMon(\''+m.id+'\')">'+
     '<div class="mon-head" style="background:linear-gradient(135deg,'+tc(sp.type)+'33,'+tc(sp.type)+'14 65%,#fff)">'+
       '<div class="mon-ava" style="border-color:'+tc(sp.type)+'">'+pokeImgHTML(m.sid)+'</div>'+
@@ -4199,7 +4440,7 @@ function openTeamMon(mid){
   var need=xpNeed(mon.level);
   var pct=Math.min(100,Math.round(mon.xp/need*100));
   var evo=nextEvo(mon);
-  var srcMap={starter:'初始伙伴',wild:'野外捕捉',fish:'江边钓鱼',gym:'道馆伙伴',prize:'连击大奖',egg:'神秘蛋'};
+  var srcMap={starter:'初始伙伴',wild:'野外捕捉',fish:'江边钓鱼',gym:'道馆伙伴',prize:'连击大奖',egg:'神秘蛋',legend:'神兽试炼'};
   var learned=movesOf(mon);
   var upcoming=(sp.moves||[]).filter(function(mv){ return mv.at>mon.level; }).slice(0,5);
   var evoLine=evo
@@ -4625,6 +4866,8 @@ function viewTeamHTML(){
         '<span class="hero-stat">📖 图鉴 '+sz.dex+' 种</span>'+
       '</div><span class="deco">⚡</span></div>'+
     meetBannerHTML()+
+    legendHomeHTML()+
+    (papaIsWed()?papaHomeHTML():'')+
     sealHTML+
     '<div class="section-label">我的伙伴（'+S.team.length+'/6）</div>'+
     teamHTML+
@@ -4645,7 +4888,7 @@ function viewCareHTML(){
   var favIdx=favFood(mon.sid);
   var list=S.team.map(function(m,i){
     var on=i===careSel;
-    var tags=(st.feed&&S.care.feedMon===m.id?'🍖':'')+(st.bath&&S.care.bathMon===m.id?'🛁':'');
+    var tags=(st.feedIds.indexOf(m.id)>=0?'🍖':'')+(st.bathIds.indexOf(m.id)>=0?'🛁':'');
     return carePickHTML(m,{on:on,tag:tags,onclick:'pickCareMon('+i+')'});
   }).join('');
   var foodBtns=FOODS.map(function(f,i){
@@ -4656,37 +4899,39 @@ function viewCareHTML(){
     return '<button class="care-item" onclick="openCare(\'bath\',false,'+i+')">'+
       '<span class="ci">'+b.ic+'</span><span class="cn">'+b.nm+'</span></button>';
   }).join('');
-  var doneNow=(st.feed?'🍖':'')+(st.bath?'🛁':'');
+  var monFed=st.feedIds.indexOf(mon.id)>=0;
+  var monBathed=st.bathIds.indexOf(mon.id)>=0;
+  var doneNow=(st.feedN?'🍖'+st.feedN:'')+(st.bathN?'🛁'+st.bathN:'');
   var replayBtns='';
-  if(st.feed||st.bath){
+  if(st.feedN||st.bathN){
     replayBtns='<div class="card" style="background:linear-gradient(135deg,#fffbeb,#f1f8e9);border:1.5px solid #ffe082">'+
       '<h3>🎬 回看今天的动画</h3>'+
-      '<div style="font-size:12.5px;color:#8a6d3b;font-weight:600;margin-bottom:8px">'+(doneNow?'今天已完成：'+doneNow+'。想再看哪一段？':'')+'</div>'+
-      (st.feed?'<button class="btn btn-yellow btn-block" style="margin-bottom:8px" onclick="openCare(\'feed\',true,'+(S.care.feedKind||0)+')">🍽 回放喂食动画（'+FOODS[(S.care.feedKind||0)%FOODS.length].nm+'）</button>':'')+
-      (st.bath?'<button class="btn btn-blue btn-block" onclick="openCare(\'bath\',true,'+(S.care.bathKind||0)+')">🛁 回放洗澡动画（'+BATHS[(S.care.bathKind||0)%BATHS.length].nm+'）</button>':'')+
+      '<div style="font-size:12.5px;color:#8a6d3b;font-weight:600;margin-bottom:8px">'+(doneNow?'今天已照顾：喂食 '+st.feedN+'/'+S.team.length+' · 洗澡 '+st.bathN+'/'+S.team.length+'。想再看哪一段？':'')+'</div>'+
+      (st.feedN?'<button class="btn btn-yellow btn-block" style="margin-bottom:8px" onclick="openCare(\'feed\',true,'+(S.care.feedKind||0)+')">🍽 回放喂食动画（'+FOODS[(S.care.feedKind||0)%FOODS.length].nm+'）</button>':'')+
+      (st.bathN?'<button class="btn btn-blue btn-block" onclick="openCare(\'bath\',true,'+(S.care.bathKind||0)+')">🛁 回放洗澡动画（'+BATHS[(S.care.bathKind||0)%BATHS.length].nm+'）</button>':'')+
     '</div>';
   }
   return '<div class="view">'+
     '<div class="card" style="background:linear-gradient(135deg,#fff0f5,#e8f5e9);border:1.5px solid #f8bbd0">'+
       '<div style="display:flex;align-items:center;gap:10px"><div style="font-size:34px">🍚</div>'+
       '<div><b style="font-size:15.5px;font-weight:900">今日照顾 · '+sc.nm+'</b>'+
-      '<div style="font-size:12.5px;color:#8a6d3b;font-weight:600;margin-top:2px">喂食、洗澡每天各一次。喂食可选 6 种食物、洗澡可选 4 种沐浴，动画一周 7 天场景不同，随时能回放！</div></div></div></div>'+
+      '<div style="font-size:12.5px;color:#8a6d3b;font-weight:600;margin-top:2px">每只宝可梦每天第一次喂食、第一次洗澡都能加经验。动画可以随时回放。</div></div></div></div>'+
     '<div class="card"><h3>照顾哪位伙伴？</h3><div class="mon-pick-grid">'+list+'</div>'+
-      '<div style="font-size:12.5px;color:#8a6d3b;font-weight:700">'+esc(mon.nick)+' 最爱的口味是 '+FOODS[favIdx].ic+' '+FOODS[favIdx].nm+'（喂它 +5 经验）</div>'+
+      '<div style="font-size:12.5px;color:#8a6d3b;font-weight:700">'+esc(mon.nick)+' 最爱的口味是 '+FOODS[favIdx].ic+' '+FOODS[favIdx].nm+'（第一次喂它 +5 经验）</div>'+
     '</div>'+
     '<div class="card"><h3>🍖 喂食 · 点一种食物开饭</h3>'+
       '<div class="care-grid">'+foodBtns+'</div>'+
-      (st.feed?'<div class="care-note">今天已经喂过啦，点食物可以再看一遍动画～</div>':'')+
+      (monFed?'<div class="care-note">'+esc(mon.nick)+' 今天已经喂过啦，再点只回放动画～</div>':'<div class="care-note">这只今天还没喂过，第一次喂食会加经验</div>')+
     '</div>'+
     '<div class="card"><h3>🛁 洗澡 · 点一种沐浴</h3>'+
       '<div class="care-grid">'+bathBtns+'</div>'+
-      (st.bath?'<div class="care-note">今天已经洗过啦，点沐浴可以再看一遍动画～</div>':'')+
+      (monBathed?'<div class="care-note">'+esc(mon.nick)+' 今天已经洗过啦，再点只回放动画～</div>':'<div class="care-note">这只今天还没洗过，第一次洗澡会加经验</div>')+
     '</div>'+
     replayBtns+
     '<div class="section-label">今日照顾状态</div>'+
     '<div class="card"><div class="stat-grid">'+
-      '<div class="stat-cell"><b>'+(st.feed?'✅':'⏳')+'</b><span>喂食 '+(st.feed?'已完成':'待完成')+'</span></div>'+
-      '<div class="stat-cell"><b>'+(st.bath?'✅':'⏳')+'</b><span>洗澡 '+(st.bath?'已完成':'待完成')+'</span></div>'+
+      '<div class="stat-cell"><b>'+st.feedN+'/'+S.team.length+'</b><span>已喂食</span></div>'+
+      '<div class="stat-cell"><b>'+st.bathN+'/'+S.team.length+'</b><span>已洗澡</span></div>'+
     '</div></div>'+
   '</div>';
 }
@@ -4771,6 +5016,34 @@ function submitWork(){
 }
 
 /* ================= 视图：道馆 ================= */
+var gymPickGid='';
+var gymPicks=[];
+var legendPickSid='';
+var legendPicks=[];
+var LEGEND_IDS=['moltres','zapdos','articuno','mew','mewtwo'];
+function makeGymTeam(g){
+  var ids=GYM_ROSTER[g.id]||GYM_ROSTER.rock;
+  var base=Math.max(3,g.need-2);
+  return ids.map(function(sid,i){
+    return {id:'gymfoe'+i,sid:sid,nick:spec(sid).name,level:base+i,xp:0,source:'gymfoe'};
+  });
+}
+function gymSceneLayers(g){
+  var sc=GYM_SCENE[g.id]||GYM_SCENE.rock;
+  return sceneHTML(sc.bg)+
+    '<div class="scene-glow"></div>'+
+    '<div class="scene-decor"><span class="sd" style="left:5%;top:38%;font-size:26px">'+sc.a+'</span>'+
+    '<span class="sd" style="left:78%;top:34%;font-size:28px">'+sc.b+'</span>'+
+    (sc.c?'<span class="sd" style="left:44%;top:22%;font-size:20px">'+sc.c+'</span>':'')+'</div>'+
+    '<div class="scene-fg '+(sc.fg||'grass')+'"></div>'+
+    '<div class="gym-place">'+esc(sc.place||g.name)+'</div>';
+}
+function gymPickGridHTML(){
+  return S.team.map(function(m,i){
+    var ord=gymPicks.indexOf(i);
+    return carePickHTML(m,{on:ord>=0,tag:ord>=0?String(ord+1):'',onclick:'toggleGymPick('+i+')'});
+  }).join('');
+}
 function viewGymHTML(){
   if(S.firstRun) return viewStarterHTML();
   var weekend=isWeekendStr(todayStr());
@@ -4782,13 +5055,17 @@ function viewGymHTML(){
   var gymsHTML=GYMS.map(function(g){
     var got=S.badges.indexOf(g.id)>=0;
     var winable=avg>=g.need;
+    var ready=winable&&S.team.length>=3;
+    var gm=spec(g.giftMon);
+    var giftTxt=(g.giftIco==='poke'||g.giftIco==='master'?ballLabel(g.giftIco,esc(g.gift),15):esc(g.gift));
+    var label=S.team.length<3?'需3只':(winable?'挑战':'Lv.'+g.need);
     var btn=got?
       '<span class="badge-tag got">✓ 已获得</span>':
-      (weekend?'<button class="btn '+(winable?'btn-primary':'btn-gray')+' btn-sm" '+(winable?'':'disabled')+' onclick="startBattle(\''+g.id+'\')">挑战</button>'
+      (weekend?'<button class="btn '+(ready?'btn-primary':'btn-gray')+' btn-sm" '+(ready?'':'disabled')+' onclick="startBattle(\''+g.id+'\')">'+label+'</button>'
         :'<span class="badge-tag">Lv.'+g.need+'</span>');
     return '<div class="gym-row"><div class="gym-ico" style="background:linear-gradient(135deg,'+tc(g.type)+','+tc(g.type)+'cc)">'+g.emoji+'</div>'+
       '<div class="gym-info"><b>'+g.name+' <span class="badge-tag got">'+g.leader+'</span></b>'+
-      '<div class="need">需要队伍平均等级 Lv.'+g.need+'（当前 '+avg+'）· 胜利礼物：'+(g.giftIco==='poke'||g.giftIco==='master'?ballLabel(g.giftIco,esc(g.gift),15):esc(g.gift))+'</div></div>'+btn+'</div>';
+      '<div class="need">需要平均 Lv.'+g.need+'（当前 '+avg+'）· 双方各 3 只<br>胜利：'+giftTxt+'，并赠送 '+esc(gm?gm.name:'该系宝可梦')+'</div></div>'+btn+'</div>';
   }).join('');
   var badgeWall=GYMS.map(function(g){
     var got=S.badges.indexOf(g.id)>=0;
@@ -4798,7 +5075,7 @@ function viewGymHTML(){
     '<div class="card" style="background:linear-gradient(135deg,#fff8e1,#fff3cd);border:1.5px solid #f5d76e">'+
       '<div style="display:flex;align-items:center;gap:10px"><div style="font-size:34px">🏟️</div>'+
       '<div><b style="font-size:15.5px;font-weight:900">冒险徽章 '+S.badges.length+'/'+GYMS.length+'</b>'+
-      '<div style="font-size:12.5px;color:#8a6d3b;font-weight:600;margin-top:2px">队伍平均等级 Lv.'+avg+' · 道馆只送徽章和礼物，经验要靠打卡！</div></div></div></div>'+
+      '<div style="font-size:12.5px;color:#8a6d3b;font-weight:600;margin-top:2px">队伍平均等级 Lv.'+avg+' · 周末和馆主各派 3 只决斗，赢了送该系宝可梦</div></div></div></div>'+
     lock+
     '<div class="section-label">徽章墙</div>'+
     '<div class="badge-wall">'+badgeWall+'</div>'+
@@ -4808,54 +5085,854 @@ function viewGymHTML(){
 }
 function startBattle(gid){
   sfxClick();
+  if(!isWeekendStr(todayStr())){ toast('道馆只在周六、周日开放'); return; }
   var g=GYMS.filter(function(x){return x.id===gid;})[0];
-  var got=S.badges.indexOf(gid)>=0;
-  if(got){ toast('这个道馆的徽章已经拿到啦'); return; }
-  if(gymWin(g)){
-    openBattleModal(g,true);
-  }else{
-    openBattleModal(g,false);
-  }
+  if(!g) return;
+  if(S.badges.indexOf(gid)>=0){ toast('这个道馆的徽章已经拿到啦'); return; }
+  if(S.team.length<3){ toast('双方各派 3 只，队伍里还不够 3 只哦'); return; }
+  if(!gymWin(g)){ toast('队伍平均等级还要到 Lv.'+g.need); return; }
+  gymPickGid=g.id;
+  var ranked=S.team.map(function(m,i){ return {i:i,lv:m.level,xp:m.xp}; });
+  ranked.sort(function(a,b){ return (b.lv-a.lv)||(b.xp-a.xp)||(a.i-b.i); });
+  gymPicks=ranked.slice(0,3).map(function(x){ return x.i; });
+  window.__gymFoes=makeGymTeam(g);
+  openGymTalk(g);
 }
-function openBattleModal(g,win){
-  try{ sfxBattleArm(); }catch(e){}
-  var lines;
-  if(win){
-    lines=['🏟️ 来到'+g.name+'！','馆主 '+g.leader+' 派出强大的宝可梦！','你的伙伴们齐心协力！','💥 砰！一招命中！','🎉 战胜 '+g.leader+'！'];
-  }else{
-    lines=['🏟️ 来到'+g.name+'！','馆主 '+g.leader+' 的宝可梦好强…','伙伴们勇敢出击，但还差一点！','先回去打卡练级，再战一次吧！'];
+/* 原创简笔半身：发型、脸色、上衣各自不同，方便一眼认出动画里的馆主 */
+function glWrap(inner){
+  return '<svg class="gl-svg" viewBox="0 0 160 210" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+inner+'</svg>';
+}
+function gymLeaderSVG(id){
+  var ink='stroke="#2A241C" stroke-linejoin="round" stroke-linecap="round"';
+  if(id==='water'){
+    return glWrap(
+      '<path d="M108 86c16-2 40 12 44 40 4 30-12 58-34 60-6-16-2-32 10-44-14 6-22 2-20-10 12 0 16-10 12-20-12 4-18-4-14-14 6-4 8-12 2-12z" fill="#FFB020" '+ink+' stroke-width="3"/>'+
+      '<path d="M124 108c10 8 16 22 12 36" fill="none" stroke="#FFE08A" stroke-width="4" stroke-linecap="round"/>'+
+      '<ellipse cx="112" cy="90" rx="10" ry="6.5" transform="rotate(-24 112 90)" fill="#1E88E5" '+ink+' stroke-width="2.2"/>'+
+      '<path d="M22 210V176c0-24 22-38 58-38s58 14 58 38V210Z" fill="#1E88E5" '+ink+' stroke-width="3"/>'+
+      '<path d="M58 146l-10 22" stroke="#2A241C" stroke-width="9" fill="none"/>'+
+      '<path d="M102 146l10 22" stroke="#2A241C" stroke-width="9" fill="none"/>'+
+      '<path d="M58 146l-10 22" stroke="#1E88E5" stroke-width="5.5" fill="none"/>'+
+      '<path d="M102 146l10 22" stroke="#1E88E5" stroke-width="5.5" fill="none"/>'+
+      '<polygon points="80,164 83.2,172 92,172 85,177.2 87.6,186 80,181.2 72.4,186 75,177.2 68,172 76.8,172" fill="#FFE14A" '+ink+' stroke-width="1.4"/>'+
+      '<path d="M66 132h28v20H66Z" fill="#FFD4C2" '+ink+' stroke-width="2.4"/>'+
+      '<ellipse cx="80" cy="102" rx="38" ry="40" fill="#FFD4C2" '+ink+' stroke-width="3"/>'+
+      '<ellipse cx="42" cy="104" rx="7" ry="9" fill="#FFD4C2" '+ink+' stroke-width="2.2"/>'+
+      '<path d="M44 92c2-30 16-44 36-44 18 0 32 12 36 36-8-16-18-18-26-8-4-14-14-16-22-6-8-10-18-6-24 22z" fill="#FFB020" '+ink+' stroke-width="2.6"/>'+
+      '<path d="M50 78c8-6 16-4 20 2" fill="none" stroke="#FFE08A" stroke-width="3" stroke-linecap="round"/>'+
+      '<path d="M58 90c6-8 12-8 16-2" fill="none" stroke="#C47A10" stroke-width="2.2"/>'+
+      '<path d="M88 88c4-8 12-8 18-1" fill="none" stroke="#C47A10" stroke-width="2.2"/>'+
+      '<ellipse cx="64" cy="110" rx="10" ry="11" fill="#fff" '+ink+' stroke-width="2.1"/>'+
+      '<ellipse cx="98" cy="110" rx="10" ry="11" fill="#fff" '+ink+' stroke-width="2.1"/>'+
+      '<circle cx="66" cy="112" r="5.6" fill="#1565C0"/>'+
+      '<circle cx="100" cy="112" r="5.6" fill="#1565C0"/>'+
+      '<circle cx="66" cy="112" r="2.7" fill="#102038"/>'+
+      '<circle cx="100" cy="112" r="2.7" fill="#102038"/>'+
+      '<circle cx="63.4" cy="108.6" r="2.1" fill="#fff"/>'+
+      '<circle cx="97.4" cy="108.6" r="2.1" fill="#fff"/>'+
+      '<ellipse cx="52" cy="122" rx="6" ry="3" fill="#F4A0B0" opacity=".75"/>'+
+      '<ellipse cx="110" cy="122" rx="6" ry="3" fill="#F4A0B0" opacity=".75"/>'+
+      '<path d="M70 130c4 10 16 10 20 0" fill="#fff" stroke="#C45A6A" stroke-width="2"/>'+
+      '<path d="M74 130c2 4 10 4 12 0" fill="#E58A96"/>'
+    );
   }
-  var m=showModal('<div class="dialog"><h3>⚔️ '+g.name+'</h3><ul class="battle-log" id="battleLog"></ul><div id="battleEnd"></div></div>');
+  if(id==='electric'){
+    return glWrap(
+      '<path d="M6 172c16-30 40-42 74-42s58 12 74 42V210H6Z" fill="#556B38" '+ink+' stroke-width="3"/>'+
+      '<path d="M58 142l22 28 22-28" fill="#3E5228" '+ink+' stroke-width="2.3"/>'+
+      '<rect x="14" y="158" width="30" height="11" rx="2" fill="#D4B483" '+ink+' stroke-width="2"/>'+
+      '<rect x="116" y="158" width="30" height="11" rx="2" fill="#D4B483" '+ink+' stroke-width="2"/>'+
+      '<circle cx="80" cy="184" r="3.1" fill="#D4B483" '+ink+' stroke-width="1.4"/>'+
+      '<circle cx="80" cy="198" r="3.1" fill="#D4B483" '+ink+' stroke-width="1.4"/>'+
+      '<rect x="70" y="174" width="8" height="13" rx="1.2" fill="#F2EEE4" '+ink+' stroke-width="1.3"/>'+
+      '<rect x="82" y="178" width="8" height="13" rx="1.2" fill="#E4E0D4" '+ink+' stroke-width="1.3"/>'+
+      '<path d="M36 108C36 72 52 56 80 56c28 0 44 16 44 52l6 28-14 22H44L30 136Z" fill="#F0C9A4" '+ink+' stroke-width="3"/>'+
+      '<ellipse cx="34" cy="112" rx="8" ry="11" fill="#F0C9A4" '+ink+' stroke-width="2.2"/>'+
+      '<ellipse cx="126" cy="112" rx="8" ry="11" fill="#F0C9A4" '+ink+' stroke-width="2.2"/>'+
+      '<path d="M40 78h80v18c0 8-18 12-40 12S40 104 40 96Z" fill="#C6A15A" '+ink+' stroke-width="3"/>'+
+      '<path d="M46 84h68" stroke="#E6D09A" stroke-width="3" fill="none" stroke-linecap="round"/>'+
+      '<path d="M42 92c2 18 4 30 6 36" stroke="#C6A15A" stroke-width="7" fill="none" stroke-linecap="round"/>'+
+      '<path d="M118 92c-2 18-4 30-6 36" stroke="#C6A15A" stroke-width="7" fill="none" stroke-linecap="round"/>'+
+      '<path d="M44 90h22" stroke="#5A4630" stroke-width="3.4" fill="none"/>'+
+      '<path d="M94 90h22" stroke="#5A4630" stroke-width="3.4" fill="none"/>'+
+      '<path d="M32 102h96v20c0 9-10 14-20 14H52c-10 0-20-5-20-14Z" fill="#141414" '+ink+' stroke-width="3"/>'+
+      '<path d="M40 108h26" stroke="#6A6A6A" stroke-width="3" fill="none"/>'+
+      '<path d="M94 108h26" stroke="#6A6A6A" stroke-width="3" fill="none"/>'+
+      '<path d="M32 110H24" stroke="#141414" stroke-width="3.2" fill="none"/>'+
+      '<path d="M128 110h8" stroke="#141414" stroke-width="3.2" fill="none"/>'+
+      '<path d="M62 150h36" stroke="#6A4030" stroke-width="3" fill="none"/>'+
+      '<path d="M80 150v8" stroke="#E0B89A" stroke-width="2" fill="none"/>'
+    );
+  }
+  if(id==='grass'){
+    return glWrap(
+      '<path d="M22 96c-10 36-12 78-2 114h26c-8-34-4-70 4-100Z" fill="#161616" '+ink+' stroke-width="2.4"/>'+
+      '<path d="M138 96c10 36 12 78 2 114h-26c8-34 4-70-4-100Z" fill="#161616" '+ink+' stroke-width="2.4"/>'+
+      '<path d="M2 196c16-28 34-36 50-30l-8 44H0Z" fill="#F7C5DE" '+ink+' stroke-width="2.6"/>'+
+      '<path d="M158 196c-16-28-34-36-50-30l8 44h44Z" fill="#E7A0C4" '+ink+' stroke-width="2.6"/>'+
+      '<path d="M28 210V172c8-26 28-38 52-38s44 12 52 38V210Z" fill="#F7C5DE" '+ink+' stroke-width="3"/>'+
+      '<rect x="40" y="176" width="80" height="16" rx="3" fill="#6D4A86" '+ink+' stroke-width="2.2"/>'+
+      '<path d="M80 146L56 186h24Z" fill="#FFF8FB" '+ink+' stroke-width="2"/>'+
+      '<path d="M80 146l24 40H80Z" fill="#E7A0C4" '+ink+' stroke-width="2"/>'+
+      '<circle cx="50" cy="166" r="4.2" fill="#F06292" '+ink+' stroke-width="1.3"/>'+
+      '<circle cx="112" cy="164" r="3.6" fill="#CE93D8" '+ink+' stroke-width="1.2"/>'+
+      '<circle cx="48" cy="198" r="3.4" fill="#F48FB1" '+ink+' stroke-width="1.2"/>'+
+      '<path d="M68 128h24v22H68Z" fill="#FFE3D4"/>'+
+      '<ellipse cx="80" cy="102" rx="36" ry="42" fill="#FFE3D4" '+ink+' stroke-width="3"/>'+
+      '<path d="M46 98C48 62 62 48 80 48c20 0 34 16 36 46-8-18-18-20-28-8-6-16-16-16-24-4-8-12-16-8-18 16z" fill="#161616" '+ink+' stroke-width="2.6"/>'+
+      '<path d="M46 100c-4 22-2 40 6 52" stroke="#161616" stroke-width="12" fill="none" stroke-linecap="round"/>'+
+      '<path d="M114 100c4 22 2 40-6 52" stroke="#161616" stroke-width="12" fill="none" stroke-linecap="round"/>'+
+      '<circle cx="114" cy="68" r="7" fill="#F06292" '+ink+' stroke-width="1.6"/>'+
+      '<circle cx="114" cy="68" r="2.6" fill="#FFE082"/>'+
+      '<ellipse cx="66" cy="108" rx="7" ry="5.2" fill="#fff" '+ink+' stroke-width="1.8"/>'+
+      '<ellipse cx="96" cy="108" rx="7" ry="5.2" fill="#fff" '+ink+' stroke-width="1.8"/>'+
+      '<ellipse cx="66" cy="109" rx="3" ry="3.2" fill="#3A2A28"/>'+
+      '<ellipse cx="96" cy="109" rx="3" ry="3.2" fill="#3A2A28"/>'+
+      '<circle cx="64.6" cy="107.4" r="1.2" fill="#fff"/>'+
+      '<circle cx="94.6" cy="107.4" r="1.2" fill="#fff"/>'+
+      '<ellipse cx="54" cy="118" rx="6" ry="3" fill="#F4A6B8" opacity=".7"/>'+
+      '<ellipse cx="106" cy="118" rx="6" ry="3" fill="#F4A6B8" opacity=".7"/>'+
+      '<path d="M72 126c4 6 12 6 16 0" fill="none" stroke="#C45A6A" stroke-width="2.2"/>'
+    );
+  }
+  if(id==='fire'){
+    return glWrap(
+      '<path d="M12 176c14-32 38-44 68-44s54 12 68 44V210H12Z" fill="#E53935" '+ink+' stroke-width="3"/>'+
+      '<path d="M56 146L80 176l24-30" fill="none" stroke="#fff" stroke-width="7"/>'+
+      '<path d="M56 146L80 176l24-30" fill="none" stroke="#2A241C" stroke-width="2.2"/>'+
+      '<circle cx="80" cy="190" r="3.2" fill="#FFD54A" '+ink+' stroke-width="1.4"/>'+
+      '<ellipse cx="80" cy="108" rx="46" ry="42" fill="#F6CDB4" '+ink+' stroke-width="3"/>'+
+      '<ellipse cx="34" cy="114" rx="9" ry="12" fill="#F6CDB4" '+ink+' stroke-width="2.3"/>'+
+      '<ellipse cx="126" cy="114" rx="9" ry="12" fill="#F6CDB4" '+ink+' stroke-width="2.3"/>'+
+      '<path d="M30 100c-8 10-8 26 0 38 8-10 10-20 6-30z" fill="#F4F4F4" '+ink+' stroke-width="2"/>'+
+      '<path d="M130 100c8 10 8 26 0 38-8-10-10-20-6-30z" fill="#F4F4F4" '+ink+' stroke-width="2"/>'+
+      '<ellipse cx="80" cy="78" rx="24" ry="13" fill="#FFE6D6"/>'+
+      '<ellipse cx="68" cy="72" rx="8" ry="4" fill="#fff" opacity=".9"/>'+
+      '<path d="M46 98c10-10 22-8 28 2-10 2-20 2-28-2z" fill="#F4F4F4" '+ink+' stroke-width="1.7"/>'+
+      '<path d="M86 100c8-10 20-10 28 0-10 3-20 2-28 0z" fill="#F4F4F4" '+ink+' stroke-width="1.7"/>'+
+      '<path d="M52 114c6-8 16-8 22 0" fill="none" stroke="#2A241C" stroke-width="2.5"/>'+
+      '<path d="M86 114c6-8 16-8 22 0" fill="none" stroke="#2A241C" stroke-width="2.5"/>'+
+      '<ellipse cx="80" cy="124" rx="5" ry="4" fill="#E8B89A"/>'+
+      '<path d="M36 132c12 10 26 16 44 16s32-6 44-16c-8 18-24 30-44 30S44 150 36 132z" fill="#F4F4F4" '+ink+' stroke-width="2.5"/>'+
+      '<path d="M40 134c-10 2-14-8-8-14" fill="none" stroke="#F4F4F4" stroke-width="7" stroke-linecap="round"/>'+
+      '<path d="M120 134c10 2 14-8 8-14" fill="none" stroke="#F4F4F4" stroke-width="7" stroke-linecap="round"/>'+
+      '<path d="M40 134c-10 2-14-8-8-14" fill="none" stroke="#2A241C" stroke-width="2"/>'+
+      '<path d="M120 134c10 2 14-8 8-14" fill="none" stroke="#2A241C" stroke-width="2"/>'+
+      '<path d="M68 158c4 12 20 12 24 0" fill="#F4F4F4" '+ink+' stroke-width="2"/>'
+    );
+  }
+  if(id==='psychic'){
+    return glWrap(
+      '<path d="M30 108c-8 28-4 62 8 102h16c-8-32-6-62 0-90Z" fill="#14685A" '+ink+' stroke-width="2.3"/>'+
+      '<path d="M130 108c8 28 4 62-8 102h-16c8-32 6-62 0-90Z" fill="#1B8F7A" '+ink+' stroke-width="2.3"/>'+
+      '<ellipse cx="138" cy="168" rx="8" ry="10" fill="#F2F2F2" '+ink+' stroke-width="1.7"/>'+
+      '<rect x="135.2" y="176" width="5.6" height="24" rx="1.4" fill="#F2F2F2" '+ink+' stroke-width="1.5"/>'+
+      '<path d="M22 178c14-34 38-48 58-48s44 14 58 48V210H22Z" fill="#D32F2F" '+ink+' stroke-width="3"/>'+
+      '<path d="M60 140c6 18 10 30 20 38 10-8 14-20 20-38" fill="#B71C1C" '+ink+' stroke-width="2.3"/>'+
+      '<path d="M70 132h20v16H70Z" fill="#FFE8E4"/>'+
+      '<ellipse cx="80" cy="102" rx="34" ry="46" fill="#FFE8E4" '+ink+' stroke-width="3"/>'+
+      '<path d="M48 104C50 58 64 44 84 44c24 0 36 20 34 54-8-22-20-28-32-18 6-16-6-22-18-16-12-8-22 0-20 40z" fill="#1B8F7A" '+ink+' stroke-width="2.6"/>'+
+      '<path d="M50 80c-2 22 2 40 12 52 4-18 2-32 6-46z" fill="#14685A" '+ink+' stroke-width="2"/>'+
+      '<ellipse cx="98" cy="112" rx="8" ry="5" fill="#fff" '+ink+' stroke-width="1.8"/>'+
+      '<ellipse cx="98" cy="112" rx="3.3" ry="3.5" fill="#5E35B1"/>'+
+      '<circle cx="98" cy="112" r="1.5" fill="#1A1030"/>'+
+      '<ellipse cx="66" cy="116" rx="5.5" ry="3.2" fill="#fff" '+ink+' stroke-width="1.6"/>'+
+      '<ellipse cx="66" cy="116" rx="2.2" ry="2.2" fill="#5E35B1"/>'+
+      '<path d="M88 100h20" stroke="#145A50" stroke-width="2.5" fill="none"/>'+
+      '<path d="M72 134h16" stroke="#A85068" stroke-width="2.3" fill="none"/>'
+    );
+  }
+  if(id==='ground'){
+    return glWrap(
+      '<path d="M2 166c20-28 44-38 78-38s58 10 78 38l8 44H-4Z" fill="#2C3138" '+ink+' stroke-width="3"/>'+
+      '<path d="M52 148l28 42-22 16" fill="#1A1E24" '+ink+' stroke-width="2"/>'+
+      '<path d="M108 148L80 190l22 16" fill="#1A1E24" '+ink+' stroke-width="2"/>'+
+      '<path d="M68 148l12 40 12-40Z" fill="#F4F1EA" '+ink+' stroke-width="2"/>'+
+      '<path d="M74 154h12l-6 12Z" fill="#8E1515" '+ink+' stroke-width="1.4"/>'+
+      '<path d="M80 162l7 14-7 28-7-28Z" fill="#C62828" '+ink+' stroke-width="1.7"/>'+
+      '<path d="M68 126h24v26H68Z" fill="#E8CDB8" '+ink+' stroke-width="2.2"/>'+
+      '<path d="M80 54c24 2 40 20 40 46 2 26-12 52-40 62-28-10-42-36-40-62 0-26 16-44 40-46z" fill="#E8CDB8" '+ink+' stroke-width="3"/>'+
+      '<path d="M46 98C44 68 58 46 80 42c22 4 36 24 34 54-6-20-16-32-34-36-16 4-26 16-34 38z" fill="#141414" '+ink+' stroke-width="2.6"/>'+
+      '<path d="M42 104c-4 16-2 32 8 42" stroke="#141414" stroke-width="9" fill="none" stroke-linecap="round"/>'+
+      '<path d="M118 104c4 16 2 32-8 42" stroke="#141414" stroke-width="9" fill="none" stroke-linecap="round"/>'+
+      '<path d="M80 60l-7 14h14Z" fill="#141414"/>'+
+      '<path d="M52 108h22" stroke="#2A241C" stroke-width="2.6" fill="none"/>'+
+      '<path d="M86 108h22" stroke="#2A241C" stroke-width="2.6" fill="none"/>'+
+      '<ellipse cx="62" cy="114" rx="7" ry="3.2" fill="#fff" '+ink+' stroke-width="1.6"/>'+
+      '<ellipse cx="98" cy="114" rx="7" ry="3.2" fill="#fff" '+ink+' stroke-width="1.6"/>'+
+      '<circle cx="63" cy="114" r="2.2" fill="#141414"/>'+
+      '<circle cx="99" cy="114" r="2.2" fill="#141414"/>'+
+      '<path d="M66 138c6-5 16-5 22 2" fill="none" stroke="#6A4038" stroke-width="2.3"/>'
+    );
+  }
+  if(id==='dragon'){
+    return glWrap(
+      '<path d="M4 150c-8 20-4 60 10 60h132c14 0 18-40 10-60-16-16-146-16-152 0z" fill="#E53935" '+ink+' stroke-width="3"/>'+
+      '<path d="M24 158c-2 16 0 52 6 52h100c6 0 8-36 6-52" fill="#C62828"/>'+
+      '<path d="M46 156L28 98l36 50Z" fill="#C62828" '+ink+' stroke-width="2.3"/>'+
+      '<path d="M114 156l18-58-36 50Z" fill="#C62828" '+ink+' stroke-width="2.3"/>'+
+      '<path d="M34 90c-18 24-24 72-16 120h24c-6-42-2-80 16-108z" fill="#8E3E28" '+ink+' stroke-width="2.4"/>'+
+      '<path d="M126 90c18 24 24 72 16 120h-24c6-42 2-80-16-108z" fill="#C4623E" '+ink+' stroke-width="2.4"/>'+
+      '<polygon points="50,76 36,8 70,58" fill="#8E3E28" '+ink+' stroke-width="2.2"/>'+
+      '<polygon points="68,66 80,2 98,56" fill="#C4623E" '+ink+' stroke-width="2.2"/>'+
+      '<polygon points="94,70 120,10 126,74" fill="#8E3E28" '+ink+' stroke-width="2.2"/>'+
+      '<path d="M58 166c6-18 12-26 22-26s16 8 22 26V210H58Z" fill="#241820" '+ink+' stroke-width="2.4"/>'+
+      '<circle cx="80" cy="158" r="6" fill="#F6C945" '+ink+' stroke-width="2"/>'+
+      '<ellipse cx="80" cy="104" rx="34" ry="40" fill="#F6D0B8" '+ink+' stroke-width="3"/>'+
+      '<path d="M48 98C52 62 64 48 80 46c18 2 32 16 34 50-8-16-16-20-26-8-4-12-14-14-20-2-8-12-16-8-20 12z" fill="#8E3E28" '+ink+' stroke-width="2.4"/>'+
+      '<path d="M52 96l20-2" stroke="#5A2A1C" stroke-width="2.6" fill="none"/>'+
+      '<path d="M88 94l20 2" stroke="#5A2A1C" stroke-width="2.6" fill="none"/>'+
+      '<ellipse cx="66" cy="112" rx="8" ry="5.5" fill="#fff" '+ink+' stroke-width="1.9"/>'+
+      '<ellipse cx="96" cy="112" rx="8" ry="5.5" fill="#fff" '+ink+' stroke-width="1.9"/>'+
+      '<ellipse cx="67" cy="113" rx="3.2" ry="3.4" fill="#1E4B8C"/>'+
+      '<ellipse cx="97" cy="113" rx="3.2" ry="3.4" fill="#1E4B8C"/>'+
+      '<circle cx="65.6" cy="111.4" r="1.2" fill="#fff"/>'+
+      '<circle cx="95.6" cy="111.4" r="1.2" fill="#fff"/>'+
+      '<path d="M70 132c6 7 16 6 24-2" fill="none" stroke="#A84848" stroke-width="2.4"/>'
+    );
+  }
+  return glWrap(
+    '<polygon points="30,84 14,16 56,68" fill="#6B3F22" '+ink+' stroke-width="2.5"/>'+
+    '<polygon points="46,70 36,4 78,58" fill="#8B5A32" '+ink+' stroke-width="2.5"/>'+
+    '<polygon points="70,62 80,2 106,56" fill="#6B3F22" '+ink+' stroke-width="2.5"/>'+
+    '<polygon points="96,66 120,6 132,66" fill="#8B5A32" '+ink+' stroke-width="2.5"/>'+
+    '<polygon points="118,78 152,24 146,90" fill="#6B3F22" '+ink+' stroke-width="2.5"/>'+
+    '<path d="M4 174c16-32 40-46 76-46s60 14 76 46V210H4Z" fill="#F47316" '+ink+' stroke-width="3"/>'+
+    '<path d="M8 186c8 10 12 20 8 24" fill="none" stroke="#D85A0C" stroke-width="6"/>'+
+    '<path d="M152 186c-8 10-12 20-8 24" fill="none" stroke="#D85A0C" stroke-width="6"/>'+
+    '<path d="M58 146c8 18 14 36 22 50 8-14 14-32 22-50" fill="#E8B07A" '+ink+' stroke-width="2.4"/>'+
+    '<path d="M66 166c8 8 20 8 28 0" fill="none" stroke="#C48462" stroke-width="2.2"/>'+
+    '<path d="M60 128h40v26H60Z" fill="#E8B07A" '+ink+' stroke-width="2.5"/>'+
+    '<ellipse cx="80" cy="106" rx="46" ry="40" fill="#E8B07A" '+ink+' stroke-width="3"/>'+
+    '<ellipse cx="34" cy="110" rx="8" ry="11" fill="#E8B07A" '+ink+' stroke-width="2.3"/>'+
+    '<ellipse cx="126" cy="110" rx="8" ry="11" fill="#E8B07A" '+ink+' stroke-width="2.3"/>'+
+    '<path d="M38 102c4-28 18-40 42-40s38 12 42 40c-10-16-24-22-42-22s-32 6-42 22z" fill="#6B3F22" '+ink+' stroke-width="2.5"/>'+
+    '<path d="M48 98c10-12 20-10 28 0" fill="none" stroke="#3A2416" stroke-width="4.6"/>'+
+    '<path d="M84 98c8-12 18-12 28 0" fill="none" stroke="#3A2416" stroke-width="4.6"/>'+
+    '<ellipse cx="62" cy="114" rx="8" ry="6.2" fill="#fff" '+ink+' stroke-width="2"/>'+
+    '<ellipse cx="100" cy="114" rx="8" ry="6.2" fill="#fff" '+ink+' stroke-width="2"/>'+
+    '<circle cx="63" cy="115" r="3.3" fill="#2A241C"/>'+
+    '<circle cx="101" cy="115" r="3.3" fill="#2A241C"/>'+
+    '<circle cx="61.4" cy="113.2" r="1.15" fill="#fff"/>'+
+    '<circle cx="99.4" cy="113.2" r="1.15" fill="#fff"/>'+
+    '<path d="M80 118v12" stroke="#C48462" stroke-width="2.4" fill="none"/>'+
+    '<path d="M66 138c8 8 20 8 28 0" fill="none" stroke="#8C3A2A" stroke-width="2.6"/>'
+  );
+}
+function openGymTalk(g){
+  gymTalkStep=0;
+  window.__gymTalkLock=false;
+  var lines=GYM_LINES[g.id]||['来挑战吧！'];
+  showModal('<div class="dialog" id="gymTalk"><h3 style="margin-bottom:8px">'+g.emoji+' '+esc(g.name)+'</h3>'+
+    '<div class="gym-talk">'+gymSceneLayers(g)+
+      '<div class="gym-leader">'+gymLeaderSVG(g.id)+'</div>'+
+    '</div>'+
+    '<div class="gym-bubble" onclick="gymTalkAdvance()">'+
+      '<div class="who"><span>馆主 '+esc(g.leader)+'</span><span class="gym-dots" id="gymDots">'+lines.map(function(_,i){return '<i'+(i===0?' class="on"':'')+'></i>';}).join('')+'</span></div>'+
+      '<div class="say" id="gymSay"></div>'+
+    '</div>'+
+    '<div class="dlg-actions"><button class="btn btn-primary btn-block" id="gymTalkNext" onclick="gymTalkAdvance()">继续 ▶</button>'+
+    '<button class="btn btn-gray btn-block" onclick="closeModal()">先不挑战</button></div></div>');
+  gymTalkPaint();
+}
+function gymTalkPaint(){
+  var g=GYMS.filter(function(x){return x.id===gymPickGid;})[0];
+  if(!g) return;
+  var lines=GYM_LINES[g.id]||['来挑战吧！'];
+  var say=$('gymSay');
+  if(say) say.textContent=lines[gymTalkStep]||'';
+  var dots=$('gymDots');
+  if(dots) dots.innerHTML=lines.map(function(_,i){return '<i'+(i===gymTalkStep?' class="on"':'')+'></i>';}).join('');
+  var btn=$('gymTalkNext');
+  var last=gymTalkStep>=lines.length-1;
+  if(btn) btn.textContent=last?'⚔️ 派出宝可梦，开始决斗':'继续 ▶';
+}
+function gymTalkAdvance(){
+  if(window.__gymTalkLock) return;
+  var g=GYMS.filter(function(x){return x.id===gymPickGid;})[0];
+  if(!g) return;
+  var lines=GYM_LINES[g.id]||['来挑战吧！'];
+  sfxClick();
+  if(gymTalkStep<lines.length-1){ gymTalkStep++; gymTalkPaint(); return; }
+  window.__gymTalkLock=true;
+  closeModal();
+  openGymDraft(g);
+}
+function openGymDraft(g){
+  var foes=window.__gymFoes||makeGymTeam(g);
+  var foeRow=foes.map(function(m){
+    return '<div style="text-align:center;width:78px"><img '+pokeImgAttrs(m.sid,'style="width:62px;height:62px;object-fit:contain"')+'><div style="font-size:11px;font-weight:900">'+esc(m.nick)+'</div><div style="font-size:10px;color:#5c4e44;font-weight:800">Lv.'+m.level+'</div></div>';
+  }).join('');
+  showModal('<div class="dialog" id="gymDraft"><h3>'+g.emoji+' '+esc(g.name)+'</h3>'+
+    '<div class="arena gym-stage" style="height:176px;margin-bottom:10px">'+gymSceneLayers(g)+
+      '<div style="position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center;gap:8px">'+foeRow+'</div></div>'+
+    '<p class="lead">馆主 <b>'+esc(g.leader)+'</b> 站在'+esc(g.type)+'系场地里，派出上面 3 只。<br>点选你的 3 只，数字就是上场顺序。</p>'+
+    '<div class="mon-pick-grid" id="gymPickGrid">'+gymPickGridHTML()+'</div>'+
+    '<div class="dlg-actions"><button class="btn btn-primary btn-block" id="gymGo" onclick="confirmGymBattle()">⚔️ 开始决斗</button>'+
+    '<button class="btn btn-gray btn-block" onclick="closeModal()">先不挑战</button></div></div>');
+}
+function toggleGymPick(i){
+  var at=gymPicks.indexOf(i);
+  if(at>=0) gymPicks.splice(at,1);
+  else if(gymPicks.length>=3){ toast('一次只能派出 3 只'); return; }
+  else gymPicks.push(i);
+  sfxClick();
+  var grid=$('gymPickGrid'); if(grid) grid.innerHTML=gymPickGridHTML();
+  var go=$('gymGo'); if(go) go.disabled=gymPicks.length!==3;
+}
+function confirmGymBattle(){
+  if(gymPicks.length!==3){ toast('请选出 3 只宝可梦'); return; }
+  var g=GYMS.filter(function(x){return x.id===gymPickGid;})[0];
+  if(!g) return;
+  var player=gymPicks.map(function(i){ return S.team[i]; }).filter(Boolean);
+  if(player.length!==3){ toast('有伙伴不在队伍里了，重新选一下'); return; }
+  var foes=window.__gymFoes||makeGymTeam(g);
+  try{ sfxBattleArm(); }catch(e){}
+  closeModal();
+  playGymBattle(g,player,foes);
+}
+function playGymBattle(g,player,foes,cfg){
+  cfg=cfg||{};
+  var matches=[], pi=0, fi=0, guard=0;
+  var foeMul=(cfg.hpMul>1)?cfg.hpMul:1;
+  var hpP=player.map(function(m){ return hpOf(m); });
+  var maxF=foes.map(function(m){ return foeMul===1?hpOf(m):Math.round(hpOf(m)*foeMul); });
+  var hpF=maxF.slice();
+  while(pi<player.length&&fi<foes.length&&guard<8){
+    guard++;
+    var simArg={hpA:hpP[pi],hpB:hpF[fi]};
+    if(foeMul!==1) simArg.maxB=maxF[fi];
+    var sim=simBattle(player[pi],foes[fi],simArg);
+    matches.push({pi:pi,fi:fi,sim:sim,startA:hpP[pi],startB:hpF[fi]});
+    hpP[pi]=sim.hpA; hpF[fi]=sim.hpB;
+    if(sim.hpA<=0) pi++;
+    if(sim.hpB<=0) fi++;
+    /* 超时两边都还剩体力：普通道馆按胜负换人；神兽要体力打完才倒下 */
+    if(sim.hpA>0&&sim.hpB>0){
+      if(cfg.boss) pi++;
+      else if(sim.winner==='A') fi++; else pi++;
+    }
+  }
+  var playerWin=cfg.boss?(hpF.length>0&&hpF[0]<=0):(fi>=foes.length);
+  function bench(list,side,active){
+    return '<div class="gym-bench '+side+'">'+list.map(function(m,i){
+      var cls='gym-pip'+(i===active?' now':(i<active?' out':' wait'));
+      return '<span class="'+cls+'" id="pip-'+side+'-'+i+'">'+pokeImgHTML(m.sid,'style="width:22px;height:22px;object-fit:contain"')+'</span>';
+    }).join('')+'</div>';
+  }
+  var A0=player[0], B0=foes[0];
+  showModal('<div class="dialog" id="gymDlg" style="padding:16px 14px"><h3 style="margin:0 0 8px">🏟️ '+esc(g.name)+' · '+esc(g.leader)+'</h3>'+
+    '<div class="arena gym-stage" id="arenaStage">'+gymSceneLayers(g)+
+      bench(player,'mine',0)+bench(foes,'foe',0)+
+      '<div class="vs-badge">'+esc(cfg.badge||(g.type+'系'))+'</div>'+
+      '<div class="arena-side left"><img id="imgA" class="fighter" '+pokeImgAttrs(A0.sid)+'>'+
+        '<div class="hp-wrap"><div class="hp-name" id="nmA">'+esc(A0.nick)+' <span>Lv.'+A0.level+'</span></div>'+
+        '<div class="hpbar hpbar2"><div class="hpfill" id="hpA" style="width:100%"></div></div></div></div>'+
+      '<div class="arena-side right"><img id="imgB" class="fighter" '+pokeImgAttrs(B0.sid)+'>'+
+        '<div class="hp-wrap"><div class="hp-name" id="nmB">'+esc(B0.nick)+' <span>Lv.'+B0.level+'</span></div>'+
+        '<div class="hpbar hpbar2"><div class="hpfill" id="hpB" style="width:100%"></div></div></div></div>'+
+      '<div id="arenaNumA" class="dmg-layer"></div><div id="arenaNumB" class="dmg-layer"></div>'+
+      '<div class="arena-msg" id="arenaMsg">双方就位！</div>'+
+    '</div><div id="gymEnd"></div></div>');
   try{ sfxBattleStart(); }catch(e0){}
-  var i=0;
-  (function nextLine(){
-    if(i>=lines.length){
-      if(win){ winBattle(g); }
-      else{ try{ sfxBattleFaint(); }catch(e){} $('battleEnd').innerHTML='<div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="closeModal()">回去练级！</button></div>'; }
+  var mi=0, ti=0, ended=false;
+  function setMsg(t){ var el=$('arenaMsg'); if(el) el.textContent=t; }
+  function markBench(side,active){
+    var list=side==='mine'?player:foes;
+    for(var i=0;i<list.length;i++){
+      var el=$('pip-'+side+'-'+i); if(!el) continue;
+      el.className='gym-pip'+(i===active?' now':(i<active?' out':' wait'));
+    }
+  }
+  function hpUpdate(side,hp,max){
+    var el=$(side==='A'?'hpA':'hpB'); if(!el) return;
+    var p=Math.max(0,Math.round(hp/max*100));
+    el.style.width=p+'%';
+    el.style.background=p>50?'linear-gradient(90deg,#66bb6a,#43a047)':(p>20?'linear-gradient(90deg,#ffca28,#f9a825)':'linear-gradient(90deg,#ef5350,#c62828)');
+  }
+  function setMon(side,mon,hp,maxHp){
+    var img=$(side==='A'?'imgA':'imgB');
+    var nm=$(side==='A'?'nmA':'nmB');
+    var max=maxHp!=null?maxHp:hpOf(mon);
+    if(img){
+      img.className='fighter';
+      img.src=pokeImg(mon.sid);
+      img.alt=mon.nick||'';
+      img.setAttribute('data-poke',pokeDexNo(mon.sid));
+      img.setAttribute('data-fb','0');
+    }
+    if(nm) nm.innerHTML=esc(mon.nick)+' <span>Lv.'+mon.level+'</span>';
+    hpUpdate(side,hp==null?max:hp,max);
+  }
+  function floatNum(side,txt,cls){
+    var layer=$(side==='A'?'arenaNumA':'arenaNumB'); if(!layer) return;
+    var span=document.createElement('span');
+    span.className='dmg-float '+(cls||'');
+    span.textContent=txt;
+    layer.appendChild(span);
+    setTimeout(function(){ if(span.parentNode) span.parentNode.removeChild(span); },900);
+  }
+  function finish(){
+    if(ended) return; ended=true;
+    if(cfg.onFinish){ cfg.onFinish(!!playerWin); return; }
+    if(playerWin){ winBattle(g); return; }
+    try{ sfxBattleFaint(); }catch(e){}
+    var slot=$('gymEnd');
+    if(slot) slot.innerHTML='<div class="big-emoji">💦</div><h3>这次没能拿下</h3>'+
+      '<p class="lead">'+esc(g.leader)+' 的'+esc(g.type)+'系队伍还是太强了。<br>换一换出战顺序，再挑战一次吧！</p>'+
+      '<div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="closeModal();startBattle(\''+g.id+'\')">再挑战一次</button>'+
+      '<button class="btn btn-gray btn-block" onclick="closeModal()">先回去练级</button></div>';
+  }
+  function nextMatch(){
+    if(ended||!$('arenaStage')){ ended=true; return; }
+    if(mi>=matches.length){ finish(); return; }
+    var mt=matches[mi];
+    ti=0;
+    setMon('A',player[mt.pi],mt.startA);
+    setMon('B',foes[mt.fi],mt.startB,foeMul===1?null:maxF[mt.fi]);
+    markBench('mine',mt.pi);
+    markBench('foe',mt.fi);
+    var tired=function(mon,hp,maxHp){ var cap=maxHp!=null?maxHp:hpOf(mon); return hp<cap?('（还剩 '+hp+' 体力）'):''; };
+    setMsg(player[mt.pi].nick+tired(player[mt.pi],mt.startA)+' 对上 '+foes[mt.fi].nick+tired(foes[mt.fi],mt.startB,foeMul===1?null:maxF[mt.fi])+'！');
+    setTimeout(step,420);
+  }
+  function step(){
+    if(ended||!$('arenaStage')){ ended=true; return; }
+    var mt=matches[mi];
+    var sim=mt.sim;
+    var me=player[mt.pi], opp=foes[mt.fi];
+    if(ti>=sim.turns.length){
+      mi++;
+      if(mi>=matches.length){ setTimeout(finish,520); return; }
+      if(cfg.boss&&sim.hpB>0){
+        setMsg(me.nick+' 先休息一下，'+opp.nick+' 还剩 '+sim.hpB+' 体力，下一只上场！');
+      }else{
+        setMsg((sim.winner==='A'?opp.nick:me.nick)+' 倒下了，下一只上场！');
+      }
+      setTimeout(nextMatch,680);
       return;
     }
-    var line=lines[i];
-    if(i===0){ try{ sfxBattleMove(g.type||'一般'); }catch(e1){} }
-    else if(line.indexOf('砰')>=0||line.indexOf('命中')>=0){ try{ sfxBattleHit(true); }catch(e2){} }
-    else if(line.indexOf('战胜')>=0){ try{ sfxBattleWin(); }catch(e3){} }
-    else if(line.indexOf('差一点')>=0||line.indexOf('练级')>=0){ try{ sfxBattleHit(false); }catch(e4){} }
-    else { try{ sfxBattleMove(g.type||'一般'); }catch(e5){} }
-    var li=document.createElement('li'); li.textContent=line; $('battleLog').appendChild(li);
-    i++;
-    setTimeout(nextLine, win?750:900);
-  })();
+    var t=sim.turns[ti];
+    var atkSide=t.side, dfnSide=(t.side==='A'?'B':'A');
+    var atkMon=atkSide==='A'?me:opp, dfnMon=dfnSide==='A'?me:opp;
+    var atkEl=$(atkSide==='A'?'imgA':'imgB'), dfnEl=$(dfnSide==='A'?'imgA':'imgB');
+    setMsg(atkMon.nick+' 使用了「'+t.move+'」！');
+    if(atkEl) atkEl.classList.add(atkSide==='A'?'lunge-r':'lunge-l');
+    try{ sfxBattleMove(t.type||'一般'); }catch(e1){}
+    setTimeout(function(){
+      if(ended||!$('arenaStage')) return;
+      if(atkEl) atkEl.classList.remove('lunge-r','lunge-l');
+      if(dfnEl){ dfnEl.classList.add('hit'); setTimeout(function(){ if(dfnEl) dfnEl.classList.remove('hit'); },280); }
+      if(t.dmg>0){
+        floatNum(dfnSide,'-'+t.dmg+(t.crit?' 会心!':''),t.crit?'crit':'');
+        try{ sfxBattleHit(!!t.crit); }catch(e2){}
+      }
+      if(t.heal>0){ floatNum(atkSide,'+'+t.heal,'heal'); try{ sfxBattleHeal(); }catch(e3){} }
+      hpUpdate(dfnSide,dfnSide==='A'?t.hpA:t.hpB,dfnSide==='A'?t.maxA:t.maxB);
+      hpUpdate(atkSide,atkSide==='A'?t.hpA:t.hpB,atkSide==='A'?t.maxA:t.maxB);
+      var extra=battleSideText(t.eff);
+      var tail=extra?(' '+extra):'';
+      if(t.ko){ tail=' '+dfnMon.nick+' 倒下了！'; if(dfnEl) dfnEl.classList.add('faint'); try{ sfxBattleFaint(); }catch(e4){} }
+      setMsg(atkMon.nick+' 使用「'+t.move+'」！'+tail);
+      ti++;
+      setTimeout(step, t.ko?640:460);
+    },260);
+  }
+  nextMatch();
 }
 function winBattle(g){
   try{ sfxBattleWin(); }catch(e){} confetti();
   var res=addBadge(g.id);
-  var end='<div class="big-emoji">🏅</div><h3>获得 '+g.name+' 徽章！</h3><p class="lead" style="display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap">'+(g.giftIco==='poke'||g.giftIco==='master'?ballIco(g.giftIco,22):'')+' '+esc(g.gift)+' 到手啦！</p>';
+  var end='<div class="big-emoji">🏅</div><h3>获得 '+esc(g.name)+' 徽章！</h3><p class="lead" style="display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap">'+(g.giftIco==='poke'||g.giftIco==='master'?ballIco(g.giftIco,22):'')+' '+esc(g.gift)+' 到手啦！</p>';
   if(g.id==='rock'){
-    end='<div class="big-emoji">'+pokeImgHTML('snorlax','style="width:120px;height:120px;object-fit:contain"')+'</div><h3>获得卡比兽封印球！</h3><p class="lead">沉睡的卡比兽需要 7 天才能苏醒…<br>这 7 天里坚持打卡，它醒来就更有力量！</p>';
+    end='<div class="big-emoji">'+pokeImgHTML('snorlax','style="width:96px;height:96px;object-fit:contain"')+'</div><h3>获得卡比兽封印球！</h3><p class="lead">沉睡的卡比兽需要 7 天才能苏醒…<br>这 7 天里坚持打卡，它醒来就更有力量！</p>';
   }else if(g.id==='dragon'){
     end='<div class="big-emoji">🥚</div><h3>获得神秘蛋！</h3><p class="lead">蛋里藏着神秘的宝可梦，2 天后会孵化…</p>';
   }
-  $('battleEnd').innerHTML=end+'<div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="closeModal()">太棒了！</button></div>';
+  var gr=res&&res.monGrant, giftLine='';
+  if(gr){
+    var sp=spec(gr.sid);
+    var pic='<div style="text-align:center;margin-top:6px">'+pokeImgHTML(gr.sid,'style="width:84px;height:84px;object-fit:contain"')+'</div>';
+    if(gr.dup){
+      giftLine=pic+'<p class="lead" style="color:#43a047;font-weight:900">你已经有 '+esc(sp.name)+' 了，经验加给'+(gr.where==='box'?'图鉴里':'队伍里')+'的它：+'+gr.xp+'</p>'+xpEventHTML(gr.ev);
+    }else if(gr.boxed){
+      giftLine=pic+'<p class="lead">'+esc(sp.name)+' 先住进图鉴盒子啦，可以随时叫它上场。</p>';
+    }else{
+      giftLine=pic+'<p class="lead">'+esc(sp.name)+' 加入了队伍！</p>';
+    }
+  }
+  var slot=$('gymEnd');
+  if(slot) slot.innerHTML=end+giftLine+'<div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="closeModal();render()">太棒了！</button></div>';
   setTimeout(function(){ render(); },150);
+}
+
+/* ================= 神兽试炼：每周 1 次，沿用道馆决斗 ================= */
+function ensureLegend(s){
+  if(!s) return;
+  var L=s.legend;
+  if(!L||typeof L!=='object'||Array.isArray(L)){
+    s.legend={week:'',used:false,sid:''};
+    return;
+  }
+  if(typeof L.week!=='string') L.week='';
+  if(typeof L.sid!=='string') L.sid='';
+  L.used=!!L.used;
+}
+function legendWeekId(){ return weekStartOf(todayStr()); }
+function legendRecord(){
+  var L=S&&S.legend;
+  if(!L||typeof L!=='object'||Array.isArray(L)) return {week:'',used:false,sid:''};
+  return {week:typeof L.week==='string'?L.week:'',used:!!L.used,sid:typeof L.sid==='string'?L.sid:''};
+}
+function legendUsedThisWeek(){
+  var L=legendRecord();
+  return !!(L.used&&L.week&&L.week===legendWeekId());
+}
+function legendDayText(s){
+  var d=parseDate(s);
+  var wk=['周日','周一','周二','周三','周四','周五','周六'];
+  return (d.getMonth()+1)+'月'+d.getDate()+'日（'+wk[d.getDay()]+'）';
+}
+function legendNextText(){ return legendDayText(nextWeekStartOf(todayStr())); }
+function legendBossLevel(sid){
+  var avg=avgLevel();
+  if(!(avg>=0)) avg=0;
+  var lv=avg+8;
+  return lv<8?8:lv;
+}
+function legendGiftLevel(){
+  var avg=avgLevel();
+  if(!avg||avg<5) return 5;
+  return avg;
+}
+function legendChallengeHTML(){
+  var used=legendUsedThisWeek();
+  var L=legendRecord();
+  var weekStart=legendWeekId();
+  var weekEnd=addDays(weekStart,6);
+  var nextTxt=legendNextText();
+  var fought=used&&SPECIES[L.sid]?SPECIES[L.sid].name:'';
+  var status=used
+    ? ('本周已经挑战过'+(fought?('「'+fought+'」'):'')+'啦。下一次是 '+nextTxt+'，那天再来玩就好。')
+    : ('本周（'+legendDayText(weekStart)+' 到 '+legendDayText(weekEnd)+'）还能挑战 1 次。不用等周末，周一到周日随便哪天都能来。今天打过之后，不管输赢，下一次都是 '+nextTxt+'。');
+  var picks=LEGEND_IDS.map(function(sid){
+    var sp=SPECIES[sid];
+    if(!sp) return '';
+    var on=!used&&legendPickSid===sid;
+    var own=findMonBySid(sid);
+    var sub=used?'本周已挑战':(own?'已经有啦':sp.type);
+    return '<button type="button" class="lg-one'+(on?' on':'')+'" onclick="pickLegend(\''+sid+'\')">'+
+      pokeImgHTML(sid,'style="width:44px;height:44px;object-fit:contain"')+
+      '<div class="nm">'+esc(sp.name)+'</div><div class="lv">'+esc(sub)+'</div></button>';
+  }).join('');
+  var picked=SPECIES[legendPickSid];
+  var startBtn=used
+    ? '<button type="button" class="btn btn-gray btn-block" style="margin-top:10px" id="legendStart" onclick="pickLegend(\''+(L.sid||'mew')+'\')">本周已经挑战过，下一次是'+esc(nextTxt)+'</button>'
+    : '<button type="button" class="btn btn-primary btn-block" style="margin-top:10px" id="legendStart" onclick="openLegendChallenge()">'+(picked?('确认挑战 '+esc(picked.name)):'先点一只神兽，再确认')+'</button>';
+  return '<div class="section-label">神兽试炼</div>'+
+    '<div class="card" id="legendCard" style="background:linear-gradient(180deg,#f4f0ff,#fff8e4);border:1.5px solid #d7c6f5">'+
+      '<div style="display:flex;align-items:center;gap:10px"><div style="font-size:34px">✨</div>'+
+      '<div><b style="font-size:15.5px;font-weight:900">神兽试炼</b>'+
+      '<div style="font-size:12.5px;color:#5c4e88;font-weight:700;margin-top:2px">'+status+'</div></div></div>'+
+      '<p class="lead" style="margin:8px 0 0">从火焰鸟、闪电鸟、急冻鸟、梦幻、超梦里选 1 只。派出队伍里的 3 只，轮流打。神兽的体力打完才会倒下。打赢了它就跟你回家；已经有了就给原来的那只加经验，不会有第二只。</p>'+
+      '<div class="lg-grid">'+picks+'</div>'+
+      startBtn+
+    '</div>';
+}
+function pickLegend(sid){
+  sfxClick();
+  if(legendUsedThisWeek()){
+    toast('这周已经挑战过啦，下一次是'+legendNextText());
+    return;
+  }
+  if(LEGEND_IDS.indexOf(sid)<0||!SPECIES[sid]) return;
+  legendPickSid=sid;
+  render();
+}
+function openLegendChallenge(){
+  sfxClick();
+  if(legendUsedThisWeek()){
+    toast('这周已经挑战过啦，下一次是'+legendNextText());
+    return;
+  }
+  if(LEGEND_IDS.indexOf(legendPickSid)<0){
+    toast('先点一只想试炼的神兽');
+    return;
+  }
+  if(!S.team||S.team.length<3){
+    toast('要派出 3 只伙伴。队伍里还不够，先去抓几只吧');
+    return;
+  }
+  openLegendDraft();
+}
+function legendPickGridHTML(){
+  return S.team.map(function(m,i){
+    var ord=legendPicks.indexOf(i);
+    return carePickHTML(m,{on:ord>=0,tag:ord>=0?String(ord+1):'',onclick:'toggleLegendPick('+i+')'});
+  }).join('');
+}
+function openLegendDraft(){
+  var sid=legendPickSid;
+  var sp=spec(sid);
+  if(!sp) return;
+  var ranked=S.team.map(function(m,i){ return {i:i,lv:m.level,xp:m.xp}; });
+  ranked.sort(function(a,b){ return (b.lv-a.lv)||(b.xp-a.xp)||(a.i-b.i); });
+  legendPicks=ranked.slice(0,3).map(function(x){ return x.i; });
+  var lv=legendBossLevel(sid);
+  window.__legendBoss={id:'legendfoe',sid:sid,nick:sp.name,level:lv,xp:0,source:'legendfoe'};
+  showModal('<div class="dialog" id="legendDraft"><h3>✨ 神兽试炼 · '+esc(sp.name)+'</h3>'+
+    '<div class="arena gym-stage" style="height:168px;margin-bottom:10px">'+gymSceneLayers({id:'legend',name:'神兽祭坛',type:sp.type})+
+      '<div style="position:absolute;inset:0;z-index:3;display:flex;align-items:center;justify-content:center">'+
+      '<div style="text-align:center"><img '+pokeImgAttrs(sid,'style="width:78px;height:78px;object-fit:contain"')+'>'+
+      '<div style="font-size:12px;font-weight:900">'+esc(sp.name)+'</div>'+
+      '<div style="font-size:11px;color:#5c4e44;font-weight:800">Lv.'+lv+'</div></div></div></div>'+
+    '<p class="lead">每周只能挑战 <b>1 次</b>（'+legendDayText(legendWeekId())+' 到 '+legendDayText(addDays(legendWeekId(),6))+'）。这一次一开始，不管最后有没有赢，都要到 <b>'+esc(legendNextText())+'</b> 才能再来。<br>点选你的 3 只，数字就是上场顺序。三只轮流打，'+esc(sp.name)+' 的体力打完才会倒下。</p>'+
+    '<div class="mon-pick-grid" id="legendPickGrid">'+legendPickGridHTML()+'</div>'+
+    '<div class="dlg-actions"><button type="button" class="btn btn-primary btn-block" id="legendGo" onclick="confirmLegendBattle()">⚔️ 开始决斗</button>'+
+    '<button type="button" class="btn btn-gray btn-block" onclick="closeModal()">先不挑战</button></div></div>');
+}
+function toggleLegendPick(i){
+  var at=legendPicks.indexOf(i);
+  if(at>=0) legendPicks.splice(at,1);
+  else if(legendPicks.length>=3){ toast('一次只能派出 3 只'); return; }
+  else legendPicks.push(i);
+  sfxClick();
+  var grid=$('legendPickGrid'); if(grid) grid.innerHTML=legendPickGridHTML();
+  var go=$('legendGo'); if(go) go.disabled=legendPicks.length!==3;
+}
+function confirmLegendBattle(){
+  if(window.__legendLock) return;
+  if(legendUsedThisWeek()){ toast('这周已经挑战过啦，下一次是'+legendNextText()); closeModal(); render(); return; }
+  if(legendPicks.length!==3){ toast('请选出 3 只宝可梦'); return; }
+  var sid=legendPickSid;
+  var sp=spec(sid);
+  if(!sp||LEGEND_IDS.indexOf(sid)<0) return;
+  var player=legendPicks.map(function(i){ return S.team[i]; }).filter(Boolean);
+  if(player.length!==3){ toast('有伙伴不在队伍里了，重新选一下'); return; }
+  var boss=window.__legendBoss;
+  if(!boss||boss.sid!==sid){
+    boss={id:'legendfoe',sid:sid,nick:sp.name,level:legendBossLevel(sid),xp:0,source:'legendfoe'};
+  }
+  S.legend={week:legendWeekId(),used:true,sid:sid};
+  save();
+  window.__legendLock=true;
+  try{ sfxBattleArm(); }catch(e){}
+  closeModal();
+  playGymBattle(
+    {id:'legend',name:'神兽试炼',leader:sp.name,emoji:'✨',type:sp.type},
+    player,
+    [boss],
+    {boss:true,hpMul:1.6,onFinish:function(win){ legendBattleEnd(win,sid); }}
+  );
+}
+function legendBattleEnd(win,sid){
+  window.__legendLock=false;
+  var sp=spec(sid)||{name:'神兽'};
+  var next=legendNextText();
+  var slot=$('gymEnd');
+  if(win){
+    try{ sfxBattleWin(); }catch(e){}
+    confetti();
+    var lv=legendGiftLevel();
+    var gr=grantSpecies(sid,'legend',lv,20);
+    var pic='<div style="text-align:center;margin-top:6px">'+pokeImgHTML(sid,'style="width:96px;height:96px;object-fit:contain"')+'</div>';
+    var line;
+    if(gr&&gr.dup){
+      line=pic+'<p class="lead">你已经有 '+esc(sp.name)+' 啦，所以没有第二只。经验加给'+(gr.where==='box'?'图鉴里':'队伍里')+'原来的那只：+'+gr.xp+'</p>'+xpEventHTML(gr.ev);
+    }else if(gr&&gr.boxed){
+      line=pic+'<p class="lead">'+esc(sp.name)+'（Lv.'+lv+'）先住进图鉴盒子啦，可以随时叫它上场。</p>';
+    }else{
+      line=pic+'<p class="lead">'+esc(sp.name)+'（Lv.'+lv+'）愿意跟你回家，加入了队伍！</p>';
+    }
+    if(slot) slot.innerHTML='<div class="big-emoji">🌟</div><h3>打败 '+esc(sp.name)+' 啦！</h3>'+line+
+      '<p class="lead">本周的挑战用掉啦。下一次是 '+esc(next)+'，到那天再来玩。</p>'+
+      '<div class="dlg-actions"><button type="button" class="btn btn-primary btn-block" onclick="closeModal();render()">太好啦！</button></div>';
+  }else{
+    try{ sfxBattleFaint(); }catch(e2){}
+    if(slot) slot.innerHTML='<div class="big-emoji">🌤️</div><h3>'+esc(sp.name)+' 先飞走啦</h3>'+
+      '<p class="lead">这次没能把它留下来，没关系呀。它一点也不生气，还回头看了你一眼。<br>本周的机会用掉啦，'+esc(next)+' 还能再来，我们一起加油！</p>'+
+      '<div class="dlg-actions"><button type="button" class="btn btn-primary btn-block" onclick="closeModal();render()">好，下次再来</button></div>';
+  }
+  setTimeout(function(){ render(); },150);
+}
+
+/* ================= 胖熊爸爸的考验：每周三 1 次，沿用道馆决斗 ================= */
+function ensurePapa(s){
+  if(!s||typeof s!=='object') return s;
+  var p=s.papa;
+  if(!p||typeof p!=='object'||Array.isArray(p)) s.papa={date:'',done:false};
+  else{
+    if(typeof p.date!=='string') p.date='';
+    p.done=p.done===true;
+  }
+  return s;
+}
+function papaIsWed(){ return parseDate(todayStr()).getDay()===3; }
+function papaFoughtToday(){
+  ensurePapa(S);
+  return S.papa.date===todayStr()&&S.papa.done===true;
+}
+function papaBearHTML(){
+  return '<img class="papa-photo" src="assets/papa-bear.jpg" alt="胖熊爸爸" onerror="this.remove()">';
+}
+function papaBanned(sid){
+  var sp=spec(sid);
+  if(!sp||!sp.name) return true;
+  var ban={articuno:1,zapdos:1,moltres:1,mewtwo:1,mew:1};
+  var banName={'急冻鸟':1,'闪电鸟':1,'火焰鸟':1,'超梦':1,'梦幻':1};
+  return !!(ban[sid]||banName[sp.name]);
+}
+function papaRollFoe(){
+  var keys=[], k;
+  for(k in SPECIES){ if(SPECIES[k]&&!papaBanned(k)) keys.push(k); }
+  var sid=keys.length?keys[rnd(keys.length)]:'pidgey';
+  var sp=spec(sid);
+  var lv=avgLevel();
+  if(!(lv>=3)) lv=3;
+  return {id:'papafoe',sid:sid,nick:sp?sp.name:'波波',level:lv,xp:0,source:'papa'};
+}
+var papaPick=-1;
+function papaPickGridHTML(){
+  return (S.team||[]).map(function(m,i){
+    return carePickHTML(m,{on:papaPick===i,tag:papaPick===i?'出战':'',onclick:'pickPapaOne('+i+')'});
+  }).join('');
+}
+function pickPapaOne(i){
+  if(!S.team||i<0||i>=S.team.length||!S.team[i]) return;
+  papaPick=i;
+  sfxClick();
+  var grid=$('papaPickGrid'); if(grid) grid.innerHTML=papaPickGridHTML();
+  var go=$('papaGo'); if(go) go.disabled=false;
+}
+function papaCardHTML(){
+  if(!papaIsWed()) return '';
+  ensurePapa(S);
+  var done=papaFoughtToday(), hasTeam=!!(S.team&&S.team.length);
+  var status, btn;
+  if(done){
+    status='这周三已经比过啦，下周三还能再来';
+    btn='<button class="btn btn-gray btn-block" disabled>这周三已经比过啦</button>';
+  }else if(!hasTeam){
+    status='先带至少 1 只宝可梦，才能接受考验';
+    btn='<button class="btn btn-gray btn-block" disabled>还没有伙伴</button>';
+  }else{
+    status='今天是周三，可以挑战 1 次';
+    btn='<button class="btn btn-primary btn-block" onclick="openPapa()">接受考验</button>';
+  }
+  return '<div class="papa-card" id="papaCard">'+
+    '<div class="papa-pic">'+papaBearHTML()+'</div>'+
+    '<div class="papa-body">'+
+      '<b>胖熊爸爸的考验</b>'+
+      '<p>胖熊爸爸来看你啦，他随机带了一只伙伴。你从队伍里点 1 只出来比，打赢就送你一个大师球。</p>'+
+      '<div class="papa-note" id="papaNote">'+status+'</div>'+
+      btn+
+    '</div></div>';
+}
+function papaHomeHTML(){
+  ensurePapa(S);
+  var wed=papaIsWed(), done=papaFoughtToday();
+  var sub=!wed?'胖熊爸爸周三才来':(done?'这周三已经比过啦，下周三再来':'今天是周三，点进去接受考验');
+  return '<button type="button" class="papa-home" id="papaHome" onclick="goPapaHome()">'+
+    '<span class="papa-home-pic">'+papaBearHTML()+'</span>'+
+    '<span class="papa-home-tx"><b>胖熊爸爸的考验</b><i>'+sub+'</i></span>'+
+    '<span class="papa-home-go">去看看</span></button>';
+}
+function legendHomeHTML(){
+  var used=legendUsedThisWeek();
+  var L=legendRecord();
+  var fought=used&&SPECIES[L.sid]?SPECIES[L.sid].name:'';
+  var sub=used
+    ? ('本周已经挑战过'+(fought?('「'+fought+'」'):'')+'啦。下一次是 '+legendNextText())
+    : '本周还能挑战 1 次';
+  var names=LEGEND_IDS.map(function(sid){
+    var sp=SPECIES[sid];
+    return sp&&sp.name?sp.name:'';
+  }).filter(Boolean).join('、');
+  return '<button type="button" class="papa-home legend-home" id="legendHome" onclick="goLegendHome()">'+
+    '<span class="legend-home-ic" aria-hidden="true">✨</span>'+
+    '<span class="papa-home-tx"><b>神兽试炼</b><i>'+esc(sub)+'</i>'+
+    '<span class="legend-home-names">'+esc(names)+'</span></span>'+
+    '<span class="papa-home-go">去看看</span></button>';
+}
+function scrollCatchBlock(id){
+  setTimeout(function(){
+    var card=$(id);
+    if(!card) return;
+    var head=document.querySelector('header');
+    var y=(window.scrollY||document.documentElement.scrollTop)+card.getBoundingClientRect().top-(head?head.offsetHeight:0)-8;
+    window.scrollTo(0, y<0?0:y);
+  }, 40);
+}
+function goPapaHome(){
+  go('catch');
+  scrollCatchBlock('papaCard');
+}
+function goLegendHome(){
+  go('catch');
+  scrollCatchBlock('legendCard');
+}
+function openPapa(){
+  sfxClick();
+  if(!papaIsWed()){ toast('胖熊爸爸周三才来'); return; }
+  if(papaFoughtToday()){ toast('这周三已经比过啦，下周三再来'); return; }
+  if(!S.team||!S.team.length){ toast('先带至少 1 只宝可梦来吧'); return; }
+  var foe=papaRollFoe();
+  window.__papaFoe=foe;
+  papaPick=-1;
+  var sp=spec(foe.sid);
+  showModal('<div class="dialog" id="papaDlg"><h3>胖熊爸爸的考验</h3>'+
+    '<div class="papa-meet">'+papaBearHTML()+
+      '<p>胖熊爸爸来看你啦，他随机带了一只伙伴。你从队伍里点 1 只出来比，打赢就送你一个大师球。</p></div>'+
+    '<div class="papa-foe" id="papaFoe">'+
+      '<img '+pokeImgAttrs(foe.sid,'style="width:84px;height:84px;object-fit:contain"')+'>'+
+      '<div><b id="papaFoeName">'+esc(foe.nick)+'</b><div id="papaFoeLv">Lv.'+foe.level+' · '+esc(sp?sp.type:'')+'</div>'+
+      '<div class="papa-soft">它想友好地比一场。点下面 1 只，选好再开始。</div></div></div>'+
+    '<div class="mon-pick-grid" id="papaPickGrid">'+papaPickGridHTML()+'</div>'+
+    '<div class="dlg-actions"><button type="button" class="btn btn-primary btn-block" id="papaGo" disabled onclick="beginPapa()">开始决斗</button>'+
+    '<button type="button" class="btn btn-gray btn-block" onclick="closeModal()">再想想</button></div></div>');
+}
+function beginPapa(){
+  if(window.__papaLock) return;
+  if(!papaIsWed()){ toast('胖熊爸爸周三才来'); closeModal(); return; }
+  if(papaFoughtToday()){ toast('这周三已经比过啦，下周三再来'); closeModal(); render(); return; }
+  if(!S.team||!S.team.length){ toast('先带至少 1 只宝可梦来吧'); return; }
+  var mon=S.team[papaPick];
+  if(!mon){ toast('先点一只伙伴'); return; }
+  var foe=window.__papaFoe;
+  if(!foe||papaBanned(foe.sid)||foe.level!==(avgLevel()<3?3:avgLevel())) foe=papaRollFoe();
+  ensurePapa(S);
+  window.__papaLock=true;
+  S.papa={date:todayStr(),done:true};
+  if(!S.items||typeof S.items!=='object') S.items={vouchers:0,rareVouchers:0};
+  save();
+  var g={id:'papa',name:'胖熊爸爸的考验',leader:'胖熊爸爸',emoji:'🐻',type:'伙伴'};
+  try{ sfxBattleArm(); }catch(e){}
+  closeModal();
+  playGymBattle(g,[mon],[foe],{
+    badge:'考验',
+    onFinish:function(win){ papaFinish(!!win,foe); }
+  });
+}
+function papaFinish(win,foe){
+  window.__papaLock=false;
+  var slot=$('gymEnd');
+  var nm=foe&&foe.nick?foe.nick:'对手';
+  if(win){
+    if(!S.items||typeof S.items!=='object') S.items={vouchers:0,rareVouchers:0};
+    S.items.rareVouchers=(S.items.rareVouchers||0)+1;
+    save();
+    try{ sfxBattleWin(); }catch(e){}
+    try{ confetti(); }catch(e2){}
+    if(slot) slot.innerHTML='<div class="big-emoji">'+ballIco('master',46)+'</div><h3>你赢过了 '+esc(nm)+'！</h3>'+
+      '<p class="lead">胖熊爸爸笑着把一个大师球放进背包。<br>现在有 <b>'+S.items.rareVouchers+'</b> 个大师球。</p>'+
+      '<div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="closeModal();render()">谢谢胖熊爸爸！</button></div>';
+  }else{
+    try{ sfxBattleFaint(); }catch(e3){}
+    if(slot) slot.innerHTML='<div class="big-emoji">🐻</div><h3>这次被 '+esc(nm)+' 打败啦</h3>'+
+      '<p class="lead">没关系，这只伙伴已经很努力了。<br>大师球这次先不送，下周三还能再比一次。</p>'+
+      '<div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="closeModal();render()">下周三再来</button></div>';
+  }
+  setTimeout(function(){ if(curView==='catch') render(); },180);
 }
 
 /* ================= 视图：队内对战 ================= */
@@ -4883,7 +5960,7 @@ function viewArenaHTML(){
       '<div style="display:flex;align-items:center;gap:10px"><div style="font-size:34px">⚔️</div>'+
       '<div><b style="font-size:15.5px;font-weight:900">队内对战 · 每晚 20:00-22:00</b>'+
       '<div style="font-size:12.5px;color:#1E4F9A;font-weight:700;margin-top:2px">'+bw.msg+'</div>'+
-      '<div style="font-size:12px;color:#8a6d3b;font-weight:600;margin-top:2px">今天已战 '+rec.count+'/3 场 · '+(rec.xpGiven?'经验奖励已领取':'第一场胜者 +12 经验，败者 +5 经验')+'</div></div></div>'+
+      '<div style="font-size:12px;color:#8a6d3b;font-weight:600;margin-top:2px">今天已战 '+rec.count+'/3 场 · 每场胜者 +12 经验，败者 +5 经验</div></div></div>'+
       '<div style="display:flex;align-items:center;justify-content:space-around;margin-top:12px">'+
         '<div style="text-align:center"><img '+pokeImgAttrs(A.sid,'style="width:78px;height:78px;object-fit:contain"')+'><div style="font-size:12px;font-weight:900">'+esc(A.nick)+'</div><div style="font-size:10.5px;color:#8a6d3b">Lv.'+A.level+' · '+spec(A.sid).type+'</div></div>'+
         '<div style="font-size:20px;font-weight:900;color:#e3350d">VS</div>'+
@@ -4898,7 +5975,7 @@ function viewArenaHTML(){
     '<div class="section-label">对战规则</div>'+
     '<div class="card" style="font-size:12.5px;line-height:1.75;color:#6b5a4a;font-weight:600">'+
       '⏰ 每晚 20:00 - 22:00 开放，每天最多 3 场<br>'+
-      '🎁 每天第一场：胜者 +12 经验，败者 +5 经验（练习赛不加经验）<br>'+
+      '🎁 每天 3 场都有经验：胜者 +12，败者 +5<br>'+
       '⚡ 出手顺序由速度决定，属性克制会造成 2 倍伤害<br>'+
       '💡 等级不是唯一，属性克制和一点点运气也很重要！'+
     '</div>'+
@@ -4920,7 +5997,7 @@ function startArena(){
   if(arenaA>=S.team.length) arenaA=0;
   if(arenaB>=S.team.length||arenaB===arenaA) arenaB=(arenaA+1)%S.team.length;
   var A=S.team[arenaA], B=S.team[arenaB];
-  var rewardOK=!S.arena.xpGiven;
+  var rewardOK=true;
   S.arena.count++; save(); render();
   var sim=simBattle(A,B);
   playArena(A,B,sim,rewardOK);
@@ -5024,6 +6101,8 @@ function viewCatchHTML(){
     lock='<div class="lock-note">🌲 野外探险只在<b>周六、周日</b>开放！<br>周末带着你的伙伴们一起去草丛里探险吧！</div>';
   }
   return '<div class="view">'+
+    (papaIsWed()?papaCardHTML():'')+
+    legendChallengeHTML()+
     '<div class="card" style="background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border:1.5px solid #a5d6a7">'+
       '<div style="display:flex;align-items:center;gap:10px"><div style="font-size:34px">🌲</div>'+
       '<div><b style="font-size:15.5px;font-weight:900">野外探险</b>'+
@@ -5038,10 +6117,10 @@ function viewCatchHTML(){
     '<div class="card" style="background:linear-gradient(135deg,#e3f4ff,#eef9ff);border:1.5px solid #8fd0ea">'+
       '<div style="display:flex;align-items:center;gap:10px"><div style="font-size:34px">🎣</div>'+
       '<div><b style="font-size:15.5px;font-weight:900">江边钓鱼</b>'+
-      '<div style="font-size:12.5px;color:#0d5f7a;font-weight:600;margin-top:2px">每天 3 次 · 只遇水系宝可梦 · 可切磋 / 可捕捉</div>'+
+      '<div style="font-size:12.5px;color:#0d5f7a;font-weight:600;margin-top:2px">每天 '+FISH_DAILY+' 次，今天还可钓 '+fl+' 次 · 只遇水系宝可梦</div>'+
       '<div style="font-size:12px;color:#1565c0;font-weight:700;margin-top:3px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px">🐟 钓上来后可比试拿经验，也可用球带走 · '+ballLabel('poke',String(S.items.vouchers),15)+' · '+ballLabel('master',String(S.items.rareVouchers),15)+'</div></div></div>'+
       '<div style="margin-top:12px">'+
-        '<button class="btn '+(fl>0?'btn-primary':'btn-gray')+' btn-block" '+(fl>0?'':'disabled')+' onclick="startFish()">'+(fl>0?('🎣 去钓鱼（今天还剩 '+fl+' 次）'):'今天钓满啦，明天再来')+'</button>'+
+        '<button class="btn '+(fl>0?'btn-primary':'btn-gray')+' btn-block" '+(fl>0?'':'disabled')+' onclick="startFish()">'+(fl>0?('🎣 去钓鱼（还可钓 '+fl+' 次，每天 '+FISH_DAILY+' 次）'):'今天钓满啦，明天再来')+'</button>'+
       '</div></div>'+
     '<div class="card"><h3>🎒 我的伙伴（'+S.team.length+'/6）</h3>'+
       (S.team.length
@@ -5069,7 +6148,7 @@ function fishReset(){
   if(!S.fish||S.fish.date!==t){ S.fish={date:t,used:0}; save(); }
   return S.fish;
 }
-function fishLeft(){ return Math.max(0,FISH_DAILY-fishReset().used); }
+function fishLeft(){ return Math.max(0,FISH_DAILY-((fishReset().used|0))); }
 var fishPick=0;                       /* 出战伙伴下标 */
 function fishFoe(){
   var sid=pickWeighted(FISH_POOL);
@@ -5128,24 +6207,31 @@ function fishStageHTML(kind,foe){
 function startFish(){
   sfxClick();
   if(!S.team.length){ toast('先要有伙伴才能钓鱼哦'); return; }
-  if(fishLeft()<=0){ toast('今天已经钓满 '+FISH_DAILY+' 次啦，明天再来'); return; }
-  fishReset().used++; save();
+  var left=fishLeft();
+  if(left<=0){ toast('今天已经钓满 '+FISH_DAILY+' 次啦，明天再来'); return; }
+  window.__fishSpent=false;
   showModal('<div class="dialog" id="fishDlg">'+
     '<h3 style="margin:0 0 8px">🎣 江边钓鱼</h3>'+
     fishStageHTML('wait')+
-    '<p class="lead" id="fishCap" style="margin-top:10px">浮标静静地漂在水面上…<br>今天还能钓 <b>'+fishLeft()+'</b> 次。</p>'+
+    '<p class="lead" id="fishCap" style="margin-top:10px">浮标静静地漂在水面上…<br>今天还可钓 <b>'+left+'</b> 次（每天 '+FISH_DAILY+' 次，抛竿才计入）。</p>'+
     '<div class="dlg-actions" id="fishActs">'+
       '<button class="btn btn-primary btn-block btn-lg" onclick="fishCast()">抛竿！</button>'+
       '<button class="btn btn-gray btn-block" onclick="closeModal();render()">收杆回家</button>'+
     '</div></div>');
-  render();
 }
 function fishCast(){
   sfxClick();
   var cap=$('fishCap'), acts=$('fishActs'), bob=$('fishBob');
   if(!cap||!acts) return;
+  if(!window.__fishSpent){
+    if(fishLeft()<=0){ toast('今天已经钓满 '+FISH_DAILY+' 次啦'); closeModal(); render(); return; }
+    fishReset().used++;
+    window.__fishSpent=true;
+    save();
+    render();
+  }
   acts.innerHTML='';
-  cap.innerHTML='抛竿…等浮标动一下。<br><span style="font-size:12.5px;color:#8a7a6a">屏住呼吸哦</span>';
+  cap.innerHTML='抛竿…等浮标动一下。<br><span style="font-size:12.5px;color:#8a7a6a">今天第 '+(fishReset().used)+' / '+FISH_DAILY+' 次</span>';
   if(bob){ bob.style.top='46%'; bob.style.left='46%'; }
   beep(520,0.1,'triangle',0.07);
   /* 随机等待后咬钩 */
@@ -5273,19 +6359,24 @@ function catchThrow(){
     var sp=spec(c.e.sid);
     var src=c.e.source||'wild';
     var lv=c.e.level||5;
-    stage.innerHTML='<div class="big" style="display:flex;align-items:center;justify-content:center;gap:8px">'+ballIco(c.ball||'poke',36)+'🎉</div><h3>抓到啦！</h3><p class="lead">'+esc(sp.name)+(src==='fish'?('（Lv.'+lv+'）'):'')+' 加入了你的队伍！</p>';
-    setTimeout(function(){
-      var r=tryAddMon(c.e.sid,src,lv);
-      if(!r.boxed){
-        stage.innerHTML+='<div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="closeModal()">太棒了！</button></div>';
-        render();
-      }else{
-        stage.innerHTML='<div class="big" style="display:flex;align-items:center;justify-content:center;gap:8px">'+ballIco(c.ball||'poke',36)+'🎉</div><h3>抓到啦！</h3><p class="lead">'+esc(sp.name)+' 已存入<b>图鉴</b>保管！<br>队伍满了？可以替换队员上场，或随时在图鉴里切换。</p>'+
-          '<div class="dlg-actions"><button class="btn btn-yellow btn-block" onclick="openReplace(\''+c.e.sid+'\',\''+src+'\')">🔄 挑选替换上场</button>'+
-          '<button class="btn btn-primary btn-block" onclick="closeModal();go(\'dex\')">📖 去看看图鉴</button></div>';
-        render();
-      }
-    },400);
+    var r=grantSpecies(c.e.sid,src,lv,15);
+    if(r.dup){
+      stage.innerHTML='<div class="big" style="display:flex;align-items:center;justify-content:center;gap:8px">'+ballIco(c.ball||'poke',36)+'🎉</div><h3>抓到啦！</h3>'+
+        '<p class="lead">'+esc(sp.name)+' 你已经有啦，不再重复收一只。<br>经验加给'+(r.where==='box'?'图鉴里':'队伍里')+'的 <b>'+esc(r.mon.nick)+'</b>：+'+r.xp+'</p>'+
+        xpEventHTML(r.ev)+
+        '<div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="closeModal()">太棒了！</button></div>';
+      if(r.ev&&r.ev.some(function(e){return e.type==='evo'||e.type==='level'||e.type==='levelmove';})){ sfxLevel(); }
+      render();
+    }else if(!r.boxed){
+      stage.innerHTML='<div class="big" style="display:flex;align-items:center;justify-content:center;gap:8px">'+ballIco(c.ball||'poke',36)+'🎉</div><h3>抓到啦！</h3><p class="lead">'+esc(sp.name)+(src==='fish'?('（Lv.'+lv+'）'):'')+' 加入了你的队伍！</p>'+
+        '<div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="closeModal()">太棒了！</button></div>';
+      render();
+    }else{
+      stage.innerHTML='<div class="big" style="display:flex;align-items:center;justify-content:center;gap:8px">'+ballIco(c.ball||'poke',36)+'🎉</div><h3>抓到啦！</h3><p class="lead">'+esc(sp.name)+' 已存入<b>图鉴</b>保管！<br>队伍满了？可以替换队员上场，或随时在图鉴里切换。</p>'+
+        '<div class="dlg-actions"><button class="btn btn-yellow btn-block" onclick="openReplace(\''+c.e.sid+'\',\''+src+'\')">🔄 挑选替换上场</button>'+
+        '<button class="btn btn-primary btn-block" onclick="closeModal();go(\'dex\')">📖 去看看图鉴</button></div>';
+      render();
+    }
   }else{
     sfxBad();
     stage.innerHTML='<div class="big">😢</div><h3>哎呀，跑掉了…</h3><p class="lead" style="display:flex;flex-direction:column;align-items:center;gap:6px"><span style="display:inline-flex;align-items:center;gap:5px">'+ballIco(c.ball||'poke',20)+' 晃了三次，还是被挣脱了！</span><br>下次见面一定抓住你！</p>'+
@@ -5729,6 +6820,7 @@ function doReset(){
 
 /* ================= 启动 ================= */
 function init(){
+  if(ensureMonIds(S.team)||ensureMonIds(S.box)) save();
   SOUND=!(S&&S.sound===false);
   cleanupGymSnorlaxDupes();
   renderHeader(); renderTabbar();
