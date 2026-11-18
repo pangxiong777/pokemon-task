@@ -192,6 +192,8 @@ main{padding:14px 14px 8px;}
 }
 .chip-opt.on{background:linear-gradient(180deg,var(--pk-yellow-s),var(--pk-yellow));border-color:var(--pk-edge);color:#5D4300;}
 .mon-pick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:4px;}
+/* 对手卡和下面队伍选人之间留白；四张队伍卡彼此仍是 8px。只作用于这两个对话框 */
+#papaPickGrid,#legendPickGrid{margin-top:18px;}
 .chip-opt.care-pick{
   display:inline-flex;align-items:center;gap:8px;padding:6px 12px 6px 6px;border-radius:18px;min-height:48px;
   /* 属性色底由内联 background 注入；未注入时退回奶油纸色 */
