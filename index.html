@@ -5744,7 +5744,7 @@ function legendChallengeHTML(){
   var fought=used&&SPECIES[L.sid]?SPECIES[L.sid].name:'';
   var status=used
     ? ('本周已经挑战过'+(fought?('「'+fought+'」'):'')+'啦。下一次是 '+nextTxt+'，那天再来玩就好。')
-    : ('本周（'+legendDayText(weekStart)+' 到 '+legendDayText(weekEnd)+'）还能挑战 1 次。不用等周末，周一到周日随便哪天都能来。今天打过之后，不管输赢，下一次都是 '+nextTxt+'。');
+    : ('本周（'+legendDayText(weekStart)+' 到 '+legendDayText(weekEnd)+'）还能挑战 1 次。不管输赢，下一次是从 '+nextTxt+' 开始。');
   var picks=LEGEND_IDS.map(function(sid){
     var sp=SPECIES[sid];
     if(!sp) return '';
@@ -5764,7 +5764,7 @@ function legendChallengeHTML(){
       '<div style="display:flex;align-items:center;gap:10px"><div style="font-size:34px">✨</div>'+
       '<div><b style="font-size:15.5px;font-weight:900">神兽试炼</b>'+
       '<div style="font-size:12.5px;color:#5c4e88;font-weight:700;margin-top:2px">'+status+'</div></div></div>'+
-      '<p class="lead" style="margin:8px 0 0">从火焰鸟、闪电鸟、急冻鸟、梦幻、超梦里选 1 只。派出队伍里的 3 只，轮流打。神兽的体力打完才会倒下。打赢了它就跟你回家；已经有了就给原来的那只加经验，不会有第二只。</p>'+
+      '<p class="lead" style="margin:8px 0 0">请派出 3 只宝可梦来挑战神兽吧！挑战成功就可以带走它哦！</p>'+
       '<div class="lg-grid">'+picks+'</div>'+
       startBtn+
     '</div>';
