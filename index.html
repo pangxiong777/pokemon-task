@@ -2108,6 +2108,88 @@ function sendToBox(ti){
   S.team.splice(ti,1); S.box.push(t); save(); closeModal(); render();
   toast(esc(t.nick)+' 回到图鉴休息啦');
 }
+/* 新伙伴从 Lv.5 开始，放生时只把这之后攒下的经验交给留下的那只 */
+function earnedXP(mon){
+  var xp=mon.xp||0, lv=mon.level||1, start=5, l;
+  if(lv>start){ for(l=start;l<lv;l++) xp+=xpNeed(l); }
+  return Math.max(0, Math.round(xp));
+}
+/* 同种里留下更强的一只：队伍和盒子都算，跳过即将放生的这只 */
+function bestOtherSpecies(sid, skipBox){
+  var best=null, i;
+  function take(where,idx,m){
+    if(!m||m.sid!==sid) return;
+    if(where==='box'&&idx===skipBox) return;
+    if(!best||m.level>best.m.level||(m.level===best.m.level&&(m.xp||0)>(best.m.xp||0))){
+      best={where:where,i:idx,m:m};
+    }
+  }
+  for(i=0;i<S.team.length;i++) take('team',i,S.team[i]);
+  for(i=0;i<(S.box||[]).length;i++) take('box',i,S.box[i]);
+  return best;
+}
+function boxIndexById(id){
+  var want=String(id||'');
+  if(!want) return -1;
+  var box=S.box||[];
+  for(var i=0;i<box.length;i++){ if(box[i]&&String(box[i].id)===want) return i; }
+  return -1;
+}
+function boxMonModalById(id){
+  var bi=boxIndexById(id);
+  if(bi<0){ toast('这只已经不在盒子里了'); return; }
+  boxMonModal(bi);
+}
+function releaseBoxAskById(id){
+  var bi=boxIndexById(id);
+  if(bi<0){ toast('这只已经不在盒子里了'); return; }
+  releaseBoxAsk(bi);
+}
+function releaseBoxById(id){
+  var bi=boxIndexById(id);
+  if(bi<0){ toast('这只已经不在盒子里了'); closeModal(); render(); return; }
+  releaseBox(bi);
+}
+function releaseBoxAsk(bi){
+  var m=S.box[bi]; if(!m) return;
+  sfxClick();
+  var other=bestOtherSpecies(m.sid, bi);
+  var lead;
+  if(other){
+    var where=other.where==='team'?'队伍里':'盒子里';
+    lead='它会回野外去。<br>'+where+'还有一只 Lv.'+other.m.level+' 的'+esc(other.m.nick)+'，这只攒下的经验会加给它。';
+  }else{
+    lead='它会离开盒子，回野外去。<br>图鉴里还会记得见过它，但这只不能再叫回来。';
+  }
+  showModal('<div class="dialog"><div style="text-align:center"><div class="big-emoji">'+pokeImgHTML(m.sid,'style="width:96px;height:96px;object-fit:contain"')+'</div>'+
+    '<h3>放生 Lv.'+m.level+' 的'+esc(m.nick)+'？</h3><p class="lead">'+lead+'</p></div>'+
+    '<div class="dlg-actions">'+
+      '<button type="button" class="btn btn-red btn-block" onclick="releaseBoxById(\''+esc(m.id)+'\')">确定放生</button>'+
+      '<button class="btn btn-gray btn-block" onclick="closeTopModal()">再想想</button>'+
+    '</div></div>');
+}
+function releaseBox(bi){
+  var m=S.box[bi]; if(!m) return;
+  var other=bestOtherSpecies(m.sid, bi);
+  var bonus=other?earnedXP(m):0;
+  var goneName=m.nick;
+  var ev=[];
+  if(other&&bonus>0) ev=addXP(other.m, bonus);
+  S.box.splice(bi,1);
+  save();
+  try{ sfxOk(); }catch(e){}
+  var lead;
+  if(other){
+    var where=other.where==='team'?'队伍里':'盒子里';
+    lead=esc(goneName)+' 回家啦。'+(bonus>0?('经验 +'+bonus+' 加给了'+where+'的 '+esc(other.m.nick)+'。'):(where+'的另一只没分到新经验，保持原样。'));
+  }else{
+    lead=esc(goneName)+' 回家啦。图鉴里还记着它。';
+  }
+  closeModal();
+  showModal('<div class="dialog"><div class="big-emoji">🌿</div><h3>放生完成</h3><p class="lead">'+lead+'</p>'+xpEventHTML(ev)+
+    '<div class="dlg-actions"><button class="btn btn-primary btn-block" onclick="closeModal();render()">知道了</button></div></div>');
+  render();
+}
 /* 被换下的伙伴必须进盒子，不能直接消失（初始宝可梦常因此丢失） */
 function replaceMon(idx,sid,source,level){
   var old=S.team[idx];
@@ -2689,14 +2771,25 @@ function battleWindowText(){
   return {open:false,msg:'今天的对战已结束 · 明天 20:00 再战（'+Math.floor(m2/60)+' 小时后）'};
 }
 function pickMove(mon){ var pool=movePool(mon); return pool[rnd(pool.length)]; }
+/* 克制表里的 2 / 0.5 只标记克制或被克。实战收成温和加成，等级差另算。 */
+function battleMult(chart){
+  if(chart>=2) return 1.35;
+  if(chart>0&&chart<1) return 0.75;
+  return chart;
+}
 function calcDmg(atk,def,mv){
   var info=MOVE_INFO[mv.m]||{t:'一般',p:30};
-  var eff=typeEff(info.t, spec(def.sid).type);
+  var eff=battleMult(typeEff(info.t, spec(def.sid).type));
   var base=info.p*(1+atk.level*0.075);
+  var gap=1+(atk.level-def.level)*0.055;
+  if(gap<0.55) gap=0.55;
+  if(gap>1.5) gap=1.5;
   var rand=0.88+Math.random()*0.24;
   var crit=Math.random()<0.09;
-  var d=Math.round(base*eff*rand*(crit?1.5:1)*0.42);
-  return {dmg:Math.max(info.p>0?3:0,d),eff:eff,crit:crit,info:info};
+  var d=Math.round(base*eff*gap*rand*(crit?1.5:1)*0.42);
+  if(!(eff>0)) d=0;
+  else if(info.p>0) d=Math.max(3,d);
+  return {dmg:d,eff:eff,crit:crit,info:info};
 }
 function simBattle(a,b,opt){
   opt=opt||{};
@@ -2727,7 +2820,7 @@ function simBattle(a,b,opt){
   return {turns:turns,winner:winner,hpA:A.hp,hpB:B.hp,maxA:A.max,maxB:B.max};
 }
 function battleSideText(eff){
-  if(eff>=2) return '效果拔群！';
+  if(eff>1) return '效果拔群！';
   if(eff===0) return '完全没效果…';
   if(eff<1) return '效果不太好…';
   return '';
@@ -3583,11 +3676,12 @@ function primeVoice(){
 ['pointerdown','touchstart','click'].forEach(function(ev){
   document.addEventListener(ev,function(){ try{ unlockAudio(); primeVoice(); }catch(e){} },{capture:true,passive:true});
 });
-/* 所有可点控件：按下即响点击音。只绑一种事件，避免 pointerdown+touchstart 各响一次 */
+/* 轻点可点控件才响。手指滑动翻页不算点击，中途移动超过阈值就取消 */
 (function(){
   var SEL='button,.btn,.chip,.chip-opt,.tab,.care-item,.meet-banner,.mw,.mode-btn,.kid-switch,.mon-tap,.nav .tab,[onclick]';
   /* 这些控件自带专用音效，不要再叠一层点击音 */
   var SKIP='[data-skill-demo],[data-skill-pick],.md-move.demoable,.sk-close,[onclick*="playCry"],[onclick*="sfxBattle"],[onclick*="playSkill"]';
+  var pending=null, SLOP=12;
   function isClickable(el){
     if(!el||!el.closest) return null;
     var t=el.closest(SEL);
@@ -3597,16 +3691,48 @@ function primeVoice(){
     if(t.closest(SKIP)||t.matches(SKIP)) return null;
     return t;
   }
-  function onPress(ev){
-    if(ev&&ev.button!=null&&ev.button!==0) return;
-    if(!isClickable(ev.target)) return;
+  function arm(ev,id){
+    if(ev&&ev.button!=null&&ev.button!==0){ pending=null; return; }
+    if(!isClickable(ev.target)){ pending=null; return; }
+    pending={id:id,x:ev.clientX,y:ev.clientY,moved:false};
+  }
+  function drag(ev,id){
+    if(!pending||pending.id!==id) return;
+    var dx=ev.clientX-pending.x, dy=ev.clientY-pending.y;
+    if(dx*dx+dy*dy>SLOP*SLOP) pending.moved=true;
+  }
+  function finish(id,cancel){
+    if(!pending||pending.id!==id) return;
+    var play=!cancel&&!pending.moved;
+    pending=null;
+    if(!play) return;
     try{ unlockAudio(); sfxClick(); }catch(e){}
   }
   if(window.PointerEvent){
-    document.addEventListener('pointerdown',onPress,{capture:true,passive:true});
+    document.addEventListener('pointerdown',function(ev){ arm(ev,ev.pointerId); },{capture:true,passive:true});
+    document.addEventListener('pointermove',function(ev){ drag(ev,ev.pointerId); },{capture:true,passive:true});
+    document.addEventListener('pointerup',function(ev){ finish(ev.pointerId,false); },{capture:true,passive:true});
+    document.addEventListener('pointercancel',function(ev){ finish(ev.pointerId,true); },{capture:true,passive:true});
   }else{
-    document.addEventListener('touchstart',onPress,{capture:true,passive:true});
-    document.addEventListener('mousedown',onPress,{capture:true,passive:true});
+    document.addEventListener('touchstart',function(ev){
+      var t=ev.changedTouches&&ev.changedTouches[0]; if(!t) return;
+      arm({target:ev.target,clientX:t.clientX,clientY:t.clientY,button:0},t.identifier);
+    },{capture:true,passive:true});
+    document.addEventListener('touchmove',function(ev){
+      var t=ev.changedTouches&&ev.changedTouches[0]; if(!t) return;
+      drag({clientX:t.clientX,clientY:t.clientY},t.identifier);
+    },{capture:true,passive:true});
+    document.addEventListener('touchend',function(ev){
+      var t=ev.changedTouches&&ev.changedTouches[0]; if(!t) return;
+      finish(t.identifier,false);
+    },{capture:true,passive:true});
+    document.addEventListener('touchcancel',function(ev){
+      var t=ev.changedTouches&&ev.changedTouches[0]; if(!t) return;
+      finish(t.identifier,true);
+    },{capture:true,passive:true});
+    document.addEventListener('mousedown',function(ev){ arm(ev,'mouse'); },{capture:true,passive:true});
+    document.addEventListener('mousemove',function(ev){ if(ev.buttons) drag(ev,'mouse'); },{capture:true,passive:true});
+    document.addEventListener('mouseup',function(ev){ finish('mouse',false); },{capture:true,passive:true});
   }
 })();
 function speakFallback(text, sync){
@@ -4383,11 +4509,17 @@ function toast(msg){
 }
 function showModal(html){
   var m=document.createElement('div'); m.className='mask'; m.innerHTML=html;
-  m.addEventListener('click',function(e){ if(e.target===m){ closeModal(m); } });
+  /* 打开弹窗的那一下可能落在新遮罩上，短时间内不响应，避免确认框一闪就关 */
+  var born=Date.now();
+  m.addEventListener('click',function(e){
+    if(Date.now()-born<400){ e.preventDefault(); e.stopPropagation(); return; }
+    if(e.target===m){ closeModal(m); }
+  }, true);
   $('modalRoot').appendChild(m);
   return m;
 }
 function closeModal(m){ stopVoice(); if(m){ m.remove(); } else { var r=$('modalRoot'); while(r.firstChild){r.removeChild(r.firstChild);} } }
+function closeTopModal(){ var r=$('modalRoot'); if(r&&r.lastChild) r.lastChild.remove(); }
 function confetti(){
   var root=$('confetti'); root.innerHTML='';
   var colors=['#e3350d','#ffcb05','#43a047','#1e88e5','#8e24aa','#f9a825'];
@@ -4849,11 +4981,7 @@ function viewTeamHTML(){
       '<b>卡比兽封印球</b>'+
       '<div class="d">道馆送的卡比兽正在沉睡中…<br>坚持每天打卡，'+left+' 天后它就会醒来加入队伍！</div>'+
       '<div class="seal-ring" style="--deg:'+deg+'deg"><div class="inner">'+left+'天</div></div></div>';
-  }else if(sn.state==='active'&&snLoc&&snLoc.where==='team'){
-    sealHTML='<div class="card" style="background:linear-gradient(135deg,#e2f5e3,#f1fbf2);border:1.5px solid #a5d6a7"><h3>🐻 卡比兽已苏醒！</h3><p style="margin:0;font-size:13.5px;color:#2e7d32;font-weight:600">它正在你的队伍里，等着和你一起打卡升级呢！</p></div>';
-  }else if(sn.state==='active'&&snLoc&&snLoc.where==='box'){
-    sealHTML='<div class="card" style="background:linear-gradient(180deg,#EEF6FF,#DCEEFF)"><h3>🐻 卡比兽在图鉴休息</h3><p style="margin:0 0 10px;font-size:13.5px;color:#1E4F9A;font-weight:600">它已经醒啦，正在图鉴盒子里养精蓄锐。想一起冒险时，去图鉴叫它上场就好～</p><button class="btn btn-yellow btn-block" onclick="go(\'dex\')">📖 去图鉴看看</button></div>';
-  }else if(sn.state==='active'){
+  }else if(sn.state==='active'&&!snLoc){
     sealHTML='<div class="card" style="background:linear-gradient(135deg,#fff3d0,#ffe9a8);border:1.5px solid #f0c24b"><h3>🐻 卡比兽醒了！</h3><p style="margin:0 0 10px;font-size:13.5px;color:#7a5200;font-weight:600">但队伍已经满了…选一位伙伴送回家，让它加入吧。</p><button class="btn btn-yellow btn-block" onclick="openReplace(\'snorlax\',\'gym\')">挑选替换</button></div>';
   }
   var teamHTML=S.team.map(function(m){return monCardHTML(m);}).join('')||
@@ -5840,12 +5968,8 @@ function papaHomeHTML(){
     '<span class="papa-home-go">去看看</span></button>';
 }
 function legendHomeHTML(){
-  var used=legendUsedThisWeek();
-  var L=legendRecord();
-  var fought=used&&SPECIES[L.sid]?SPECIES[L.sid].name:'';
-  var sub=used
-    ? ('本周已经挑战过'+(fought?('「'+fought+'」'):'')+'啦。下一次是 '+legendNextText())
-    : '本周还能挑战 1 次';
+  if(legendUsedThisWeek()) return '';
+  var sub='本周还能挑战 1 次';
   var names=LEGEND_IDS.map(function(sid){
     var sp=SPECIES[sid];
     return sp&&sp.name?sp.name:'';
@@ -5978,8 +6102,8 @@ function viewArenaHTML(){
     '<div class="card" style="font-size:12.5px;line-height:1.75;color:#6b5a4a;font-weight:600">'+
       '⏰ 每晚 20:00 - 22:00 开放，每天最多 3 场<br>'+
       '🎁 每天 3 场都有经验：胜者 +12，败者 +5<br>'+
-      '⚡ 出手顺序由速度决定，属性克制会造成 2 倍伤害<br>'+
-      '💡 等级不是唯一，属性克制和一点点运气也很重要！'+
+      '⚡ 出手顺序由速度决定。属性克制时，这一下会更疼一些<br>'+
+      '💡 等级更高也会更占优。克制有用，还要看等级和一点点运气！'+
     '</div>'+
   '</div>';
 }
@@ -6008,8 +6132,9 @@ function startArena(){
 /* ================= 视图：图鉴 ================= */
 function boxMonModal(bi){
   var m=S.box[bi]; if(!m) return;
-  var sp=spec(m.sid);
+  var sp=spec(m.sid)||{type:'一般',moves:[],name:m.nick||'宝可梦'};
   var mvs=(sp.moves||[]).filter(function(mv){return mv.at<=m.level;}).map(function(mv){return mv.m;});
+  var id=esc(m.id||'');
   showModal('<div class="dialog"><div style="text-align:center">'+
     '<div style="font-size:11px;font-weight:900;color:#8a7a6a">No.'+('000'+dexNo(m.sid)).slice(-3)+'</div>'+
     '<div class="big-emoji">'+pokeImgHTML(m.sid,'style="width:110px;height:110px;object-fit:contain"')+'</div>'+
@@ -6017,8 +6142,9 @@ function boxMonModal(bi){
     '<span class="type-tag" style="background:'+tc(sp.type)+'">'+sp.type+'</span> <span class="lv-tag">Lv.'+m.level+'</span>'+
     '<p class="lead">招式：'+(mvs.length?mvs.map(function(x){return esc(x);}).join('、'):'—')+'</p></div>'+
     '<div class="dlg-actions">'+
-      '<button class="btn btn-primary btn-block" onclick="addFromBox('+bi+')">'+(S.team.length<6?'⬆️ 加入队伍':'🔄 替换队员上场')+'</button>'+
-      '<button class="btn btn-gray btn-block" onclick="closeModal()">返回</button>'+
+      '<button type="button" class="btn btn-primary btn-block" onclick="addFromBox('+bi+')">'+(S.team.length<6?'⬆️ 加入队伍':'🔄 替换队员上场')+'</button>'+
+      '<button type="button" class="btn btn-red btn-block" onclick="releaseBoxAskById(\''+id+'\')">'+(bestOtherSpecies(m.sid,bi)?'放生（经验给另一只）':'放生')+'</button>'+
+      '<button type="button" class="btn btn-gray btn-block" onclick="closeModal()">返回</button>'+
     '</div></div>');
 }
 function teamToBoxModal(ti){
@@ -6042,9 +6168,10 @@ function viewDexHTML(){
       '<div class="ds-nm">'+esc(m.nick)+'</div><div class="ds-lv">Lv.'+m.level+'</div></button>';
   }).join('');
   /* 盒子 */
-  var boxGrid=S.box.map(function(m,i){
+  var boxGrid=S.box.map(function(m){
     var sp=spec(m.sid)||{};
-    return '<button class="dex-slot" style="'+carePickBgStyle(sp.type)+'" onclick="boxMonModal('+i+')">'+
+    var id=esc(m.id||'');
+    return '<button type="button" class="dex-slot" style="'+carePickBgStyle(sp.type)+'" onclick="boxMonModalById(\''+id+'\')">'+
       '<div class="ds-ic">'+pokeImgHTML(m.sid,'style="width:46px;height:46px;object-fit:contain"')+'</div>'+
       '<div class="ds-nm">'+esc(m.nick)+'</div><div class="ds-lv">Lv.'+m.level+'</div></button>';
   }).join('');
@@ -6071,7 +6198,7 @@ function viewDexHTML(){
       '<div style="font-size:11px;color:#8a7a6a;font-weight:600;margin-top:6px">点击队员 → 送回图鉴休息；最多同时出战 6 只</div></div>'+
     (S.box.length?'<div class="card"><h3>📥 图鉴盒子（'+S.box.length+' 只待命）</h3>'+
       '<div class="dex-grid">'+boxGrid+'</div>'+
-      '<div style="font-size:11px;color:#8a7a6a;font-weight:600;margin-top:6px">点击盒中伙伴 → 加入队伍或替换队员</div></div>':'')+
+      '<div style="font-size:11px;color:#8a7a6a;font-weight:600;margin-top:6px">点击盒中伙伴 → 加入队伍、替换队员，或放生</div></div>':'')+
     '<div class="section-label">全图鉴 · '+POKE_TOTAL+' 只</div>'+
     '<div class="card"><div class="dex-grid dex-all">'+grid+'</div>'+
       '<div style="font-size:11px;color:#8a7a6a;font-weight:600;margin-top:8px">灰影 = 还没遇到过的神秘宝可梦，去野外探险收集吧！</div></div>'+
@@ -6082,6 +6209,9 @@ function dexMonInfo(sid){
   sfxClick();
   var evoTxt=sp.evo.length?sp.evo.map(function(e){ return 'Lv.'+e.at+' → '+esc(SPECIES[e.to]?SPECIES[e.to].name:e.to); }).join('，'):'不再进化';
   var mvs=sp.moves.map(function(mv){ return mv.at>1?('Lv.'+mv.at+' '+esc(mv.m)):esc(mv.m); }).join('、');
+  var relBtns=(S.box||[]).filter(function(m){ return m&&m.sid===sid; }).map(function(m){
+    return '<button type="button" class="btn btn-red btn-block" onclick="releaseBoxAskById(\''+esc(m.id)+'\')">放生盒子里的 Lv.'+m.level+' '+esc(m.nick)+'</button>';
+  }).join('');
   showModal('<div class="dialog"><div style="text-align:center">'+
     '<div style="font-size:11px;font-weight:900;color:#8a7a6a">No.'+('000'+dexNo(sid)).slice(-3)+'</div>'+
     '<div class="big-emoji">'+pokeImgHTML(sid,'style="width:110px;height:110px;object-fit:contain"')+'</div>'+
@@ -6089,7 +6219,7 @@ function dexMonInfo(sid){
     '<span class="type-tag" style="background:'+tc(sp.type)+'">'+sp.type+'</span>'+
     '<p class="lead" style="margin-top:8px">进化：'+evoTxt+'</p>'+
     '<p class="lead" style="font-size:12px">可学招式：'+mvs+'</p></div>'+
-    '<div class="dlg-actions"><button class="btn btn-gray btn-block" onclick="closeModal()">关闭</button></div></div>');
+    '<div class="dlg-actions">'+relBtns+'<button type="button" class="btn btn-gray btn-block" onclick="closeModal()">关闭</button></div></div>');
 }
 
 /* ================= 视图：野外捕捉 ================= */
